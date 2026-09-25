@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thực Hành HTML - Bài Tập Thẻ Hình Ảnh (<img>)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#dcfce7',
+              500: '#22c55e',
+              600: '#16a34a',
+              700: '#15803d',
+              800: '#166534',
+              900: '#14532d',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    .code-font {
+      font-family: 'Fira Code', monospace;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-900 text-slate-100 flex flex-col">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useRef } = React;
+
+    // Sample Default Code Template
+    const DEFAULT_CODE = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập Thẻ Hình Ảnh</title>
+</head>
+<body>
+    <h1>Trang web cá nhân của tôi</h1>
+    <p>Dưới đây là hình ảnh phong cảnh thiên nhiên mà tôi ưa thích:</p>
+
+    <!-- Thêm thẻ <img> của bạn bên dưới -->
+    <img src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80" 
+         alt="Cảnh thiên nhiên núi rừng hùng vĩ phản chiếu trên mặt hồ xanh biếc" 
+         width="600" 
+         style="border-radius: 8px; max-width: 100%; height: auto;">
+
+</body>
+</html>`;
+
+    // Sample Image List with high quality ALT texts
+    const SAMPLE_IMAGES = [
+      {
+        id: 1,
+        category: 'Thiên nhiên',
+        title: 'Hồ nước & Núi rừng',
+        url: 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=800&q=80',
+        alt: 'Khung cảnh thiên nhiên hoang sơ với mặt hồ phẳng lặng phản chiếu rặng núi trùng điệp lúc hoàng hôn'
+      },
+      {
+        id: 2,
+        category: 'Lập trình',
+        title: 'Màn hình Code & Laptop',
+        url: 'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80',
+        alt: 'Lập trình viên đang làm việc trên máy tính xách tay hiển thị dòng mã HTML và CSS'
+      },
+      {
+        id: 3,
+        category: 'Động vật',
+        title: 'Chú chó Beagle',
+        url: 'https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80',
+        alt: 'Chú chó cún giống Beagle đáng yêu đang ngồi ngoan ngoãn trên thảm cỏ xanh'
+      },
+      {
+        id: 4,
+        category: 'Học tập',
+        title: 'Bàn học & Cà phê',
+        url: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80',
+        alt: 'Góc không gian làm việc hiện đại gồm sách vở, sổ tay và tách cà phê ấm nóng'
+      }
+    ];
+
+    function App() {
+      const [code, setCode] = useState(DEFAULT_CODE);
+      const [activeTab, setActiveTab] = useState('preview'); // preview | gallery | guide | github
+      const [simulateBroken, setSimulateBroken] = useState(false);
+      const [githubUrl, setGithubUrl] = useState('');
+      const [githubValid, setGithubValid] = useState(null);
+      const [toastMessage, setToastMessage] = useState('');
+      const [copiedCmd, setCopiedCmd] = useState('');
+
+      // Show toast helper
+      const showToast = (msg) => {
+        setToastMessage(msg);
+        setTimeout(() => setToastMessage(''), 3000);
+      };
+
+      const validationResults = useMemo(() => {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(code, 'text/html');
+
+          const hasDoctype = code.trim().toLowerCase().startsWith('<!doctype html');
+          const hasBody = doc.body !== null && doc.body.tagName.toLowerCase() === 'body';
+          
+          // Get all images inside body
+          const images = doc.querySelectorAll('body img');
+          const hasImg = images.length > 0;
+
+          let hasValidSrc = false;
+          let hasValidAlt = false;
+          let altQuality = 'none'; // 'none' | 'weak' | 'good'
+          let inspectedImages = [];
+
+          if (hasImg) {
+            let validSrcCount = 0;
+            let validAltCount = 0;
+
+            images.forEach((img, idx) => {
+              const src = img.getAttribute('src');
+              const alt = img.getAttribute('alt');
+
+              const isSrcOk = Boolean(src && src.trim() !== '');
+              const isAltPresent = img.hasAttribute('alt');
+              const isAltOk = Boolean(alt && alt.trim() !== '');
+
+              if (isSrcOk) validSrcCount++;
+              if (isAltOk) validAltCount++;
+
+              let altScore = 'Cần cải thiện';
+              if (!isAltPresent) {
+                altScore = 'Thiếu thuộc tính alt';
+              } else if (!isAltOk) {
+                altScore = 'Thuộc tính alt bị rỗng';
+              } else if (alt.trim().length < 8) {
+                altScore = 'Mô tả quá ngắn (< 8 ký tự)';
+              } else if (/^(image|picture|ảnh|hình ảnh)$/i.test(alt.trim())) {
+                altScore = 'Mô tả quá chung chung';
+              } else {
+                altScore = 'Mô tả tốt (Chuẩn SEO/A11y)';
+              }
+
+              inspectedImages.push({
+                index: idx + 1,
+                src: src || 'Chưa cấu hình',
+                alt: alt !== null ? (alt || '(Để trống)') : 'KHÔNG CÓ ALT',
+                isSrcOk,
+                isAltOk,
+                altScore
+              });
+            });
+
+            hasValidSrc = validSrcCount > 0;
+            hasValidAlt = validAltCount > 0;
+
+            if (hasValidAlt) {
+              const goodAlts = inspectedImages.filter(i => i.altScore.includes('Mô tả tốt'));
+              if (goodAlts.length > 0) altQuality = 'good';
+              else altQuality = 'weak';
+            }
+          }
+
+          // Calculate score
+          let checks = [
+            { id: 'doctype', label: 'Cấu trúc HTML5 chuẩn (<!DOCTYPE html>, <html>, <body>)', status: hasDoctype && hasBody },
+            { id: 'has_img', label: 'Có ít nhất 1 thẻ <img> trong <body>', status: hasImg },
+            { id: 'has_src', label: 'Thẻ <img> chứa thuộc tính src dẫn tới đường dẫn ảnh', status: hasValidSrc },
+            { id: 'has_alt', label: 'Thẻ <img> chứa thuộc tính alt mô tả nội dung hình ảnh', status: hasValidAlt },
+            { id: 'alt_quality', label: 'Nội dung thuộc tính alt rõ ràng, chi tiết (> 8 ký tự)', status: altQuality === 'good' }
+          ];
+
+          const passedCount = checks.filter(c => c.status).length;
+          const isAllPassed = checks.slice(0, 4).every(c => c.status); // First 4 are mandatory criteria
+
+          return {
+            checks,
+            passedCount,
+            totalChecks: checks.length,
+            isAllPassed,
+            inspectedImages,
+            imgCount: images.length
+          };
+        } catch (e) {
+          return {
+            checks: [],
+            passedCount: 0,
+            totalChecks: 5,
+            isAllPassed: false,
+            inspectedImages: [],
+            imgCount: 0
+          };
+        }
+      }, [code]);
+
+      const handleFormat = () => {
+        // Basic HTML formatting indent
+        try {
+          let formatted = code
+            .replace(/>\s*</g, '>\n<')
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .join('\n');
+          
+          setCode(formatted);
+          showToast('Đã định dạng lại mã nguồn!');
+        } catch (err) {
+          showToast('Không thể tự động định dạng mã!');
+        }
+      };
+
+      const handleCopyCode = () => {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = code;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          showToast('Đã sao chép toàn bộ mã vào bộ nhớ tạm!');
+        } catch (err) {
+          showToast('Thao tác sao chép thất bại!');
+        }
+      };
+
+      const handleDownload = () => {
+        const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'index.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Đã tải xuống file index.html!');
+      };
+
+      const handleInsertSnippet = () => {
+        const snippet = `\n    <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?auto=format&fit=crop&w=800&q=80" alt="Chú chó Beagle đáng yêu chạy trên cỏ xanh" width="500">\n`;
+        // Insert inside body tag
+        if (code.includes('</body>')) {
+          setCode(code.replace('</body>', `${snippet}</body>`));
+        } else {
+          setCode(prev => prev + snippet);
+        }
+        showToast('Đã thêm mẫu thẻ <img> vào mã!');
+      };
+
+      const handleInsertGalleryImg = (img) => {
+        const snippet = `<img src="${img.url}" alt="${img.alt}" width="600" style="max-width: 100%; height: auto;">`;
+        if (code.includes('</body>')) {
+          setCode(code.replace('</body>', `    ${snippet}\n</body>`));
+        } else {
+          setCode(prev => prev + '\n' + snippet);
+        }
+        showToast(`Đã chèn ảnh: ${img.title}`);
+        setActiveTab('preview');
+      };
+
+      // Streamlined Code for Live Preview HTML rendering
+      const renderedPreviewHtml = useMemo(() => {
+        if (!simulateBroken) return code;
+        // Replace all src="..." with broken path to test ALT behavior
+        return code.replace(/src=["']([^"']+)["']/gi, 'src="https://invalid-image-domain-test.xyz/broken-image.jpg"');
+      }, [code, simulateBroken]);
+
+      const handleVerifyGithub = (e) => {
+        const url = e.target.value;
+        setGithubUrl(url);
+        
+        const githubRegex = /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/?$/;
+        if (url.trim() === '') {
+          setGithubValid(null);
+        } else if (githubRegex.test(url.trim())) {
+          setGithubValid(true);
+        } else {
+          setGithubValid(false);
+        }
+      };
+
+      const copyToClipboardText = (text, label) => {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          setCopiedCmd(label);
+          setTimeout(() => setCopiedCmd(''), 2000);
+          showToast(`Đã sao chép lệnh: ${text}`);
+        } catch (e) {
+          showToast('Sao chép thất bại');
+        }
+      };
+
+      return (
+        <div className="flex flex-col h-screen max-h-screen overflow-hidden">
+          
+          {/* Header Bar */}
+          <header className="bg-slate-800 border-b border-slate-700 px-4 py-3 flex flex-wrap items-center justify-between gap-3 shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                <i className="fa-solid fa-image text-lg"></i>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white flex items-center gap-2">
+                  [Bài tập] Sử dụng thẻ hình ảnh (<span className="text-emerald-400 code-font">&lt;img&gt;</span>)
+                </h1>
+                <p className="text-xs text-slate-400">Trình thực hành HTML tương tác & Kiểm tra thuộc tính <code className="text-amber-300">alt</code> tự động</p>
+              </div>
+            </div>
+
+            {/* Validation Badge */}
+            <div className="flex items-center gap-3">
+              <div className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-2 ${
+                validationResults.isAllPassed 
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                  : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+              }`}>
+                <i className={`fa-solid ${validationResults.isAllPassed ? 'fa-circle-check' : 'fa-triangle-exclamation'}`}></i>
+                <span>Trạng thái bài tập: {validationResults.passedCount}/{validationResults.totalChecks} Tiêu chuẩn</span>
+              </div>
+
+              <button 
+                onClick={() => setActiveTab('github')}
+                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs px-3.5 py-1.5 rounded-lg font-medium transition flex items-center gap-2 shadow-md shadow-emerald-600/20"
+              >
+                <i className="fa-brands fa-github text-sm"></i>
+                <span>Nộp bài GitHub</span>
+              </button>
+            </div>
+          </header>
+
+          {/* Toast Notification */}
+          {toastMessage && (
+            <div className="fixed top-16 right-6 z-50 bg-emerald-600 text-white px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 text-xs font-medium animate-bounce">
+              <i className="fa-solid fa-circle-check"></i>
+              <span>{toastMessage}</span>
+            </div>
+          )}
+
+          {/* Main Workspace Split Screen */}
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-slate-950">
+            
+            {/* Left Column: Editor & Auto Validator (5 cols) */}
+            <div className="lg:col-span-5 border-r border-slate-800 flex flex-col h-full overflow-hidden bg-slate-900">
+              
+              {/* Editor Header Toolbar */}
+              <div className="bg-slate-800/80 px-4 py-2 border-b border-slate-700/70 flex items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                    <i className="fa-regular fa-file-code text-emerald-400"></i> index.html
+                  </span>
+                  <span className="text-[10px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded">HTML5</span>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={handleInsertSnippet}
+                    title="Chèn mẫu thẻ <img> tiêu chuẩn"
+                    className="px-2.5 py-1 text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 rounded transition flex items-center gap-1.5"
+                  >
+                    <i className="fa-solid fa-plus text-xs text-emerald-400"></i>
+                    <span>+ Thẻ &lt;img&gt;</span>
+                  </button>
+                  <button 
+                    onClick={handleFormat}
+                    title="Định dạng lại dòng thụt lề"
+                    className="p-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-solid fa-align-left"></i>
+                  </button>
+                  <button 
+                    onClick={handleCopyCode}
+                    title="Sao chép toàn bộ mã"
+                    className="p-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-regular fa-copy"></i>
+                  </button>
+                  <button 
+                    onClick={handleDownload}
+                    title="Tải về file index.html"
+                    className="p-1.5 text-xs text-slate-400 hover:text-emerald-400 hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-solid fa-download"></i>
+                  </button>
+                </div>
+              </div>
+
+              {/* Code Area */}
+              <div className="flex-1 relative overflow-hidden bg-slate-950 flex flex-col">
+                <textarea
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  spellCheck="false"
+                  className="w-full h-full p-4 bg-slate-950 text-slate-100 code-font text-xs sm:text-sm resize-none focus:outline-none leading-relaxed selection:bg-slate-700"
+                  placeholder="Nhập mã HTML tại đây..."
+                ></textarea>
+              </div>
+
+              {/* Realtime Validator Panel */}
+              <div className="border-t border-slate-800 bg-slate-900/90 p-3 shrink-0 max-h-52 overflow-y-auto">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <i className="fa-solid fa-list-check text-emerald-400"></i> Kiểm tra bài tập (Auto Validator)
+                  </h3>
+                  <span className="text-[10px] text-slate-400">Tự động phân tích DOM</span>
+                </div>
+
+                <div className="space-y-1.5">
+                  {validationResults.checks.map((check) => (
+                    <div 
+                      key={check.id}
+                      className={`text-xs p-2 rounded-lg border flex items-start gap-2 transition ${
+                        check.status 
+                          ? 'bg-emerald-950/30 border-emerald-800/40 text-emerald-300' 
+                          : 'bg-slate-800/50 border-slate-700/60 text-slate-400'
+                      }`}
+                    >
+                      <i className={`fa-solid ${check.status ? 'fa-circle-check text-emerald-400' : 'fa-circle-xmark text-slate-500'} mt-0.5 text-sm`}></i>
+                      <div className="flex-1">
+                        <p className={`font-medium ${check.status ? 'text-emerald-200' : 'text-slate-300'}`}>
+                          {check.label}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Right Column: Preview, ALT Tester, Inspector, Gallery & Git Guide (7 cols) */}
+            <div className="lg:col-span-7 flex flex-col h-full overflow-hidden bg-slate-900">
+              
+              {/* Navigation Tabs Header */}
+              <div className="bg-slate-800 border-b border-slate-700 px-3 py-2 flex items-center justify-between overflow-x-auto gap-2 shrink-0">
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={() => setActiveTab('preview')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'preview' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-solid fa-desktop text-emerald-400"></i> Xem trước & Thử nghiệm
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveTab('gallery')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'gallery' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-solid fa-images text-amber-400"></i> Thư viện ảnh mẫu
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveTab('guide')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'guide' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-solid fa-book-open text-blue-400"></i> Hướng dẫn viết ALT
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveTab('github')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'github' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-brands fa-github text-purple-400"></i> Hướng dẫn Nộp bài
+                  </button>
+                </div>
+              </div>
+
+              {/* TAB 1: Live Preview & ALT Inspector */}
+              {activeTab === 'preview' && (
+                <div className="flex-1 flex flex-col overflow-hidden p-4 gap-4">
+                  
+                  {/* Top Control Bar for Preview */}
+                  <div className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex flex-wrap items-center justify-between gap-3 shrink-0">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-xs font-semibold text-slate-200">Trực quan hóa Trang Web</span>
+                    </div>
+
+                    {/* Broken Image Simulator Toggle */}
+                    <div className="flex items-center gap-3">
+                      <label className="flex items-center gap-2 cursor-pointer select-none">
+                        <span className="text-xs font-medium text-slate-300">
+                          <i className="fa-solid fa-triangle-exclamation text-amber-400 mr-1"></i> Giả lập lỗi đường dẫn ảnh (Kiểm tra ALT):
+                        </span>
+                        <div className="relative inline-block w-10 h-5">
+                          <input 
+                            type="checkbox" 
+                            checked={simulateBroken}
+                            onChange={(e) => setSimulateBroken(e.target.checked)}
+                            className="opacity-0 w-0 h-0 peer"
+                          />
+                          <span className="absolute cursor-pointer top-0 left-0 right-0 bottom-0 bg-slate-700 rounded-full peer-checked:bg-amber-600 transition-all duration-200"></span>
+                          <span className="absolute cursor-pointer left-0.5 bottom-0.5 w-4 h-4 bg-white rounded-full peer-checked:translate-x-5 transition-all duration-200"></span>
+                        </div>
+                      </label>
+                    </div>
+                  </div>
+
+                  {/* Rendered Frame */}
+                  <div className="flex-1 bg-white rounded-xl shadow-inner border border-slate-700 overflow-hidden relative min-h-[220px]">
+                    <iframe
+                      title="HTML Live Preview"
+                      srcDoc={renderedPreviewHtml}
+                      className="w-full h-full border-0 bg-white text-black"
+                      sandbox="allow-scripts"
+                    ></iframe>
+                  </div>
+
+                  {/* Image Inspector Table */}
+                  <div className="bg-slate-800/70 border border-slate-700 rounded-xl p-3 shrink-0 max-h-56 overflow-y-auto">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                        <i className="fa-solid fa-magnifying-glass font-mono text-emerald-400"></i> Phân tích thẻ &lt;img&gt; đang tìm thấy ({validationResults.imgCount})
+                      </h4>
+                      {simulateBroken && (
+                        <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded border border-amber-500/30">
+                          Đang bật chế độ ảnh hỏng
+                        </span>
+                      )}
+                    </div>
+
+                    {validationResults.inspectedImages.length === 0 ? (
+                      <p className="text-xs text-slate-400 italic py-2 text-center">Chưa tìm thấy thẻ &lt;img&gt; nào trong &lt;body&gt; của bạn.</p>
+                    ) : (
+                      <div className="space-y-2">
+                        {validationResults.inspectedImages.map((img) => (
+                          <div key={img.index} className="bg-slate-900 p-2.5 rounded-lg border border-slate-700 text-xs">
+                            <div className="flex items-center justify-between gap-2 mb-1">
+                              <span className="font-bold text-emerald-400">Ảnh #{img.index}</span>
+                              <span className={`px-2 py-0.5 rounded text-[10px] font-semibold ${
+                                img.altScore.includes('Mô tả tốt') 
+                                  ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/30' 
+                                  : 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                              }`}>
+                                {img.altScore}
+                              </span>
+                            </div>
+
+                            <div className="space-y-1 text-[11px] text-slate-300">
+                              <p className="truncate">
+                                <strong className="text-slate-400">src:</strong> <code className="text-amber-300">{img.src}</code>
+                              </p>
+                              <p>
+                                <strong className="text-slate-400">alt:</strong> <span className="text-slate-200 italic">"{img.alt}"</span>
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 2: Image Gallery */}
+              {activeTab === 'gallery' && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <h3 className="text-sm font-bold text-slate-200 mb-1 flex items-center gap-2">
+                      <i className="fa-solid fa-photo-film text-amber-400"></i> Thư viện ảnh mẫu chất lượng cao
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Chọn một hình ảnh bên dưới để chèn tự động vào mã HTML của bạn cùng mẫu thẻ `alt` chuẩn accessibility.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    {SAMPLE_IMAGES.map((img) => (
+                      <div key={img.id} className="bg-slate-800 rounded-xl border border-slate-700 overflow-hidden flex flex-col group">
+                        <div className="h-36 overflow-hidden relative">
+                          <img 
+                            src={img.url} 
+                            alt={img.alt} 
+                            className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                          />
+                          <span className="absolute top-2 left-2 bg-slate-900/80 text-white text-[10px] px-2 py-0.5 rounded backdrop-blur">
+                            {img.category}
+                          </span>
+                        </div>
+                        
+                        <div className="p-3 flex-1 flex flex-col justify-between gap-3">
+                          <div>
+                            <h4 className="text-xs font-bold text-slate-200 mb-1">{img.title}</h4>
+                            <p className="text-[11px] text-slate-400 italic bg-slate-900/60 p-2 rounded border border-slate-700/50">
+                              alt="{img.alt}"
+                            </p>
+                          </div>
+
+                          <button 
+                            onClick={() => handleInsertGalleryImg(img)}
+                            className="w-full py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs rounded font-medium transition flex items-center justify-center gap-1.5"
+                          >
+                            <i className="fa-solid fa-square-plus"></i> Sử dụng ảnh này
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* TAB 3: Writing Best Practices */}
+              {activeTab === 'guide' && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4 text-xs text-slate-300 leading-relaxed">
+                  
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <h3 className="text-sm font-bold text-slate-100 mb-2 flex items-center gap-2">
+                      <i className="fa-solid fa-graduation-cap text-blue-400"></i> Tại sao thuộc tính <code className="text-amber-300 font-mono">alt</code> lại quan trọng?
+                    </h3>
+                    <p className="text-slate-300 mb-2">
+                      Thuộc tính <code className="text-amber-300 font-mono">alt</code> (Alternative Text) cung cấp đoạn văn bản thay thế khi hình ảnh không thể hiển thị hoặc được đọc bởi các thiết bị hỗ trợ người khiếm thị (Screen Reader).
+                    </p>
+                  </div>
+
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h4 className="font-bold text-slate-200 text-xs uppercase tracking-wider text-emerald-400">
+                       Quy tắc viết thẻ <code className="font-mono">&lt;img&gt;</code> chuẩn SEO & Accessibility:
+                    </h4>
+
+                    <div className="space-y-2">
+                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <p className="font-semibold text-slate-200 mb-1">1. Mô tả cụ thể, súc tích nội dung hình ảnh</p>
+                        <p className="text-slate-400">Nêu rõ các chi tiết chính trong ảnh (ai, cái gì, ở đâu, màu sắc/hành động nổi bật).</p>
+                      </div>
+
+                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <p className="font-semibold text-slate-200 mb-1">2. Tránh các từ ngữ thừa thãi</p>
+                        <p className="text-slate-400">Không nên ghi: <em>"Hình ảnh của...", "Ảnh chụp...", "Bức tranh..."</em> vì các công cụ trình đọc màn hình đã tự nhận biết đó là ảnh.</p>
+                      </div>
+
+                      <div className="bg-slate-900 p-3 rounded-lg border border-slate-700">
+                        <p className="font-semibold text-slate-200 mb-1">3. Ví dụ Đối chiếu:</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                          <div className="bg-red-950/30 border border-red-800/40 p-2 rounded text-red-200">
+                            <p className="font-bold text-[11px] text-red-400 mb-1">❌ Không nên viết:</p>
+                            <code className="block text-[11px]">alt="ảnh chó"</code>
+                            <code className="block text-[11px]">alt="hình ảnh con chó đang ngồi"</code>
+                          </div>
+                          <div className="bg-emerald-950/30 border border-emerald-800/40 p-2 rounded text-emerald-200">
+                            <p className="font-bold text-[11px] text-emerald-400 mb-1"> Tuyệt vời:</p>
+                            <code className="block text-[11px]">alt="Chú chó cún giống Beagle dễ thương đang ngồi ngoan ngoãn trên thảm cỏ xanh"</code>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 4: GitHub Submission Helper */}
+              {activeTab === 'github' && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <h3 className="text-sm font-bold text-slate-100 mb-1 flex items-center gap-2">
+                      <i className="fa-brands fa-github text-purple-400"></i> Hướng dẫn Từng bước Nộp bài lên GitHub
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Thực hiện các lệnh Git sau trong thư mục chứa file <code className="text-amber-300">index.html</code> để đưa mã nguồn lên GitHub Repository.
+                    </p>
+                  </div>
+
+                  {/* Git Commands List */}
+                  <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      Các lệnh Git cơ bản:
+                    </h4>
+
+                    {[
+                      { step: 1, cmd: 'git init', desc: 'Khởi tạo Git Repository trong thư mục' },
+                      { step: 2, cmd: 'git add index.html', desc: 'Đưa file index.html vào trạng thái chuẩn bị commit' },
+                      { step: 3, cmd: 'git commit -m "Thêm thẻ hình ảnh cho bài tập HTML"', desc: 'Lưu lại phiên bản bài làm' },
+                      { step: 4, cmd: 'git branch -M main', desc: 'Chuyển tên nhánh chính thành main' },
+                      { step: 5, cmd: 'git remote add origin https://github.com/USERNAME/REPO_NAME.git', desc: 'Liên kết với GitHub Repository của bạn' },
+                      { step: 6, cmd: 'git push -u origin main', desc: 'Đẩy mã nguồn lên kho lưu trữ GitHub' }
+                    ].map((item) => (
+                      <div key={item.step} className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between gap-2">
+                        <div className="overflow-hidden">
+                          <span className="text-[10px] text-slate-500 font-bold mr-2">BƯỚC {item.step}</span>
+                          <span className="text-xs text-slate-400 block sm:inline">{item.desc}</span>
+                          <code className="block text-xs code-font text-emerald-400 mt-1">{item.cmd}</code>
+                        </div>
+
+                        <button 
+                          onClick={() => copyToClipboardText(item.cmd, `step_${item.step}`)}
+                          className="px-2.5 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition shrink-0 flex items-center gap-1"
+                        >
+                          <i className={`fa-regular ${copiedCmd === `step_${item.step}` ? 'fa-circle-check text-emerald-400' : 'fa-copy'}`}></i>
+                          <span>{copiedCmd === `step_${item.step}` ? 'Đã chép' : 'Copy'}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Repo URL Validator */}
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h4 className="text-xs font-bold text-slate-200 flex items-center gap-2">
+                      <i className="fa-solid fa-link text-emerald-400"></i> Kiểm tra đường dẫn Repository trước khi nộp:
+                    </h4>
+
+                    <div>
+                      <input 
+                        type="text" 
+                        value={githubUrl}
+                        onChange={handleVerifyGithub}
+                        placeholder="https://github.com/ten-nguoi-dung/ten-repository"
+                        className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100 focus:outline-none focus:border-emerald-500"
+                      />
+                    </div>
+
+                    {githubValid === true && (
+                      <div className="p-2.5 bg-emerald-950/40 border border-emerald-800/50 rounded-lg text-emerald-300 text-xs flex items-center gap-2">
+                        <i className="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                        <span>Đường dẫn GitHub hợp lệ! Bạn có thể dán liên kết này vào hệ thống nộp bài.</span>
+                      </div>
+                    )}
+
+                    {githubValid === false && (
+                      <div className="p-2.5 bg-red-950/40 border border-red-800/50 rounded-lg text-red-300 text-xs flex items-center gap-2">
+                        <i className="fa-solid fa-circle-xmark text-red-400 text-sm"></i>
+                        <span>Đường dẫn chưa đúng định dạng. Cần có dạng: https://github.com/username/repository</span>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+
+          </div>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
