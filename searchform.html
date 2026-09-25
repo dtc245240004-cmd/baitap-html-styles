@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[Thực hành] Tạo Form Tìm Kiếm Google (searchform.html)</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          colors: {
+            google: {
+              blue: '#4285F4',
+              red: '#EA4335',
+              yellow: '#FBBC05',
+              green: '#34A853',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #090d16;
+      color: #f8fafc;
+    }
+    .code-font {
+      font-family: 'Fira Code', monospace;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo } = React;
+
+    // Default HTML source code template
+    const DEFAULT_CODE = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <title>Form Tìm kiếm Google</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f1f5f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .search-card {
+            background: white;
+            padding: 35px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 480px;
+            width: 90%;
+        }
+        .search-card h2 {
+            color: #1a73e8;
+            margin-top: 0;
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+        .search-card input[type="text"] {
+            width: 68%;
+            padding: 12px 18px;
+            border: 2px solid #cbd5e1;
+            border-radius: 24px;
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .search-card input[type="text"]:focus {
+            border-color: #1a73e8;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.2);
+        }
+        .search-card input[type="submit"] {
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            margin-left: 8px;
+            border-radius: 24px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .search-card input[type="submit"]:hover {
+            background-color: #1557b0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="search-card">
+        <h2>Google Search</h2>
+        
+        <!-- Form kết nối đến Google Search -->
+        <form action="https://www.google.com/search" method="GET" target="_blank">
+            <input type="text" name="q" placeholder="Nhập từ khóa tìm kiếm..."/>
+            <input type="submit" value="Tìm kiếm"/>
+        </form>
+    </div>
+
+</body>
+</html>`;
+
+    // Search Engine Presets Lookup
+    const SEARCH_ENGINES = [
+      { id: 'google', name: 'Google Search', action: 'https://www.google.com/search', param: 'q', color: 'text-blue-400', badge: 'Khuyên dùng' },
+      { id: 'bing', name: 'Bing Search', action: 'https://www.bing.com/search', param: 'q', color: 'text-sky-400', badge: 'Microsoft' },
+      { id: 'duckduckgo', name: 'DuckDuckGo', action: 'https://duckduckgo.com/', param: 'q', color: 'text-orange-400', badge: 'Bảo mật' },
+      { id: 'youtube', name: 'YouTube', action: 'https://www.youtube.com/results', param: 'search_query', color: 'text-red-400', badge: 'Video' },
+      { id: 'wikipedia', name: 'Wikipedia', action: 'https://vi.wikipedia.org/w/index.php', param: 'search', color: 'text-slate-300', badge: 'Bách khoa' },
+      { id: 'yahoo', name: 'Yahoo! Search', action: 'https://search.yahoo.com/search', param: 'p', color: 'text-purple-400', badge: 'Yahoo' },
+    ];
+
+    function App() {
+      const [code, setCode] = useState(DEFAULT_CODE);
+      const [activeTab, setActiveTab] = useState('preview'); // preview | lab | cheatSheet | github
+      const [toastMessage, setToastMessage] = useState('');
+      const [copiedCmd, setCopiedCmd] = useState('');
+      const [simulatedQuery, setSimulatedQuery] = useState('học lập trình web');
+      const [githubUrl, setGithubUrl] = useState('');
+      const [githubValid, setGithubValid] = useState(null);
+
+      const showToast = (msg) => {
+        setToastMessage(msg);
+        setTimeout(() => setToastMessage(''), 3000);
+      };
+
+      const validationResults = useMemo(() => {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(code, 'text/html');
+
+          const form = doc.querySelector('form');
+          const hasForm = Boolean(form);
+
+          // Check action
+          const actionVal = form ? form.getAttribute('action')?.trim() || '' : '';
+          const isGoogleAction = actionVal.includes('google.com') || actionVal.includes('google.com.vn');
+          const isValidAction = actionVal.startsWith('http://') || actionVal.startsWith('https://');
+
+          // Check method
+          const methodVal = form ? (form.getAttribute('method')?.toUpperCase() || 'GET') : '';
+          const isMethodGet = methodVal === 'GET';
+
+          // Check search input & name
+          const textInput = doc.querySelector('input[type="text"], input:not([type])');
+          const inputName = textInput ? textInput.getAttribute('name') : null;
+          const hasNameQ = inputName === 'q' || inputName === 'search_query' || inputName === 'search' || inputName === 'p';
+          const hasPlaceholder = Boolean(textInput && textInput.getAttribute('placeholder'));
+
+          // Check submit button
+          const submitBtn = doc.querySelector('input[type="submit"], button[type="submit"], button:not([type])');
+          const hasSubmit = Boolean(submitBtn);
+
+          const checks = [
+            { id: 'has_form', label: 'Tồn tại thẻ <form> trong file HTML', status: hasForm, tip: 'Thêm thẻ <form action="..." method="GET"> vào body' },
+            { id: 'action_url', label: 'Thuộc tính action dẫn tới Google Search (https://www.google.com/search)', status: isGoogleAction && isValidAction, tip: 'Thêm action="https://www.google.com/search"' },
+            { id: 'method_get', label: 'Thuộc tính method="GET" (gửi tham số qua URL)', status: isMethodGet, tip: 'Dùng method="GET" để đính kèm từ khóa vào URL' },
+            { id: 'input_name', label: 'Thẻ <input> có thuộc tính name="q" (đúng định dạng Google nhận)', status: hasNameQ, tip: 'Thêm name="q" vào thẻ <input type="text"/>' },
+            { id: 'has_submit', label: 'Có nút gửi <input type="submit" value="Tìm kiếm"/>', status: hasSubmit, tip: 'Thêm nút submit để kích hoạt sự kiện gửi form' },
+            { id: 'has_placeholder', label: 'Có chữ gợi ý placeholder trong ô nhập liệu', status: hasPlaceholder, tip: 'Thêm placeholder="Nhập từ khóa..."' },
+          ];
+
+          const passedCount = checks.filter(c => c.status).length;
+          const isAllPassed = passedCount === checks.length;
+
+          // Extracted Form Metadata for Inspector
+          const formMeta = {
+            action: actionVal || 'Chưa thiết lập',
+            method: methodVal || 'GET',
+            paramName: inputName || 'q',
+            isGoogle: isGoogleAction
+          };
+
+          return { checks, passedCount, totalChecks: checks.length, isAllPassed, formMeta };
+        } catch (e) {
+          return { checks: [], passedCount: 0, totalChecks: 6, isAllPassed: false, formMeta: {} };
+        }
+      }, [code]);
+
+      const requestSimulation = useMemo(() => {
+        const { action, method, paramName } = validationResults.formMeta;
+        const encodedQuery = encodeURIComponent(simulatedQuery || '');
+        
+        let fullUrl = action;
+        if (action.includes('?')) {
+          fullUrl += `&${paramName}=${encodedQuery}`;
+        } else {
+          fullUrl += `?${paramName}=${encodedQuery}`;
+        }
+
+        const isGet = method === 'GET';
+
+        return {
+          method,
+          action,
+          paramName,
+          query: simulatedQuery,
+          fullUrl: isGet ? fullUrl : action,
+          bodyPayload: isGet ? null : `${paramName}=${encodedQuery}`,
+          isGet
+        };
+      }, [validationResults.formMeta, simulatedQuery]);
+
+      const handleFormat = () => {
+        try {
+          let formatted = code
+            .replace(/>\s*</g, '>\n<')
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .join('\n');
+          setCode(formatted);
+          showToast('Đã định dạng mã nguồn!');
+        } catch (e) {
+          showToast('Không thể tự động định dạng mã!');
+        }
+      };
+
+      const handleReset = () => {
+        setCode(DEFAULT_CODE);
+        showToast('Đã khôi phục mã nguồn ban đầu!');
+      };
+
+      const handleCopyCode = () => {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = code;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          showToast('Đã sao chép mã nguồn vào Clipboard!');
+        } catch (err) {
+          showToast('Sao chép thất bại!');
+        }
+      };
+
+      const handleDownload = () => {
+        const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'searchform.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Đã tải xuống file searchform.html!');
+      };
+
+      const applyEnginePreset = (engine) => {
+        let newCode = code;
+        // Replace action
+        newCode = newCode.replace(/action="[^"]*"/g, `action="${engine.action}"`);
+        // Replace input name
+        newCode = newCode.replace(/name="[^"]*"/g, `name="${engine.param}"`);
+        // Replace heading title
+        newCode = newCode.replace(/<h2>[^<]*<\/h2>/g, `<h2>${engine.name}</h2>`);
+        setCode(newCode);
+        showToast(`Đã chuyển sang công cụ: ${engine.name}`);
+      };
+
+      const toggleMethodInCode = (newMethod) => {
+        let newCode = code;
+        if (/method="[^"]*"/i.test(newCode)) {
+          newCode = newCode.replace(/method="[^"]*"/gi, `method="${newMethod}"`);
+        } else {
+          newCode = newCode.replace(/<form/i, `<form method="${newMethod}"`);
+        }
+        setCode(newCode);
+        showToast(`Đã đổi phương thức sang: ${newMethod}`);
+      };
+
+      const copyToClipboardText = (text, label) => {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          setCopiedCmd(label);
+          setTimeout(() => setCopiedCmd(''), 2000);
+          showToast(`Đã chép: ${text}`);
+        } catch (e) {
+          showToast('Sao chép thất bại');
+        }
+      };
+
+      const handleVerifyGithub = (e) => {
+        const url = e.target.value;
+        setGithubUrl(url);
+        const githubRegex = /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/?$/;
+        if (url.trim() === '') setGithubValid(null);
+        else setGithubValid(githubRegex.test(url.trim()));
+      };
+
+      const handleTestLaunchSearch = (e) => {
+        e.preventDefault();
+        if (!simulatedQuery.trim()) {
+          showToast('Vui lòng nhập từ khóa tìm kiếm!');
+          return;
+        }
+        if (requestSimulation.isGet) {
+          window.open(requestSimulation.fullUrl, '_blank');
+          showToast(`Đã mở kết quả tìm kiếm trên tab mới!`);
+        } else {
+          showToast('Thất bại! Method POST không thể tự động mở tìm kiếm qua URL.');
+        }
+      };
+
+      return (
+        <div className="flex flex-col h-screen max-h-screen overflow-hidden">
+          
+          {/* Header Bar */}
+          <header className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex flex-wrap items-center justify-between gap-3 shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-blue-500 via-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-lg shadow-blue-500/20">
+                <i className="fa-solid fa-magnifying-glass text-lg"></i>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white flex items-center gap-2">
+                  [Thực hành] Tạo Form Tìm Kiếm Google (<span className="text-blue-400 code-font">searchform.html</span>)
+                </h1>
+                <p className="text-xs text-slate-400">Môi trường thực hành HTML Form Submission, GET vs POST & Query Strings</p>
+              </div>
+            </div>
+
+            {/* Validation Badge & GitHub Action */}
+            <div className="flex items-center gap-3">
+              <div className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-2 ${
+                validationResults.isAllPassed 
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                  : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+              }`}>
+                <i className={`fa-solid ${validationResults.isAllPassed ? 'fa-circle-check' : 'fa-list-check'}`}></i>
+                <span>Tiến độ: {validationResults.passedCount}/{validationResults.totalChecks} Tiêu chuẩn</span>
+              </div>
+
+              <button 
+                onClick={() => setActiveTab('github')}
+                className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3.5 py-1.5 rounded-lg font-medium transition flex items-center gap-2 shadow-md shadow-blue-600/20"
+              >
+                <i className="fa-brands fa-github text-sm"></i>
+                <span>Nộp bài GitHub</span>
+              </button>
+            </div>
+          </header>
+
+          {/* Toast Notification */}
+          {toastMessage && (
+            <div className="fixed top-16 right-6 z-50 bg-blue-600 text-white px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 text-xs font-medium animate-bounce">
+              <i className="fa-solid fa-circle-check"></i>
+              <span>{toastMessage}</span>
+            </div>
+          )}
+
+          {/* Main Content Split Workspace */}
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-slate-950">
+            
+            {/* Left Column: Code Editor & Auto Validator (5 cols) */}
+            <div className="lg:col-span-5 border-r border-slate-800 flex flex-col h-full overflow-hidden bg-slate-900">
+              
+              {/* Editor Header Toolbar */}
+              <div className="bg-slate-800/80 px-4 py-2 border-b border-slate-700/70 flex items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                    <i className="fa-regular fa-file-code text-blue-400"></i> searchform.html
+                  </span>
+                  <span className="text-[10px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded">HTML5</span>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={handleFormat}
+                    title="Định dạng dòng thụt lề"
+                    className="p-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded transition flex items-center gap-1"
+                  >
+                    <i className="fa-solid fa-align-left"></i>
+                    <span className="hidden sm:inline text-[10px]">Format</span>
+                  </button>
+                  <button 
+                    onClick={handleCopyCode}
+                    title="Sao chép toàn bộ mã"
+                    className="p-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-regular fa-copy"></i>
+                  </button>
+                  <button 
+                    onClick={handleReset}
+                    title="Khôi phục mã ban đầu"
+                    className="p-1.5 text-xs text-slate-400 hover:text-amber-400 hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-solid fa-rotate-left"></i>
+                  </button>
+                  <button 
+                    onClick={handleDownload}
+                    title="Tải về file searchform.html"
+                    className="p-1.5 text-xs text-slate-400 hover:text-blue-400 hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-solid fa-download"></i>
+                  </button>
+                </div>
+              </div>
+
+              {/* Textarea Editor */}
+              <div className="flex-1 relative overflow-hidden bg-slate-950 flex flex-col">
+                <textarea
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  spellCheck="false"
+                  className="w-full h-full p-4 bg-slate-950 text-slate-100 code-font text-xs sm:text-sm resize-none focus:outline-none leading-relaxed selection:bg-slate-800"
+                  placeholder="Nhập mã HTML searchform.html tại đây..."
+                ></textarea>
+              </div>
+
+              {/* Automated DOM Validator Panel */}
+              <div className="border-t border-slate-800 bg-slate-900/90 p-3 shrink-0 max-h-56 overflow-y-auto">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <i className="fa-solid fa-list-check text-blue-400"></i> Kiểm Tra Cấu Trúc HTML (Automated DOM Grader)
+                  </h3>
+                  <span className="text-[10px] text-slate-400">Thời gian thực</span>
+                </div>
+
+                <div className="space-y-1.5">
+                  {validationResults.checks.map((check) => (
+                    <div 
+                      key={check.id}
+                      className={`text-xs p-2 rounded-lg border flex items-start gap-2 transition ${
+                        check.status 
+                          ? 'bg-emerald-950/30 border-emerald-800/40 text-emerald-300' 
+                          : 'bg-slate-800/50 border-slate-700/60 text-slate-400'
+                      }`}
+                    >
+                      <i className={`fa-solid ${check.status ? 'fa-circle-check text-emerald-400' : 'fa-circle-xmark text-slate-500'} mt-0.5 text-sm`}></i>
+                      <div className="flex-1">
+                        <p className={`font-medium ${check.status ? 'text-emerald-200' : 'text-slate-300'}`}>
+                          {check.label}
+                        </p>
+                        {!check.status && (
+                          <p className="text-[10px] text-amber-400/90 mt-0.5 italic">Gợi ý: {check.tip}</p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Right Column: Preview, Lab & Documentation (7 cols) */}
+            <div className="lg:col-span-7 flex flex-col h-full overflow-hidden bg-slate-900">
+              
+              {/* Navigation Tabs Header */}
+              <div className="bg-slate-800 border-b border-slate-700 px-3 py-2 flex items-center justify-between overflow-x-auto gap-2 shrink-0">
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={() => setActiveTab('preview')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'preview' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-solid fa-desktop text-blue-400"></i> Xem trước & Thử nghiệm Form
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveTab('lab')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'lab' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-solid fa-flask text-emerald-400"></i> Đổi Search Engine & Method
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveTab('cheatSheet')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'cheatSheet' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-solid fa-book-open text-amber-400"></i> So sánh GET vs POST
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveTab('github')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'github' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-brands fa-github text-purple-400"></i> Hướng dẫn Nộp bài
+                  </button>
+                </div>
+              </div>
+
+              {/* TAB 1: Live Interactive Preview & Form Launcher */}
+              {activeTab === 'preview' && (
+                <div className="flex-1 flex flex-col overflow-hidden p-4 gap-4">
+                  
+                  {/* Info Header */}
+                  <div className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex items-center justify-between gap-3 shrink-0">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-xs font-semibold text-slate-200">Giao diện Render Thực tế trong Trình duyệt</span>
+                    </div>
+
+                    <div className="text-[11px] text-slate-400 flex items-center gap-2">
+                      <span>Action: <code className="text-blue-300 font-mono">{validationResults.formMeta.action}</code></span>
+                      <span className="bg-slate-700 text-amber-300 px-1.5 py-0.5 rounded font-bold">{validationResults.formMeta.method}</span>
+                    </div>
+                  </div>
+
+                  {/* Rendered Frame */}
+                  <div className="flex-1 bg-white rounded-xl shadow-inner border border-slate-700 overflow-hidden relative min-h-[240px]">
+                    <iframe
+                      title="Search Form Preview"
+                      srcDoc={code}
+                      className="w-full h-full border-0 bg-white"
+                      sandbox="allow-scripts allow-forms allow-same-origin"
+                    ></iframe>
+                  </div>
+
+                  {/* HTTP Query Request Simulation Panel */}
+                  <div className="bg-slate-800/90 border border-slate-700 rounded-xl p-3 shrink-0 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                        <i className="fa-solid fa-network-wired text-blue-400"></i> Trình Giám Sát Truyền Dữ Liệu HTTP Request (Query String Inspector)
+                      </h4>
+                      <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded border border-blue-500/30">
+                        Method: {requestSimulation.method}
+                      </span>
+                    </div>
+
+                    {/* Interactive Query Input Test */}
+                    <form onSubmit={handleTestLaunchSearch} className="flex items-center gap-2">
+                      <div className="relative flex-1">
+                        <i className="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input 
+                          type="text" 
+                          value={simulatedQuery}
+                          onChange={(e) => setSimulatedQuery(e.target.value)}
+                          placeholder="Thử gõ từ khóa tìm kiếm tại đây..."
+                          className="w-full bg-slate-950 border border-slate-700 rounded-lg pl-8 pr-3 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+                        />
+                      </div>
+                      <button 
+                        type="submit"
+                        className="bg-blue-600 hover:bg-blue-500 text-white text-xs px-3 py-1.5 rounded-lg font-medium transition flex items-center gap-1.5 shrink-0"
+                      >
+                        <i className="fa-solid fa-arrow-up-right-from-square"></i>
+                        <span>Gửi Search</span>
+                      </button>
+                    </form>
+
+                    {/* Inspection URL Output */}
+                    <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 font-mono text-xs space-y-1.5">
+                      <div className="flex items-center justify-between text-[11px] text-slate-400">
+                        <span>{requestSimulation.isGet ? 'URL Hoàn chỉnh sinh ra (Query String):' : 'URL Đích (Body gửi ẩn):'}</span>
+                        <span className="text-amber-400 font-bold">Tham số name="{requestSimulation.paramName}"</span>
+                      </div>
+                      
+                      <div className="p-2 bg-slate-900 rounded text-sky-300 break-all select-all font-mono text-[11px]">
+                        {requestSimulation.fullUrl}
+                      </div>
+
+                      {!requestSimulation.isGet && (
+                        <div className="p-2 bg-red-950/40 border border-red-900/50 rounded text-red-300 text-[11px]">
+                          <strong>HTTP Request Body:</strong> {requestSimulation.bodyPayload}
+                          <p className="text-[10px] text-red-400/90 mt-1 italic">
+                            ⚠️ Lưu ý: Khi dùng method="POST", dữ liệu nằm trong HTTP Body thay vì URL. Các công cụ tìm kiếm công cộng như Google/Bing sẽ từ chối xử lý và báo lỗi.
+                          </p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 2: Engine Presets & GET vs POST Experiment Lab */}
+              {activeTab === 'lab' && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  
+                  {/* Engine Presets Selection */}
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                        <i className="fa-solid fa-cubes text-emerald-400"></i> Chuyển Đổi Nhanh Công Cụ Tìm Kiếm (Search Engines)
+                      </h3>
+                      <span className="text-[10px] text-slate-400">1-Click Cập nhật Code</span>
+                    </div>
+                    <p className="text-xs text-slate-400">
+                      Mỗi công cụ tìm kiếm yêu cầu đường dẫn <code className="text-amber-300">action</code> và tên tham số <code className="text-amber-300">name</code> khác nhau. Nhấn chọn để tự động thay thế mã HTML:
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2.5">
+                      {SEARCH_ENGINES.map((engine) => (
+                        <button
+                          key={engine.id}
+                          onClick={() => applyEnginePreset(engine)}
+                          className="bg-slate-900 hover:bg-slate-950 border border-slate-700/80 hover:border-blue-500/50 p-3 rounded-xl transition text-left group flex flex-col justify-between"
+                        >
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className={`text-xs font-bold ${engine.color}`}>{engine.name}</span>
+                              <span className="text-[9px] bg-slate-800 text-slate-300 px-1.5 py-0.5 rounded border border-slate-700">{engine.badge}</span>
+                            </div>
+                            <p className="text-[10px] text-slate-400 font-mono truncate">{engine.action}</p>
+                          </div>
+                          <div className="mt-2 pt-1 border-t border-slate-800/80 flex items-center justify-between text-[10px] text-slate-400">
+                            <span>Tham số: <code className="text-amber-300">name="{engine.param}"</code></span>
+                            <i className="fa-solid fa-code text-slate-500 group-hover:text-blue-400 transition"></i>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Method Switcher Experiment */}
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                      <i className="fa-solid fa-arrows-split-up-and-left text-amber-400"></i> Thực Nghiệm Đổi Phương Thức Truyền (Method GET vs POST)
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Thử đổi thuộc tính <code className="text-amber-300">method="..."</code> trong thẻ <code className="text-sky-300">&lt;form&gt;</code> để kiểm tra sự khác biệt:
+                    </p>
+
+                    <div className="flex flex-wrap gap-3">
+                      <button
+                        onClick={() => toggleMethodInCode('GET')}
+                        className={`flex-1 min-w-[200px] p-3 rounded-xl border text-left transition ${
+                          validationResults.formMeta.method === 'GET'
+                            ? 'bg-blue-950/40 border-blue-500 text-blue-300 ring-1 ring-blue-500'
+                            : 'bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-bold text-xs font-mono">method="GET"</span>
+                          <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-bold">Chuẩn Tìm Kiếm</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400">
+                          Dữ liệu nối trực tiếp vào URL dạng Query String (<code className="text-amber-300">?q=keyword</code>). Cho phép lưu Bookmark và chia sẻ link.
+                        </p>
+                      </button>
+
+                      <button
+                        onClick={() => toggleMethodInCode('POST')}
+                        className={`flex-1 min-w-[200px] p-3 rounded-xl border text-left transition ${
+                          validationResults.formMeta.method === 'POST'
+                            ? 'bg-red-950/40 border-red-500 text-red-300 ring-1 ring-red-500'
+                            : 'bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-600'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-bold text-xs font-mono text-red-400">method="POST"</span>
+                          <span className="text-[10px] bg-red-500/20 text-red-300 px-1.5 py-0.5 rounded font-bold">Không phù hợp Search</span>
+                        </div>
+                        <p className="text-[11px] text-slate-400">
+                          Dữ liệu đóng gói gửi ẩn trong HTTP Body. Không hiện trên URL, không lưu được Bookmark. Google sẽ từ chối yêu cầu POST này.
+                        </p>
+                      </button>
+                    </div>
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 3: Cheat Sheet & GET vs POST Comparison */}
+              {activeTab === 'cheatSheet' && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  
+                  {/* Comparison Table GET vs POST */}
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                      <i className="fa-solid fa-table-list text-amber-400"></i> Bảng So Sánh Chi Tiết Method GET và POST
+                    </h3>
+
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-left text-xs border-collapse">
+                        <thead>
+                          <tr className="border-b border-slate-700 bg-slate-900/60 text-slate-300">
+                            <th className="p-2.5 font-bold">Tiêu chí so sánh</th>
+                            <th className="p-2.5 font-bold text-blue-400">Phương thức GET</th>
+                            <th className="p-2.5 font-bold text-purple-400">Phương thức POST</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-700/60 text-slate-300">
+                          <tr>
+                            <td className="p-2.5 font-semibold text-slate-200">Vị trí gửi dữ liệu</td>
+                            <td className="p-2.5 text-blue-300">Đính kèm trực tiếp vào đường dẫn URL (Query String)</td>
+                            <td className="p-2.5 text-purple-300">Đóng gói ẩn trong thân tin nhắn HTTP Body</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold text-slate-200">Hiển thị dữ liệu</td>
+                            <td className="p-2.5">Công khai trên thanh địa chỉ trình duyệt</td>
+                            <td className="p-2.5">Ẩn hoàn toàn trên thanh địa chỉ</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold text-slate-200">Lưu Bookmark & Caching</td>
+                            <td className="p-2.5 text-emerald-400"><i className="fa-solid fa-check mr-1"></i> ĐƯỢC lưu vào Lịch sử & Bookmark</td>
+                            <td className="p-2.5 text-red-400"><i className="fa-solid fa-xmark mr-1"></i> KHÔNG THỂ lưu Bookmark hoặc Cache</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold text-slate-200">Giới hạn kích thước</td>
+                            <td className="p-2.5">Bị giới hạn bởi độ dài URL (khoảng 2,048 ký tự)</td>
+                            <td className="p-2.5">Không giới hạn (phù hợp tải file, ảnh lớn)</td>
+                          </tr>
+                          <tr>
+                            <td className="p-2.5 font-semibold text-slate-200">Ứng dụng phù hợp</td>
+                            <td className="p-2.5 text-amber-300 font-semibold">Tìm kiếm, Lọc dữ liệu, Phân trang (Search/Filter)</td>
+                            <td className="p-2.5 text-emerald-300 font-semibold">Đăng nhập, Đăng ký, Gửi thông tin nhạy cảm, Thanh toán</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+
+                  {/* Engine Query Parameters Lookup Table */}
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h3 className="text-sm font-bold text-slate-100 flex items-center gap-2">
+                      <i className="fa-solid fa-code-branch text-sky-400"></i> Tra Cứu Tên Tham Số Search (`name="..."`) Các Trang Web
+                    </h3>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                      {[
+                        { engine: 'Google Search', action: 'https://www.google.com/search', param: 'q', example: '?q=hoc+html' },
+                        { engine: 'Bing Search', action: 'https://www.bing.com/search', param: 'q', example: '?q=hoc+css' },
+                        { engine: 'YouTube', action: 'https://www.youtube.com/results', param: 'search_query', example: '?search_query=nhac+tre' },
+                        { engine: 'Wikipedia (Việt Nam)', action: 'https://vi.wikipedia.org/w/index.php', param: 'search', example: '?search=ha+noi' },
+                        { engine: 'DuckDuckGo', action: 'https://duckduckgo.com/', param: 'q', example: '?q=javascript' },
+                        { engine: 'Yahoo! Search', action: 'https://search.yahoo.com/search', param: 'p', example: '?p=reactjs' },
+                      ].map((item, idx) => (
+                        <div key={idx} className="bg-slate-900 p-2.5 rounded-lg border border-slate-700/80 space-y-1">
+                          <div className="flex items-center justify-between">
+                            <span className="font-bold text-slate-200">{item.engine}</span>
+                            <code className="text-amber-300 bg-slate-800 px-1.5 py-0.5 rounded font-mono">name="{item.param}"</code>
+                          </div>
+                          <p className="text-[10px] text-slate-400 font-mono truncate">{item.action}</p>
+                          <p className="text-[10px] text-blue-400 font-mono">Mẫu URL: {item.example}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 4: GitHub Submission Helper */}
+              {activeTab === 'github' && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <h3 className="text-sm font-bold text-slate-100 mb-1 flex items-center gap-2">
+                      <i className="fa-brands fa-github text-purple-400"></i> Hướng dẫn Từng bước Nộp bài lên GitHub
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Mở Terminal/Git Bash tại thư mục chứa file <code className="text-amber-300">searchform.html</code> và thực hiện lần lượt các lệnh:
+                    </p>
+                  </div>
+
+                  {/* Git Commands List */}
+                  <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      Các lệnh Git cơ bản:
+                    </h4>
+
+                    {[
+                      { step: 1, cmd: 'git init', desc: 'Khởi tạo kho lưu trữ Git trong thư mục hiện tại' },
+                      { step: 2, cmd: 'git add searchform.html', desc: 'Đưa file searchform.html vào danh sách theo dõi' },
+                      { step: 3, cmd: 'git commit -m "Hoàn thành bài tập tạo form tìm kiếm Google"', desc: 'Lưu lại bản commit bài làm' },
+                      { step: 4, cmd: 'git branch -M main', desc: 'Đổi tên nhánh chính thành main' },
+                      { step: 5, cmd: 'git remote add origin https://github.com/USERNAME/REPO_NAME.git', desc: 'Liên kết tới GitHub Repository cá nhân của bạn' },
+                      { step: 6, cmd: 'git push -u origin main', desc: 'Tải mã nguồn lên kho lưu trữ GitHub' }
+                    ].map((item) => (
+                      <div key={item.step} className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between gap-2">
+                        <div className="overflow-hidden">
+                          <span className="text-[10px] text-slate-500 font-bold mr-2">BƯỚC {item.step}</span>
+                          <span className="text-xs text-slate-400 block sm:inline">{item.desc}</span>
+                          <code className="block text-xs code-font text-blue-400 mt-1">{item.cmd}</code>
+                        </div>
+
+                        <button 
+                          onClick={() => copyToClipboardText(item.cmd, `step_${item.step}`)}
+                          className="px-2.5 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition shrink-0 flex items-center gap-1"
+                        >
+                          <i className={`fa-regular ${copiedCmd === `step_${item.step}` ? 'fa-circle-check text-emerald-400' : 'fa-copy'}`}></i>
+                          <span>{copiedCmd === `step_${item.step}` ? 'Đã chép' : 'Copy'}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* GitHub Repo URL Validator */}
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h4 className="text-xs font-bold text-slate-200 flex items-center gap-2">
+                      <i className="fa-solid fa-link text-blue-400"></i> Kiểm tra đường dẫn Repository trước khi nộp:
+                    </h4>
+
+                    <div>
+                      <input 
+                        type="text" 
+                        value={githubUrl}
+                        onChange={handleVerifyGithub}
+                        placeholder="https://github.com/ten-nguoi-dung/ten-repository"
+                        className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100 focus:outline-none focus:border-blue-500"
+                      />
+                    </div>
+
+                    {githubValid === true && (
+                      <div className="p-2.5 bg-emerald-950/40 border border-emerald-800/50 rounded-lg text-emerald-300 text-xs flex items-center gap-2">
+                        <i className="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                        <span>Đường dẫn GitHub hợp lệ! Bạn có thể dán liên kết này vào phần nộp bài.</span>
+                      </div>
+                    )}
+
+                    {githubValid === false && (
+                      <div className="p-2.5 bg-red-950/40 border border-red-800/50 rounded-lg text-red-300 text-xs flex items-center gap-2">
+                        <i className="fa-solid fa-circle-xmark text-red-400 text-sm"></i>
+                        <span>Đường dẫn chưa đúng định dạng. Cần có dạng: https://github.com/username/repository</span>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+
+          </div>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
