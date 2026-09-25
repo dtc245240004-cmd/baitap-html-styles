@@ -1,0 +1,1167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[Bài tập] Tạo Form Đơn Giản - Workspace & Chấm Điểm Auto</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- React & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+  
+  <!-- Babel Compiler -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <!-- Google Font Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    .code-font {
+      font-family: 'Fira Code', monospace;
+    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+</head>
+<body class="h-screen overflow-hidden">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    // --- TEMPLATES FOR PART 1 AND PART 2 ---
+    const DEFAULT_PART1_CODE = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phần 1 - Form Thông Tin Cá Nhân</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: #f3f4f6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .form-card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            max-width: 460px;
+            width: 100%;
+        }
+        h2 {
+            color: #1e293b;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 22px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 12px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label.form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #334155;
+            font-size: 14px;
+        }
+        input[type="text"], input[type="email"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: all 0.2s;
+        }
+        input[type="text"]:focus, input[type="email"]:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
+        }
+        .checkbox-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            background-color: #f8fafc;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            color: #475569;
+            cursor: pointer;
+        }
+        .checkbox-label input {
+            margin-right: 8px;
+            width: 16px;
+            height: 16px;
+            accent-color: #2563eb;
+        }
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .btn-submit {
+            background-color: #2563eb;
+            color: #ffffff;
+        }
+        .btn-submit:hover {
+            background-color: #1d4ed8;
+        }
+        .btn-reset {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+        .btn-reset:hover {
+            background-color: #cbd5e1;
+        }
+    </style>
+</head>
+<body>
+
+<div class="form-card">
+    <h2>THÔNG TIN SỞ THÍCH</h2>
+    <form action="#" method="GET">
+        <div class="form-group">
+            <label class="form-label" for="yourname">Họ và tên:</label>
+            <input type="text" id="yourname" name="yourname" placeholder="Nhập họ và tên đầy đủ..." required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="email">Email:</label>
+            <input type="email" id="email" name="email" placeholder="email@vietham.com" required>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label">Sở thích:</label>
+            <div class="checkbox-grid">
+                <label class="checkbox-label"><input type="checkbox" name="hobby" value="sports"> Thể thao</label>
+                <label class="checkbox-label"><input type="checkbox" name="hobby" value="music"> Âm nhạc</label>
+                <label class="checkbox-label"><input type="checkbox" name="hobby" value="reading"> Đọc sách</label>
+                <label class="checkbox-label"><input type="checkbox" name="hobby" value="travel"> Du lịch</label>
+                <label class="checkbox-label"><input type="checkbox" name="hobby" value="gaming"> Chơi game</label>
+                <label class="checkbox-label"><input type="checkbox" name="hobby" value="movies"> Xem phim</label>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button type="submit" class="btn btn-submit">Gửi thông tin</button>
+            <button type="reset" class="btn btn-reset">Nhập lại</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>`;
+
+    const DEFAULT_PART2_CODE = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phần 2 - Form Đăng Ký Học Viên</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+        }
+        .registration-card {
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            max-width: 600px;
+            width: 100%;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+        .card-header {
+            background: linear-gradient(135deg, #0d9488, #0f766e);
+            color: white;
+            padding: 24px;
+            text-align: center;
+        }
+        .card-header h1 {
+            margin: 0;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+        .card-header p {
+            margin: 6px 0 0 0;
+            opacity: 0.9;
+            font-size: 13px;
+        }
+        form {
+            padding: 24px;
+        }
+        fieldset {
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            padding: 16px 20px 20px 20px;
+            margin-bottom: 20px;
+            background-color: #fafafa;
+        }
+        legend {
+            font-weight: 700;
+            color: #0f766e;
+            padding: 0 10px;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+        .full-width {
+            grid-column: span 2;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            font-weight: 600;
+            font-size: 13px;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+        .required {
+            color: #ef4444;
+            margin-left: 2px;
+        }
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        input[type="date"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: inherit;
+            color: #1e293b;
+            background-color: #ffffff;
+            transition: all 0.2s ease;
+        }
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #0d9488;
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.2);
+        }
+        textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            padding-top: 6px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            font-weight: normal;
+            cursor: pointer;
+            margin-bottom: 0;
+            color: #475569;
+        }
+        .radio-label input {
+            margin-right: 6px;
+            accent-color: #0d9488;
+        }
+        .actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 10px;
+        }
+        .btn {
+            padding: 11px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease;
+        }
+        .btn-submit {
+            background-color: #0d9488;
+            color: white;
+        }
+        .btn-submit:hover {
+            background-color: #0f766e;
+        }
+        .btn-reset {
+            background-color: #e2e8f0;
+            color: #475569;
+        }
+        .btn-reset:hover {
+            background-color: #cbd5e1;
+        }
+        @media (max-width: 520px) {
+            .form-grid { grid-template-columns: 1fr; }
+            .full-width { grid-column: span 1; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="registration-card">
+    <div class="card-header">
+        <h1>ĐĂNG KÝ HỌC VIÊN</h1>
+        <p>Vui lòng nhập đầy đủ thông tin để hoàn tất thủ tục đăng ký</p>
+    </div>
+
+    <form action="#" method="POST">
+        <fieldset>
+            <legend>Thông Tin Nhân Thân</legend>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="fullname">Họ và tên <span class="required">*</span></label>
+                    <input type="text" id="fullname" name="fullname" placeholder="Nguyễn Văn A" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Địa chỉ Email <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" placeholder="hocvien@domain.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Số điện thoại <span class="required">*</span></label>
+                    <input type="tel" id="phone" name="phone" placeholder="0912345678" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="dob">Ngày sinh <span class="required">*</span></label>
+                    <input type="date" id="dob" name="dob" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Giới tính <span class="required">*</span></label>
+                    <div class="radio-group">
+                        <label class="radio-label"><input type="radio" name="gender" value="male" checked> Nam</label>
+                        <label class="radio-label"><input type="radio" name="gender" value="female"> Nữ</label>
+                        <label class="radio-label"><input type="radio" name="gender" value="other"> Khác</label>
+                    </div>
+                </div>
+            </div>
+        </fieldset>
+
+        <fieldset>
+            <legend>Khóa Học & Ghi Chú</legend>
+            <div class="form-grid">
+                <div class="form-group full-width">
+                    <label for="course">Lựa chọn khóa học <span class="required">*</span></label>
+                    <select id="course" name="course" required>
+                        <option value="">-- Chọn khóa học đăng ký --</option>
+                        <option value="web-frontend">Lập Trình Web Frontend (HTML/CSS/JS)</option>
+                        <option value="python-data">Python & Phân Tích Dữ Liệu</option>
+                        <option value="java-fullstack">Lập Trình Fullstack Java</option>
+                        <option value="ui-ux">Thiết Kế Giao Diện UI/UX</option>
+                    </select>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="address">Địa chỉ thường trú</label>
+                    <textarea id="address" name="address" rows="2" placeholder="Số nhà, đường, phường/xã, quận/huyện..."></textarea>
+                </div>
+
+                <div class="form-group full-width">
+                    <label for="notes">Ghi chú bổ sung</label>
+                    <textarea id="notes" name="notes" rows="2" placeholder="Yêu cầu hỗ trợ, lịch học ưu tiên..."></textarea>
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="actions">
+            <button type="reset" class="btn btn-reset">Hủy / Nhập lại</button>
+            <button type="submit" class="btn btn-submit">Đăng ký học viên</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>`;
+
+    // DOM Validation Rules Engine
+    function validateHTMLCode(code, activePart) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(code, 'text/html');
+      
+      const checks = [];
+
+      if (activePart === 'part1') {
+        // Requirement 1: Form tag
+        const formEl = doc.querySelector('form');
+        checks.push({
+          title: 'Thẻ <form> tồn tại',
+          status: !!formEl,
+          detail: formEl ? 'Tìm thấy thẻ <form> phù hợp.' : 'Thiếu thẻ <form> bao bọc các ô nhập liệu.'
+        });
+
+        // Requirement 2: Textbox name="yourname"
+        const yourNameInput = doc.querySelector('input[name="yourname"]');
+        checks.push({
+          title: 'Input Họ và tên (name="yourname")',
+          status: !!yourNameInput && (yourNameInput.getAttribute('type') === 'text' || !yourNameInput.getAttribute('type')),
+          detail: yourNameInput ? 'Trường name="yourname" đã được định nghĩa đúng.' : 'Cần thẻ <input type="text" name="yourname">'
+        });
+
+        // Requirement 3: Textbox name="email"
+        const emailInput = doc.querySelector('input[name="email"]');
+        checks.push({
+          title: 'Input Email (name="email")',
+          status: !!emailInput,
+          detail: emailInput ? 'Trường name="email" đã được định nghĩa đúng.' : 'Cần thẻ <input type="email" name="email">'
+        });
+
+        // Requirement 4: Checkboxes name="hobby"
+        const hobbyCheckboxes = doc.querySelectorAll('input[type="checkbox"][name="hobby"]');
+        checks.push({
+          title: 'Danh sách Checkbox sở thích (name="hobby")',
+          status: hobbyCheckboxes.length >= 2,
+          detail: hobbyCheckboxes.length >= 2 
+            ? `Tìm thấy ${hobbyCheckboxes.length} checkbox sở thích sử dụng chung name="hobby".` 
+            : 'Cần ít nhất 2 checkbox có thuộc tính name="hobby".'
+        });
+
+        // Requirement 5: Submit button "Gửi thông tin"
+        const submitBtn = doc.querySelector('button[type="submit"], input[type="submit"]');
+        const submitText = submitBtn ? (submitBtn.innerText || submitBtn.value || '').toLowerCase() : '';
+        const hasSubmitKey = submitText.includes('gửi') || submitText.includes('gui') || submitText.includes('submit');
+        checks.push({
+          title: 'Nút Submit "Gửi thông tin"',
+          status: !!submitBtn && hasSubmitKey,
+          detail: (submitBtn && hasSubmitKey) ? 'Nút Submit đúng chuẩn type="submit" với nội dung phù hợp.' : 'Cần nút submit với chữ "Gửi thông tin".'
+        });
+
+        // Requirement 6: Reset button "Nhập lại"
+        const resetBtn = doc.querySelector('button[type="reset"], input[type="reset"]');
+        const resetText = resetBtn ? (resetBtn.innerText || resetBtn.value || '').toLowerCase() : '';
+        const hasResetKey = resetText.includes('nhập') || resetText.includes('nhap') || resetText.includes('reset') || resetText.includes('lại');
+        checks.push({
+          title: 'Nút Reset "Nhập lại"',
+          status: !!resetBtn && hasResetKey,
+          detail: (resetBtn && hasResetKey) ? 'Nút Reset đúng chuẩn type="reset".' : 'Cần nút reset type="reset" với chữ "Nhập lại".'
+        });
+
+        // Requirement 7: CSS styling present
+        const styleTag = doc.querySelector('style') || doc.querySelector('link[rel="stylesheet"]');
+        checks.push({
+          title: 'Định dạng CSS & Căn chỉnh',
+          status: !!styleTag,
+          detail: styleTag ? 'Có thể thấy thẻ CSS <style> hỗ trợ giao diện.' : 'Nên thêm CSS căn chỉnh màu sắc, phông chữ và bố cục.'
+        });
+
+      } else { // Part 2
+        // Form tag
+        const formEl = doc.querySelector('form');
+        checks.push({
+          title: 'Thẻ <form> tồn tại',
+          status: !!formEl,
+          detail: formEl ? 'Đã tìm thấy form đăng ký.' : 'Thiếu thẻ <form>.'
+        });
+
+        // Fullname
+        const fullname = doc.querySelector('[name="fullname"]');
+        checks.push({
+          title: 'Trường Họ tên (fullname)',
+          status: !!fullname,
+          detail: fullname ? 'Đã tìm thấy input[name="fullname"]' : 'Cần input tên Tiếng Anh name="fullname"'
+        });
+
+        // Email
+        const email = doc.querySelector('[name="email"]');
+        checks.push({
+          title: 'Trường Email (email)',
+          status: !!email,
+          detail: email ? 'Đã tìm thấy input[name="email"]' : 'Cần input name="email"'
+        });
+
+        // Phone
+        const phone = doc.querySelector('[name="phone"]');
+        checks.push({
+          title: 'Trường Số điện thoại (phone)',
+          status: !!phone,
+          detail: phone ? 'Đã tìm thấy input[name="phone"]' : 'Cần input name="phone"'
+        });
+
+        // Date of Birth
+        const dob = doc.querySelector('[name="dob"]');
+        checks.push({
+          title: 'Trường Ngày sinh (dob)',
+          status: !!dob,
+          detail: dob ? 'Đã tìm thấy input[name="dob"]' : 'Cần input name="dob"'
+        });
+
+        // Gender (radios)
+        const genderRadios = doc.querySelectorAll('input[type="radio"][name="gender"]');
+        checks.push({
+          title: 'Giới tính Radio Group (gender)',
+          status: genderRadios.length >= 2,
+          detail: genderRadios.length >= 2 ? `Tìm thấy ${genderRadios.length} lựa chọn giới tính (gender).` : 'Cần các input radio name="gender".'
+        });
+
+        // Course (<select>)
+        const courseSelect = doc.querySelector('select[name="course"]');
+        checks.push({
+          title: 'Thẻ <select> chọn khóa học (course)',
+          status: !!courseSelect && courseSelect.options.length >= 2,
+          detail: courseSelect ? 'Đã khai báo thẻ select name="course" chứa các khóa học.' : 'Cần thẻ <select name="course"> với các thẻ <option>.'
+        });
+
+        // Address (<textarea> or input)
+        const address = doc.querySelector('[name="address"]');
+        checks.push({
+          title: 'Trường Địa chỉ (address)',
+          status: !!address,
+          detail: address ? 'Đã tìm thấy trường name="address".' : 'Cần <textarea name="address">'
+        });
+
+        // Notes (<textarea> or input)
+        const notes = doc.querySelector('[name="notes"]');
+        checks.push({
+          title: 'Trường Ghi chú (notes)',
+          status: !!notes,
+          detail: notes ? 'Đã tìm thấy trường name="notes".' : 'Cần <textarea name="notes">'
+        });
+
+        // Submit & Reset
+        const submitBtn = doc.querySelector('button[type="submit"], input[type="submit"]');
+        const resetBtn = doc.querySelector('button[type="reset"], input[type="reset"]');
+        checks.push({
+          title: 'Nút bấm Submit & Reset',
+          status: !!submitBtn && !!resetBtn,
+          detail: (submitBtn && resetBtn) ? 'Có đầy đủ cả nút Submit và Reset.' : 'Thiếu nút type="submit" hoặc type="reset".'
+        });
+      }
+
+      const passedCount = checks.filter(c => c.status).length;
+      const score = Math.round((passedCount / checks.length) * 100);
+
+      return { checks, score, passedCount, total: checks.length };
+    }
+
+    // Main App Component
+    function App() {
+      const [activePart, setActivePart] = useState('part1'); // 'part1' | 'part2'
+      const [part1Code, setPart1Code] = useState(DEFAULT_PART1_CODE);
+      const [part2Code, setPart2Code] = useState(DEFAULT_PART2_CODE);
+      const [activeTab, setActiveTab] = useState('editor'); // 'editor' | 'validator' | 'inspector' | 'cheatsheet' | 'submission'
+      const [viewMode, setViewMode] = useState('split'); // 'split' | 'code' | 'preview'
+      const [lastSubmission, setLastSubmission] = useState(null);
+      const [toast, setToast] = useState(null);
+
+      const currentCode = activePart === 'part1' ? part1Code : part2Code;
+      const setCurrentCode = activePart === 'part1' ? setPart1Code : setPart2Code;
+
+      // Handle message from iframe (intercept form submit/reset)
+      useEffect(() => {
+        function handleIframeMessage(e) {
+          if (!e.data || typeof e.data !== 'object') return;
+          if (e.data.type === 'FORM_SUBMIT') {
+            setLastSubmission({
+              timestamp: new Date().toLocaleTimeString(),
+              part: activePart,
+              method: e.data.method || 'GET',
+              action: e.data.action || '#',
+              data: e.data.data || []
+            });
+            showToast('Dữ liệu form đã được bắt thành công!', 'success');
+          } else if (e.data.type === 'FORM_RESET') {
+            showToast('Form vừa được làm mới (Reset)!', 'info');
+          }
+        }
+        window.addEventListener('message', handleIframeMessage);
+        return () => window.removeEventListener('message', handleIframeMessage);
+      }, [activePart]);
+
+      const showToast = (msg, type = 'info') => {
+        setToast({ msg, type });
+        setTimeout(() => setToast(null), 3000);
+      };
+
+      const handleResetDefault = () => {
+        if (activePart === 'part1') setPart1Code(DEFAULT_PART1_CODE);
+        else setPart2Code(DEFAULT_PART2_CODE);
+        showToast('Đã khôi phục mã nguồn ban đầu!', 'info');
+      };
+
+      const handleCopyCode = () => {
+        navigator.clipboard.writeText(currentCode);
+        showToast('Đã chép mã nguồn vào bộ nhớ tạm!', 'success');
+      };
+
+      const handleDownload = () => {
+        const element = document.createElement("a");
+        const file = new Blob([currentCode], {type: 'text/html'});
+        element.href = URL.createObjectURL(file);
+        element.download = activePart === 'part1' ? "part1.html" : "part2.html";
+        document.body.appendChild(element);
+        element.click();
+        document.body.removeChild(element);
+        showToast(`Đã tải xuống ${activePart}.html`, 'success');
+      };
+
+      // Validation evaluation
+      const validationResult = validateHTMLCode(currentCode, activePart);
+
+      // Injected preview code with submission interceptor
+      const getInjectedCode = (rawCode) => {
+        const interceptorScript = `
+          <script>
+            document.addEventListener('DOMContentLoaded', () => {
+              const forms = document.querySelectorAll('form');
+              forms.forEach(form => {
+                form.addEventListener('submit', (e) => {
+                  e.preventDefault();
+                  const formData = new FormData(form);
+                  const entries = [];
+                  for (let [key, val] of formData.entries()) {
+                    entries.push([key, val]);
+                  }
+                  window.parent.postMessage({
+                    type: 'FORM_SUBMIT',
+                    method: (form.getAttribute('method') || 'GET').toUpperCase(),
+                    action: form.getAttribute('action') || '#',
+                    data: entries
+                  }, '*');
+                });
+                form.addEventListener('reset', () => {
+                  window.parent.postMessage({ type: 'FORM_RESET' }, '*');
+                });
+              });
+            });
+          <\/script>
+        `;
+        if (rawCode.includes('</body>')) {
+          return rawCode.replace('</body>', `${interceptorScript}</body>`);
+        }
+        return rawCode + interceptorScript;
+      };
+
+      return (
+        <div class="flex flex-col h-screen bg-slate-900 text-slate-100">
+          {/* Toast Alert */}
+          {toast && (
+            <div className={`fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 border ${
+              toast.type === 'success' ? 'bg-emerald-950 border-emerald-500 text-emerald-200' : 'bg-blue-950 border-blue-500 text-blue-200'
+            }`}>
+              <span>{toast.type === 'success' ? '✓' : 'ℹ'}</span>
+              <span>{toast.msg}</span>
+            </div>
+          )}
+
+          {/* Top Header */}
+          <header className="h-16 border-b border-slate-800 bg-slate-950/80 backdrop-blur px-4 flex items-center justify-between shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-gradient-to-tr from-blue-600 to-indigo-500 flex items-center justify-center font-bold text-white shadow-lg shadow-blue-500/20">
+                &lt;/&gt;
+              </div>
+              <div>
+                <h1 className="font-semibold text-base text-slate-100 leading-tight">
+                  [Bài tập] Tạo Form Đơn Giản
+                </h1>
+                <p className="text-xs text-slate-400">Workspace Thực Hành & Chấm Điểm Tự Động HTML Form</p>
+              </div>
+            </div>
+
+            {/* Switcher Part 1 / Part 2 */}
+            <div className="flex items-center bg-slate-900 p-1 rounded-xl border border-slate-800">
+              <button
+                onClick={() => setActivePart('part1')}
+                className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+                  activePart === 'part1'
+                    ? 'bg-blue-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                }`}
+              >
+                <span>Phần 1: Form Sở Thích</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-950/60 text-blue-300 border border-blue-800">part1.html</span>
+              </button>
+
+              <button
+                onClick={() => setActivePart('part2')}
+                className={`px-4 py-1.5 rounded-lg text-xs font-semibold transition-all flex items-center gap-2 ${
+                  activePart === 'part2'
+                    ? 'bg-teal-600 text-white shadow-md'
+                    : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800/50'
+                }`}
+              >
+                <span>Phần 2: Đăng Ký Học Viên</span>
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-teal-950/60 text-teal-300 border border-teal-800">part2.html</span>
+              </button>
+            </div>
+
+            {/* Score Badge Header */}
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs">
+                <span className="text-slate-400">Điểm tự động:</span>
+                <span className={`font-bold ${validationResult.score === 100 ? 'text-emerald-400' : validationResult.score >= 70 ? 'text-amber-400' : 'text-rose-400'}`}>
+                  {validationResult.score}%
+                </span>
+              </div>
+              <button
+                onClick={handleDownload}
+                className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium transition flex items-center gap-1.5 border border-slate-700"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Tải file
+              </button>
+            </div>
+          </header>
+
+          {/* Navigation Bar */}
+          <nav className="bg-slate-950/40 border-b border-slate-800/80 px-4 flex items-center justify-between text-xs shrink-0">
+            <div className="flex gap-1 py-1">
+              {[
+                { id: 'editor', label: '💻 Code Editor & Live Preview', icon: '📝' },
+                { id: 'validator', label: `✅ Kiểm Tra & Chấm Điểm (${validationResult.passedCount}/${validationResult.total})`, icon: '🎯' },
+                { id: 'inspector', label: `📊 Form Inspector ${lastSubmission ? '• (Có dữ liệu)' : ''}`, icon: '🔍' },
+                { id: 'cheatsheet', label: '📖 Lý Thuyết & CSS Guide', icon: '📚' },
+                { id: 'submission', label: '🚀 Hướng Dẫn Nộp Bài', icon: '📤' }
+              ].map(tab => (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`px-3 py-2 rounded-lg font-medium transition flex items-center gap-1.5 ${
+                    activeTab === tab.id
+                      ? 'bg-slate-800 text-blue-400 font-semibold border border-slate-700/60'
+                      : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60'
+                  }`}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+
+            {/* View Layout Selector (When Editor Tab is active) */}
+            {activeTab === 'editor' && (
+              <div className="flex items-center gap-1 bg-slate-900 p-0.5 rounded-lg border border-slate-800 my-1">
+                <button
+                  onClick={() => setViewMode('code')}
+                  className={`px-2.5 py-1 rounded text-[11px] font-medium transition ${viewMode === 'code' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                >
+                  Code
+                </button>
+                <button
+                  onClick={() => setViewMode('split')}
+                  className={`px-2.5 py-1 rounded text-[11px] font-medium transition ${viewMode === 'split' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                >
+                  Song Song
+                </button>
+                <button
+                  onClick={() => setViewMode('preview')}
+                  className={`px-2.5 py-1 rounded text-[11px] font-medium transition ${viewMode === 'preview' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:text-slate-200'}`}
+                >
+                  Xem Trước
+                </button>
+              </div>
+            )}
+          </nav>
+
+          {/* Main Body Area */}
+          <main className="flex-1 overflow-hidden relative">
+            {}
+            {/* TAB 1: CODE EDITOR & LIVE PREVIEW */}
+            {activeTab === 'editor' && (
+              <div className="h-full flex flex-col lg:flex-row divide-y lg:divide-y-0 lg:divide-x divide-slate-800">
+                {/* Left Side: Code Editor */}
+                {(viewMode === 'split' || viewMode === 'code') && (
+                  <div className={`flex-1 flex flex-col h-full bg-slate-950/60 ${viewMode === 'code' ? 'w-full' : ''}`}>
+                    {/* Editor Action Bar */}
+                    <div className="px-4 py-2 bg-slate-900/80 border-b border-slate-800/80 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+                        <span className="font-mono text-slate-300 font-semibold">
+                          {activePart === 'part1' ? 'part1.html (Form Sở Thích)' : 'part2.html (Đăng Ký Học Viên)'}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={handleCopyCode}
+                          className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-[11px] transition"
+                        >
+                          Chép Code
+                        </button>
+                        <button
+                          onClick={handleResetDefault}
+                          className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-rose-300 hover:text-rose-200 text-[11px] transition"
+                        >
+                          Khôi Phục Mẫu
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Textarea Editor */}
+                    <div className="flex-1 relative font-mono text-xs overflow-hidden">
+                      <textarea
+                        value={currentCode}
+                        onChange={(e) => setCurrentCode(e.target.value)}
+                        className="w-full h-full bg-slate-950 p-4 text-slate-200 focus:outline-none resize-none leading-relaxed code-font"
+                        placeholder="Nhập mã HTML vào đây..."
+                        spellCheck="false"
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {/* Right Side: Live Interactive Preview */}
+                {(viewMode === 'split' || viewMode === 'preview') && (
+                  <div className={`flex-1 flex flex-col h-full bg-slate-900 ${viewMode === 'preview' ? 'w-full' : ''}`}>
+                    <div className="px-4 py-2 bg-slate-900/80 border-b border-slate-800/80 flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
+                        <span className="font-semibold text-slate-300">Live Browser Preview</span>
+                      </div>
+                      <span className="text-[11px] text-slate-400">
+                        Thử nghiệm nhấn Submit/Reset trực tiếp trong khung bên dưới
+                      </span>
+                    </div>
+
+                    <div className="flex-1 p-2 bg-slate-950/40">
+                      <iframe
+                        title="Form Live Preview"
+                        srcDoc={getInjectedCode(currentCode)}
+                        className="w-full h-full rounded-lg bg-white border border-slate-800 shadow-inner"
+                        sandbox="allow-scripts allow-forms allow-same-origin"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {}
+            {/* TAB 2: AUTOMATED VALIDATOR */}
+            {activeTab === 'validator' && (
+              <div className="h-full overflow-y-auto p-6 max-w-5xl mx-auto space-y-6">
+                {/* Score Summary Box */}
+                <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+                  <div className="space-y-2 text-center md:text-left">
+                    <span className="text-xs uppercase font-bold tracking-wider text-blue-400 bg-blue-950/80 px-2.5 py-1 rounded border border-blue-800/50">
+                      Đánh Giá Tự Động • {activePart === 'part1' ? 'Phần 1' : 'Phần 2'}
+                    </span>
+                    <h2 className="text-xl font-bold text-slate-100">
+                      {activePart === 'part1' 
+                        ? 'Form Sở Thích (yourname, email, hobby, submit, reset)'
+                        : 'Form Đăng Ký Học Viên (English field names)'}
+                    </h2>
+                    <p className="text-xs text-slate-400 max-w-xl">
+                      Hệ thống tự động dùng DOMParser để kiểm tra việc tuân thủ cấu trúc HTML, thuộc tính name, các loại input và các nút bấm theo đúng đề bài yêu cầu.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-4 bg-slate-900/80 px-6 py-4 rounded-xl border border-slate-700/80">
+                    <div className="text-center">
+                      <div className={`text-4xl font-extrabold ${validationResult.score === 100 ? 'text-emerald-400' : validationResult.score >= 70 ? 'text-amber-400' : 'text-rose-400'}`}>
+                        {validationResult.score}%
+                      </div>
+                      <div className="text-[11px] text-slate-400 mt-1">
+                        {validationResult.passedCount} / {validationResult.total} Tiêu chí đạt
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Checklist Breakdown */}
+                <div className="space-y-3">
+                  <h3 className="text-sm font-semibold text-slate-300 tracking-wide uppercase">Chi Tiết Kiểm Tra Từng Tiêu Chí</h3>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {validationResult.checks.map((check, idx) => (
+                      <div
+                        key={idx}
+                        className={`p-4 rounded-xl border transition-all ${
+                          check.status
+                            ? 'bg-emerald-950/20 border-emerald-800/50 text-emerald-200'
+                            : 'bg-rose-950/20 border-rose-800/50 text-rose-200'
+                        }`}
+                      >
+                        <div className="flex items-start justify-between gap-3">
+                          <div className="flex items-center gap-2.5">
+                            <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
+                              check.status ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                            }`}>
+                              {check.status ? '✓' : '✕'}
+                            </span>
+                            <span className="font-semibold text-sm text-slate-100">{check.title}</span>
+                          </div>
+                          <span className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                            check.status ? 'bg-emerald-900/60 text-emerald-300' : 'bg-rose-900/60 text-rose-300'
+                          }`}>
+                            {check.status ? 'Đạt' : 'Chưa đạt'}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-400 mt-2 pl-8">
+                          {check.detail}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 3: FORM INSPECTOR (PAYLOAD CAPTURE) */}
+            {activeTab === 'inspector' && (
+              <div className="h-full overflow-y-auto p-6 max-w-4xl mx-auto space-y-6">
+                <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-6">
+                  <h2 className="text-lg font-bold text-slate-100 mb-1 flex items-center gap-2">
+                    <span>🔍</span> Form Submission Payload Inspector
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Mỗi khi bạn nhấn nút <b>"Gửi thông tin"</b> hoặc <b>"Đăng ký"</b> ở khung Live Preview, hệ thống sẽ chặn và thu thập toàn bộ dữ liệu form được truyền đi bên dưới.
+                  </p>
+                </div>
+
+                {lastSubmission ? (
+                  <div className="space-y-4">
+                    {/* Meta info */}
+                    <div className="grid grid-cols-3 gap-3">
+                      <div className="bg-slate-800 p-3 rounded-xl border border-slate-700 text-xs">
+                        <span className="text-slate-400 block text-[11px]">Thời gian gửi</span>
+                        <span className="font-semibold text-slate-200">{lastSubmission.timestamp}</span>
+                      </div>
+                      <div className="bg-slate-800 p-3 rounded-xl border border-slate-700 text-xs">
+                        <span className="text-slate-400 block text-[11px]">Phương thức (Method)</span>
+                        <span className="font-semibold text-blue-400">{lastSubmission.method}</span>
+                      </div>
+                      <div className="bg-slate-800 p-3 rounded-xl border border-slate-700 text-xs">
+                        <span className="text-slate-400 block text-[11px]">Đã gửi cho Bài tập</span>
+                        <span className="font-semibold text-teal-400">{lastSubmission.part === 'part1' ? 'Phần 1' : 'Phần 2'}</span>
+                      </div>
+                    </div>
+
+                    {/* Table of key-value pairs */}
+                    <div className="bg-slate-950 rounded-xl border border-slate-800 overflow-hidden">
+                      <div className="px-4 py-2.5 bg-slate-900 border-b border-slate-800 text-xs font-semibold text-slate-300">
+                        Bảng Dữ Liệu Key - Value (FormData)
+                      </div>
+                      <table className="w-full text-xs text-left text-slate-300">
+                        <thead className="bg-slate-900/60 text-slate-400 font-mono text-[11px] border-b border-slate-800">
+                          <tr>
+                            <th className="px-4 py-2">STT</th>
+                            <th className="px-4 py-2">Tên trường (name)</th>
+                            <th className="px-4 py-2">Giá trị (value)</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-800/60">
+                          {lastSubmission.data.map(([key, val], i) => (
+                            <tr key={i} className="hover:bg-slate-900/40">
+                              <td className="px-4 py-2 text-slate-500 font-mono">{i + 1}</td>
+                              <td className="px-4 py-2 font-semibold text-blue-400 font-mono">{key}</td>
+                              <td className="px-4 py-2 text-slate-200 font-mono bg-slate-900/30">{val.toString() || <span className="text-slate-600 italic">(Trống)</span>}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {/* URL Encoded Query String */}
+                    <div className="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-2">
+                      <span className="text-xs font-semibold text-slate-400 block">Chuỗi Query String Mã Hóa (URL Encoded):</span>
+                      <div className="p-3 bg-slate-900 rounded-lg text-xs font-mono text-emerald-400 break-all select-all">
+                        {lastSubmission.data.map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v)}`).join('&')}
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-12 bg-slate-950/40 border border-slate-800 rounded-2xl">
+                    <span className="text-4xl block mb-2">📥</span>
+                    <p className="text-sm font-semibold text-slate-300">Chưa nhận được lượt gửi form nào</p>
+                    <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                      Hãy quay lại tab <b>"Code Editor & Live Preview"</b> và nhấn nút Submit trên form để xem kết quả tại đây!
+                    </p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {}
+            {/* TAB 4: CHEAT SHEET & CSS GUIDE */}
+            {activeTab === 'cheatsheet' && (
+              <div className="h-full overflow-y-auto p-6 max-w-5xl mx-auto space-y-6">
+                <div className="border-b border-slate-800 pb-4">
+                  <h2 className="text-xl font-bold text-slate-100">Kiến Thức Căn Bản & Bố Cục CSS Form</h2>
+                  <p className="text-xs text-slate-400 mt-1">Tổng hợp các thẻ HTML Form và quy tắc căn chỉnh đẹp mắt trong Thiết kế Web.</p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Part 1 Requirements Guide */}
+                  <div className="bg-slate-800/40 border border-slate-700/80 rounded-xl p-5 space-y-3">
+                    <h3 className="font-bold text-blue-400 text-sm flex items-center gap-2">
+                      <span>📌</span> Yêu Cầu Phần 1 (Simple Form)
+                    </h3>
+                    <ul className="text-xs text-slate-300 space-y-2 list-disc pl-4 leading-relaxed">
+                      <li><b>Ô Nhập Tên:</b> Thẻ <code className="text-amber-300 font-mono">&lt;input type="text" name="yourname"&gt;</code></li>
+                      <li><b>Ô Nhập Email:</b> Thẻ <code className="text-amber-300 font-mono">&lt;input type="email" name="email"&gt;</code></li>
+                      <li><b>Sở thích (Checkboxes):</b> Các checkbox sở thích phải <span className="text-emerald-400 font-semibold">đặt cùng name="hobby"</span> để tạo danh sách nhóm.</li>
+                      <li><b>Nút Submit:</b> <code className="text-amber-300 font-mono">&lt;button type="submit"&gt;Gửi thông tin&lt;/button&gt;</code></li>
+                      <li><b>Nút Reset:</b> <code className="text-amber-300 font-mono">&lt;button type="reset"&gt;Nhập lại&lt;/button&gt;</code></li>
+                    </ul>
+                  </div>
+
+                  {/* Part 2 Requirements Guide */}
+                  <div className="bg-slate-800/40 border border-slate-700/80 rounded-xl p-5 space-y-3">
+                    <h3 className="font-bold text-teal-400 text-sm flex items-center gap-2">
+                      <span>🎓</span> Yêu Cầu Phần 2 (Student Registration Form)
+                    </h3>
+                    <ul className="text-xs text-slate-300 space-y-2 list-disc pl-4 leading-relaxed">
+                      <li><b>Họ và tên:</b> <code className="text-amber-300 font-mono">name="fullname"</code></li>
+                      <li><b>Email / Số ĐT:</b> <code className="text-amber-300 font-mono">name="email"</code> và <code className="text-amber-300 font-mono">name="phone"</code></li>
+                      <li><b>Ngày sinh / Giới tính:</b> <code className="text-amber-300 font-mono">name="dob"</code> (date) và <code className="text-amber-300 font-mono">name="gender"</code> (radio)</li>
+                      <li><b>Khóa học:</b> Thẻ <code className="text-amber-300 font-mono">&lt;select name="course"&gt;</code> kèm thẻ <code className="text-amber-300 font-mono">&lt;option&gt;</code></li>
+                      <li><b>Địa chỉ / Ghi chú:</b> <code className="text-amber-300 font-mono">&lt;textarea name="address"&gt;</code> và <code className="text-amber-300 font-mono">&lt;textarea name="notes"&gt;</code></li>
+                    </ul>
+                  </div>
+                </div>
+
+                {/* CSS Styling & Layout Tips */}
+                <div className="bg-slate-950 p-5 rounded-xl border border-slate-800 space-y-3">
+                  <h3 className="font-bold text-slate-200 text-sm">💡 Bí Quyết CSS Căn Chỉnh Form Đẹp Mắt</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-300">
+                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                      <span className="font-semibold text-blue-400 block mb-1">1. Box-Sizing & Reset</span>
+                      <p className="text-slate-400">Luôn dùng <code className="text-slate-200">* &#123; box-sizing: border-box; &#125;</code> để chiều rộng input không bị tràn ra ngoài padding.</p>
+                    </div>
+                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                      <span className="font-semibold text-teal-400 block mb-1">2. Bố Cục CSS Grid</span>
+                      <p className="text-slate-400">Sử dụng <code className="text-slate-200">display: grid; grid-template-columns: repeat(2, 1fr);</code> cho form đăng ký 2 cột responsive.</p>
+                    </div>
+                    <div className="bg-slate-900 p-3 rounded-lg border border-slate-800">
+                      <span className="font-semibold text-indigo-400 block mb-1">3. Fieldset & Legend</span>
+                      <p className="text-slate-400">Gộp nhóm thông tin bằng thẻ <code className="text-slate-200">&lt;fieldset&gt;</code> và tạo tiêu đề nhóm bằng <code className="text-slate-200">&lt;legend&gt;</code>.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* TAB 5: GITHUB SUBMISSION ASSISTANT */}
+            {activeTab === 'submission' && (
+              <div className="h-full overflow-y-auto p-6 max-w-4xl mx-auto space-y-6">
+                <div className="bg-slate-800/60 border border-slate-700 rounded-2xl p-6">
+                  <h2 className="text-lg font-bold text-slate-100 mb-1 flex items-center gap-2">
+                    <span>🚀</span> Hướng Dẫn Nộp Bài Từng Bước
+                  </h2>
+                  <p className="text-xs text-slate-400">
+                    Lưu các file <code className="text-blue-300">part1.html</code> và <code className="text-teal-300">part2.html</code> vào thư mục dự án và thực hiện các lệnh Git bên dưới để đẩy bài lên GitHub.
+                  </p>
+                </div>
+
+                {/* Git Step-by-Step */}
+                <div className="space-y-4">
+                  {[
+                    {
+                      step: 'Bước 1',
+                      title: 'Khởi tạo Repository trong thư mục chứa file bài tập',
+                      cmd: 'git init'
+                    },
+                    {
+                      step: 'Bước 2',
+                      title: 'Thêm file part1.html và part2.html vào Staging Area',
+                      cmd: 'git add part1.html part2.html'
+                    },
+                    {
+                      step: 'Bước 3',
+                      title: 'Tạo Commit đầu tiên cho bài tập',
+                      cmd: 'git commit -m "Completing simple HTML forms assignment Part 1 and Part 2"'
+                    },
+                    {
+                      step: 'Bước 4',
+                      title: 'Liên kết với kho chứa trên GitHub & Push bài làm',
+                      cmd: 'git branch -M main\ngit remote add origin https://github.com/USERNAME/html-form-assignment.git\ngit push -u origin main'
+                    }
+                  ].map((item, idx) => (
+                    <div key={idx} className="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="px-2 py-0.5 rounded bg-blue-900/60 text-blue-300 text-[10px] font-bold uppercase">{item.step}</span>
+                          <span className="text-xs font-semibold text-slate-200">{item.title}</span>
+                        </div>
+                        <pre className="p-2.5 bg-slate-900 rounded-lg text-xs font-mono text-emerald-400 whitespace-pre-wrap border border-slate-800/80">
+                          {item.cmd}
+                        </pre>
+                      </div>
+
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(item.cmd);
+                          showToast(`Đã chép câu lệnh ${item.step}!`, 'success');
+                        }}
+                        className="self-start md:self-center px-3 py-1.5 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-medium transition shrink-0 border border-slate-700"
+                      >
+                        Sao chép
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </main>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
