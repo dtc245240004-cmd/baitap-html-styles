@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[Thực hành] Tạo form cơ bản (simpleform.html)</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- React & ReactDOM CDN -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            mono: ['Fira Code', 'monospace'],
+          },
+          colors: {
+            wufoo: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #0f172a;
+      color: #f8fafc;
+    }
+    .code-font {
+      font-family: 'Fira Code', monospace;
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #1e293b;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #475569;
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
+  </style>
+</head>
+<body class="min-h-screen bg-slate-950 text-slate-100 flex flex-col">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useMemo, useRef } = React;
+
+    // Standard code template based on exercise instructions
+    const DEFAULT_CODE = `<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Simple Order Form</title>
+    <style>
+        .wufoo {
+            font-family: "Lucida Grande", "Lucida Sans Unicode", Tahoma, sans-serif;
+            background-color: #f8fafc;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        .wufoo h2 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+        .wufoo p {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: #334155;
+        }
+        .wufoo input[type="text"], .wufoo select {
+            padding: 6px 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .wufoo input[type="button"], .wufoo input[type="submit"] {
+            background-color: #0284c7;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .wufoo input[type="button"]:hover, .wufoo input[type="submit"]:hover {
+            background-color: #0369a1;
+        }
+    </style>
+</head>
+<body>
+
+    <form method="get" action="simpleform.html" class="wufoo">
+        <h2>Order Form</h2>
+        
+        <p>What would you like to buy?</p>
+        <select name="product">
+            <option value="A">A</option>
+            <option value="B">B (+ 0.5$)</option>
+            <option value="C">C (+ 0.5$)</option>
+        </select>
+
+        <p>How many would you like to order?</p>
+        <input type="radio" name="rd" id="rd1" value="1"/> <label for="rd1">1 - $10</label> <br/>
+        <input type="radio" name="rd" id="rd2" value="2"/> <label for="rd2">2 - $20</label> <br/>
+        <input type="radio" name="rd" id="rd3" value="3"/> <label for="rd3">3 - $25</label> <br/>
+
+        <p>Name <span style="color: red">*</span></p>
+        <input type="text" name="firstname" placeholder="FirstName" size="15"/>
+        <input type="text" name="lastname" placeholder="LastName" size="15"/>
+
+        <p>Email</p>
+        <input type="text" name="email" size="35"/>
+
+        <p>Phone Number</p>
+        <input type="text" name="phone1" size="5"/> -
+        <input type="text" name="phone2" size="5"/> -
+        <input type="text" name="phone3" size="5"/>
+
+        <p><input type="button" name="btSubmit" value="Submit"/></p>
+    </form>
+
+</body>
+</html>`;
+
+    function App() {
+      const [code, setCode] = useState(DEFAULT_CODE);
+      const [activeTab, setActiveTab] = useState('preview'); // preview | cheatSheet | github
+      const [toastMessage, setToastMessage] = useState('');
+      const [copiedCmd, setCopiedCmd] = useState('');
+      const [submittedData, setSubmittedData] = useState(null);
+      const [queryString, setQueryString] = useState('');
+      const [githubUrl, setGithubUrl] = useState('');
+      const [githubValid, setGithubValid] = useState(null);
+
+      const showToast = (msg) => {
+        setToastMessage(msg);
+        setTimeout(() => setToastMessage(''), 3000);
+      };
+
+      const validationResults = useMemo(() => {
+        try {
+          const parser = new DOMParser();
+          const doc = parser.parseFromString(code, 'text/html');
+
+          // Check 1: Form tag attributes
+          const form = doc.querySelector('form');
+          const hasForm = Boolean(form);
+          const hasMethodGet = form ? form.getAttribute('method')?.toLowerCase() === 'get' : false;
+          const hasActionSimple = form ? form.getAttribute('action')?.toLowerCase() === 'simpleform.html' : false;
+          const hasClassWufoo = form ? form.classList.contains('wufoo') : false;
+
+          // Check 2: CSS Style block with .wufoo font-family
+          const styles = doc.querySelectorAll('style');
+          let hasWufooStyle = false;
+          styles.forEach(style => {
+            const text = style.textContent.toLowerCase();
+            if (text.includes('.wufoo') && (text.includes('lucida grande') || text.includes('lucida sans unicode') || text.includes('tahoma'))) {
+              hasWufooStyle = true;
+            }
+          });
+
+          // Check 3: h2 Order Form
+          const h2 = doc.querySelector('h2');
+          const hasH2 = Boolean(h2 && h2.textContent.toLowerCase().includes('order form'));
+
+          // Check 4: Select tag
+          const select = doc.querySelector('select');
+          const options = doc.querySelectorAll('select option');
+          const hasSelectWithOptions = Boolean(select && options.length >= 3);
+
+          // Check 5: Radio buttons with name="rd"
+          const radios = doc.querySelectorAll('input[type="radio"][name="rd"]');
+          const hasRadios = radios.length >= 3;
+
+          // Check 6: Text inputs firstname & lastname
+          const firstNameInput = doc.querySelector('input[name="firstname"]');
+          const lastNameInput = doc.querySelector('input[name="lastname"]');
+          const hasNameInputs = Boolean(
+            firstNameInput && firstNameInput.getAttribute('placeholder')?.toLowerCase() === 'firstname' &&
+            lastNameInput && lastNameInput.getAttribute('placeholder')?.toLowerCase() === 'lastname'
+          );
+
+          // Check 7: Email input
+          const emailInput = doc.querySelector('input[name="email"]');
+          const hasEmailInput = Boolean(emailInput && emailInput.getAttribute('size') === '35');
+
+          // Check 8: Phone inputs (phone1, phone2, phone3)
+          const phone1 = doc.querySelector('input[name="phone1"]');
+          const phone2 = doc.querySelector('input[name="phone2"]');
+          const phone3 = doc.querySelector('input[name="phone3"]');
+          const hasPhoneInputs = Boolean(
+            phone1 && phone1.getAttribute('size') === '5' &&
+            phone2 && phone2.getAttribute('size') === '5' &&
+            phone3 && phone3.getAttribute('size') === '5'
+          );
+
+          // Check 9: Submit button
+          const btSubmit = doc.querySelector('input[name="btSubmit"]');
+          const hasSubmitButton = Boolean(btSubmit && (btSubmit.getAttribute('value')?.toLowerCase() === 'submit'));
+
+          const checks = [
+            { id: 'form_attr', label: '<form method="get" action="simpleform.html" class="wufoo">', status: hasForm && hasMethodGet && hasActionSimple && hasClassWufoo },
+            { id: 'wufoo_font', label: 'CSS .wufoo định dạng font "Lucida Grande", Tahoma, sans-serif', status: hasWufooStyle },
+            { id: 'heading_h2', label: 'Tiêu đề <h2>Order Form</h2>', status: hasH2 },
+            { id: 'select_opt', label: 'Menu thả xuống <select> chứa ít nhất 3 <option>', status: hasSelectWithOptions },
+            { id: 'radios_rd', label: 'Nút chọn 3 Radio buttons có name="rd"', status: hasRadios },
+            { id: 'name_fields', label: 'Ô nhập firstname, lastname có placeholder & size="15"', status: hasNameInputs },
+            { id: 'email_field', label: 'Ô nhập email có size="35"', status: hasEmailInput },
+            { id: 'phone_fields', label: '3 ô số điện thoại (phone1, phone2, phone3) size="5"', status: hasPhoneInputs },
+            { id: 'submit_btn', label: 'Nút Submit có name="btSubmit" và value="Submit"', status: hasSubmitButton },
+          ];
+
+          const passedCount = checks.filter(c => c.status).length;
+          const isAllPassed = passedCount === checks.length;
+
+          return {
+            checks,
+            passedCount,
+            totalChecks: checks.length,
+            isAllPassed
+          };
+        } catch (e) {
+          return {
+            checks: [],
+            passedCount: 0,
+            totalChecks: 9,
+            isAllPassed: false
+          };
+        }
+      }, [code]);
+
+      const previewIframeSrc = useMemo(() => {
+        // Embed event interceptor script into HTML string to catch form submission
+        const scriptToInject = `
+          <script>
+            document.addEventListener('DOMContentLoaded', function() {
+              const form = document.querySelector('form');
+              const submitBtn = document.querySelector('input[name="btSubmit"]') || document.querySelector('input[type="submit"]');
+
+              function handleSend(e) {
+                if(e) e.preventDefault();
+                if (!form) return;
+                
+                const formData = new FormData(form);
+                const params = {};
+                for (let [key, value] of formData.entries()) {
+                  params[key] = value;
+                }
+                
+                // Collect manual text values if FormData misses un-named inputs
+                const inputs = form.querySelectorAll('input, select');
+                inputs.forEach(i => {
+                  if (i.name) {
+                    if (i.type === 'radio' && !i.checked) return;
+                    params[i.name] = i.value;
+                  }
+                });
+
+                window.parent.postMessage({
+                  type: 'FORM_SUBMIT',
+                  data: params,
+                  action: form.getAttribute('action') || 'simpleform.html'
+                }, '*');
+              }
+
+              if (form) {
+                form.addEventListener('submit', handleSend);
+              }
+              if (submitBtn) {
+                submitBtn.addEventListener('click', handleSend);
+              }
+            });
+          <\/script>
+        `;
+
+        if (code.includes('</body>')) {
+          return code.replace('</body>', `${scriptToInject}</body>`);
+        }
+        return code + scriptToInject;
+      }, [code]);
+
+      // Listen for submit postMessage from preview iframe
+      useEffect(() => {
+        const handleMessage = (event) => {
+          if (event.data && event.data.type === 'FORM_SUBMIT') {
+            const data = event.data.data;
+            const action = event.data.action || 'simpleform.html';
+            
+            // Build URL query string
+            const searchParams = new URLSearchParams();
+            Object.keys(data).forEach(key => {
+              searchParams.append(key, data[key]);
+            });
+            
+            const qStr = `${action}?${searchParams.toString()}`;
+            setQueryString(qStr);
+            setSubmittedData(data);
+            showToast(' Đã giả lập gửi Form thành công (HTTP GET)!');
+          }
+        };
+
+        window.addEventListener('message', handleMessage);
+        return () => window.removeEventListener('message', handleMessage);
+      }, []);
+
+      const handleFormat = () => {
+        try {
+          let formatted = code
+            .replace(/>\s*</g, '>\n<')
+            .split('\n')
+            .map(line => line.trim())
+            .filter(line => line.length > 0)
+            .join('\n');
+          setCode(formatted);
+          showToast('Đã định dạng mã nguồn!');
+        } catch (e) {
+          showToast('Không thể tự động định dạng mã!');
+        }
+      };
+
+      const handleReset = () => {
+        setCode(DEFAULT_CODE);
+        setSubmittedData(null);
+        setQueryString('');
+        showToast('Đã khôi phục mã nguồn ban đầu!');
+      };
+
+      const handleCopyCode = () => {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = code;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          showToast('Đã sao chép mã nguồn vào Clipboard!');
+        } catch (err) {
+          showToast('Sao chép thất bại!');
+        }
+      };
+
+      const handleDownload = () => {
+        const blob = new Blob([code], { type: 'text/html;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'simpleform.html';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast('Đã tải xuống file simpleform.html!');
+      };
+
+      const handleInsertSnippet = (snippet) => {
+        if (code.includes('</form>')) {
+          setCode(code.replace('</form>', `    ${snippet}\n</form>`));
+        } else {
+          setCode(prev => prev + '\n' + snippet);
+        }
+        showToast('Đã chèn đoạn mã!');
+      };
+
+      const handleVerifyGithub = (e) => {
+        const url = e.target.value;
+        setGithubUrl(url);
+        const githubRegex = /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/?$/;
+        if (url.trim() === '') setGithubValid(null);
+        else setGithubValid(githubRegex.test(url.trim()));
+      };
+
+      const copyToClipboardText = (text, label) => {
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          document.body.appendChild(textarea);
+          textarea.select();
+          document.execCommand('copy');
+          document.body.removeChild(textarea);
+          setCopiedCmd(label);
+          setTimeout(() => setCopiedCmd(''), 2000);
+          showToast(`Đã chép: ${text}`);
+        } catch (e) {
+          showToast('Sao chép thất bại');
+        }
+      };
+
+      return (
+        <div className="flex flex-col h-screen max-h-screen overflow-hidden">
+          
+          {/* Header Bar */}
+          <header className="bg-slate-900 border-b border-slate-800 px-4 py-3 flex flex-wrap items-center justify-between gap-3 shrink-0">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
+                <i className="fa-solid fa-rectangle-list text-lg"></i>
+              </div>
+              <div>
+                <h1 className="text-lg font-bold text-white flex items-center gap-2">
+                  [Thực hành] Tạo form cơ bản (<span className="text-sky-400 code-font">simpleform.html</span>)
+                </h1>
+                <p className="text-xs text-slate-400">Trình thực hành HTML Form, Giả lập GET Request & Kiểm tra DOM tự động</p>
+              </div>
+            </div>
+
+            {/* Validation Badge */}
+            <div className="flex items-center gap-3">
+              <div className={`px-3 py-1.5 rounded-lg border text-xs font-semibold flex items-center gap-2 ${
+                validationResults.isAllPassed 
+                  ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' 
+                  : 'bg-amber-500/10 border-amber-500/30 text-amber-400'
+              }`}>
+                <i className={`fa-solid ${validationResults.isAllPassed ? 'fa-circle-check' : 'fa-list-check'}`}></i>
+                <span>Tiến độ: {validationResults.passedCount}/{validationResults.totalChecks} Tiêu chuẩn</span>
+              </div>
+
+              <button 
+                onClick={() => setActiveTab('github')}
+                className="bg-sky-600 hover:bg-sky-500 text-white text-xs px-3.5 py-1.5 rounded-lg font-medium transition flex items-center gap-2 shadow-md shadow-sky-600/20"
+              >
+                <i className="fa-brands fa-github text-sm"></i>
+                <span>Nộp bài GitHub</span>
+              </button>
+            </div>
+          </header>
+
+          {/* Toast Notification */}
+          {toastMessage && (
+            <div className="fixed top-16 right-6 z-50 bg-sky-600 text-white px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 text-xs font-medium animate-bounce">
+              <i className="fa-solid fa-circle-check"></i>
+              <span>{toastMessage}</span>
+            </div>
+          )}
+
+          {/* Main Content Workspace Split Screen */}
+          <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden bg-slate-950">
+            
+            {/* Left Column: Editor & Auto Validator (5 cols) */}
+            <div className="lg:col-span-5 border-r border-slate-800 flex flex-col h-full overflow-hidden bg-slate-900">
+              
+              {/* Editor Header Toolbar */}
+              <div className="bg-slate-800/80 px-4 py-2 border-b border-slate-700/70 flex items-center justify-between gap-2 shrink-0">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium text-slate-300 flex items-center gap-1.5">
+                    <i className="fa-regular fa-file-code text-sky-400"></i> simpleform.html
+                  </span>
+                  <span className="text-[10px] bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded">HTML5</span>
+                </div>
+
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={handleFormat}
+                    title="Định dạng lại dòng thụt lề"
+                    className="p-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded transition flex items-center gap-1"
+                  >
+                    <i className="fa-solid fa-align-left"></i>
+                    <span className="hidden sm:inline text-[10px]">Format</span>
+                  </button>
+                  <button 
+                    onClick={handleCopyCode}
+                    title="Sao chép toàn bộ mã"
+                    className="p-1.5 text-xs text-slate-400 hover:text-white hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-regular fa-copy"></i>
+                  </button>
+                  <button 
+                    onClick={handleReset}
+                    title="Khôi phục lại mã mặc định"
+                    className="p-1.5 text-xs text-slate-400 hover:text-amber-400 hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-solid fa-rotate-left"></i>
+                  </button>
+                  <button 
+                    onClick={handleDownload}
+                    title="Tải về file simpleform.html"
+                    className="p-1.5 text-xs text-slate-400 hover:text-sky-400 hover:bg-slate-700 rounded transition"
+                  >
+                    <i className="fa-solid fa-download"></i>
+                  </button>
+                </div>
+              </div>
+
+              {/* Code Area */}
+              <div className="flex-1 relative overflow-hidden bg-slate-950 flex flex-col">
+                <textarea
+                  value={code}
+                  onChange={(e) => setCode(e.target.value)}
+                  spellCheck="false"
+                  className="w-full h-full p-4 bg-slate-950 text-slate-100 code-font text-xs sm:text-sm resize-none focus:outline-none leading-relaxed selection:bg-slate-800"
+                  placeholder="Nhập mã HTML đơn giản tại đây..."
+                ></textarea>
+              </div>
+
+              {/* Realtime Validator Panel */}
+              <div className="border-t border-slate-800 bg-slate-900/90 p-3 shrink-0 max-h-56 overflow-y-auto">
+                <div className="flex items-center justify-between mb-2">
+                  <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <i className="fa-solid fa-list-check text-sky-400"></i> Kiểm tra Tiêu chuẩn Đề bài (Auto Grader)
+                  </h3>
+                  <span className="text-[10px] text-slate-400">Tự động quét DOM</span>
+                </div>
+
+                <div className="space-y-1.5">
+                  {validationResults.checks.map((check) => (
+                    <div 
+                      key={check.id}
+                      className={`text-xs p-2 rounded-lg border flex items-start gap-2 transition ${
+                        check.status 
+                          ? 'bg-emerald-950/30 border-emerald-800/40 text-emerald-300' 
+                          : 'bg-slate-800/50 border-slate-700/60 text-slate-400'
+                      }`}
+                    >
+                      <i className={`fa-solid ${check.status ? 'fa-circle-check text-emerald-400' : 'fa-circle-xmark text-slate-500'} mt-0.5 text-sm`}></i>
+                      <div className="flex-1">
+                        <p className={`font-medium ${check.status ? 'text-emerald-200' : 'text-slate-300'}`}>
+                          {check.label}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+            </div>
+
+            {/* Right Column: Live Form Preview, GET Inspector, Cheat Sheet & Git Guide (7 cols) */}
+            <div className="lg:col-span-7 flex flex-col h-full overflow-hidden bg-slate-900">
+              
+              {/* Navigation Tabs Header */}
+              <div className="bg-slate-800 border-b border-slate-700 px-3 py-2 flex items-center justify-between overflow-x-auto gap-2 shrink-0">
+                <div className="flex items-center gap-1">
+                  <button 
+                    onClick={() => setActiveTab('preview')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'preview' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-solid fa-desktop text-sky-400"></i> Xem trước & Giả lập Form
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveTab('cheatSheet')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'cheatSheet' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-solid fa-book-open text-amber-400"></i> Tra cứu Thẻ Form
+                  </button>
+
+                  <button 
+                    onClick={() => setActiveTab('github')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition flex items-center gap-1.5 ${
+                      activeTab === 'github' 
+                        ? 'bg-slate-700 text-white shadow' 
+                        : 'text-slate-400 hover:text-slate-200 hover:bg-slate-800'
+                    }`}
+                  >
+                    <i className="fa-brands fa-github text-purple-400"></i> Hướng dẫn Nộp bài
+                  </button>
+                </div>
+              </div>
+
+              {/* TAB 1: Live Interactive Preview & HTTP GET Inspector */}
+              {activeTab === 'preview' && (
+                <div className="flex-1 flex flex-col overflow-hidden p-4 gap-4">
+                  
+                  {/* Top Bar Info */}
+                  <div className="bg-slate-800/80 p-3 rounded-xl border border-slate-700 flex items-center justify-between gap-3 shrink-0">
+                    <div className="flex items-center gap-2">
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                      <span className="text-xs font-semibold text-slate-200">Giao diện Render Thực tế trong Trình duyệt</span>
+                    </div>
+
+                    <div className="text-[11px] text-slate-400 flex items-center gap-1">
+                      <i className="fa-solid fa-font text-sky-400"></i> Font áp dụng: <code className="text-amber-300">Lucida Grande / Tahoma</code>
+                    </div>
+                  </div>
+
+                  {/* Rendered Frame */}
+                  <div className="flex-1 bg-white rounded-xl shadow-inner border border-slate-700 overflow-hidden relative min-h-[260px]">
+                    <iframe
+                      title="Form Live Preview"
+                      srcDoc={previewIframeSrc}
+                      className="w-full h-full border-0 bg-white"
+                      sandbox="allow-scripts"
+                    ></iframe>
+                  </div>
+
+                  {/* HTTP GET Request Action Inspector */}
+                  <div className="bg-slate-800/90 border border-slate-700 rounded-xl p-3 shrink-0 max-h-52 overflow-y-auto">
+                    <div className="flex items-center justify-between mb-2">
+                      <h4 className="text-xs font-bold text-slate-200 flex items-center gap-1.5">
+                        <i className="fa-solid fa-network-wired text-sky-400"></i> Trình giám sát Dữ liệu Form (HTTP GET Simulation Inspector)
+                      </h4>
+                      {queryString && (
+                        <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded border border-emerald-500/30">
+                          <i className="fa-solid fa-check text-xs mr-1"></i> Đã nhận Submit
+                        </span>
+                      )}
+                    </div>
+
+                    {!queryString ? (
+                      <div className="text-xs text-slate-400 italic py-3 text-center border border-dashed border-slate-700 rounded-lg bg-slate-950/40">
+                        Thực hiện nhập các ô dữ liệu trên khung Xem trước và nhấn nút <strong className="text-sky-300">"Submit"</strong> để kiểm tra chuỗi URL GET được sinh ra.
+                      </div>
+                    ) : (
+                      <div className="space-y-2">
+                        {/* Generated URL query string */}
+                        <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-700">
+                          <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1">Mô phỏng đường dẫn URL gửi đi (Query String):</span>
+                          <code className="text-xs code-font text-amber-300 break-all">{queryString}</code>
+                        </div>
+
+                        {/* Key-Value Pair Summary */}
+                        {submittedData && (
+                          <div className="bg-slate-950 p-2.5 rounded-lg border border-slate-700">
+                            <span className="text-[10px] font-bold text-slate-400 uppercase block mb-1.5">Phân tích Tham số Key-Value:</span>
+                            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs">
+                              {Object.entries(submittedData).map(([k, v]) => (
+                                <div key={k} className="bg-slate-900 p-1.5 rounded border border-slate-800">
+                                  <span className="text-sky-400 font-mono font-semibold">{k}:</span> <span className="text-slate-200 font-mono">{v || '(Rỗng)'}</span>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 2: Form Cheat Sheet & Snippet Library */}
+              {activeTab === 'cheatSheet' && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <h3 className="text-sm font-bold text-slate-100 mb-1 flex items-center gap-2">
+                      <i className="fa-solid fa-book text-amber-400"></i> Tra cứu Thuộc tính & Thẻ HTML Form
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Tìm hiểu chi tiết công dụng của từng thuộc tính trong bài tập <code className="text-amber-300">simpleform.html</code>.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                    
+                    {/* Form element card */}
+                    <div className="bg-slate-800 p-3 rounded-xl border border-slate-700 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sky-400 font-bold code-font">&lt;form&gt;</code>
+                        <span className="text-[10px] bg-sky-950 text-sky-300 px-1.5 py-0.5 rounded">Khung chứa</span>
+                      </div>
+                      <p className="text-slate-300">Thẻ bao bọc toàn bộ các phần tử nhập liệu.</p>
+                      <ul className="text-[11px] text-slate-400 space-y-1 list-disc pl-4">
+                        <li><code className="text-amber-300">method="get"</code>: Gửi dữ liệu nối vào đường dẫn URL.</li>
+                        <li><code className="text-amber-300">action="simpleform.html"</code>: Trang xử lý sau khi nộp.</li>
+                      </ul>
+                    </div>
+
+                    {/* Select element card */}
+                    <div className="bg-slate-800 p-3 rounded-xl border border-slate-700 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sky-400 font-bold code-font">&lt;select&gt; &amp; &lt;option&gt;</code>
+                        <span className="text-[10px] bg-sky-950 text-sky-300 px-1.5 py-0.5 rounded">Thả xuống</span>
+                      </div>
+                      <p className="text-slate-300">Tạo danh sách tùy chọn sổ xuống.</p>
+                      <button 
+                        onClick={() => handleInsertSnippet('<select name="item"><option value="1">Option 1</option><option value="2">Option 2</option></select>')}
+                        className="mt-1 text-[10px] bg-slate-700 hover:bg-slate-600 text-slate-200 px-2 py-1 rounded transition"
+                      >
+                        + Chèn mẫu &lt;select&gt;
+                      </button>
+                    </div>
+
+                    {/* Radio element card */}
+                    <div className="bg-slate-800 p-3 rounded-xl border border-slate-700 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sky-400 font-bold code-font">&lt;input type="radio"&gt;</code>
+                        <span className="text-[10px] bg-sky-950 text-sky-300 px-1.5 py-0.5 rounded">Chọn 1</span>
+                      </div>
+                      <p className="text-slate-300">Cho phép chọn duy nhất 1 lựa chọn trong nhóm.</p>
+                      <p className="text-[11px] text-amber-300 italic">Lưu ý: Tất cả các nút radio trong cùng 1 nhóm phải có thuộc tính name="rd" giống hệt nhau.</p>
+                    </div>
+
+                    {/* Text input element card */}
+                    <div className="bg-slate-800 p-3 rounded-xl border border-slate-700 space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <code className="text-sky-400 font-bold code-font">&lt;input type="text"&gt;</code>
+                        <span className="text-[10px] bg-sky-950 text-sky-300 px-1.5 py-0.5 rounded">Văn bản</span>
+                      </div>
+                      <p className="text-slate-300">Ô nhập dữ liệu chữ một dòng ngắn.</p>
+                      <ul className="text-[11px] text-slate-400 space-y-1 list-disc pl-4">
+                        <li><code className="text-amber-300">placeholder="..."</code>: Chữ gợi ý mờ.</li>
+                        <li><code className="text-amber-300">size="15"</code>: Đô rộng ô nhập theo số ký tự.</li>
+                      </ul>
+                    </div>
+
+                  </div>
+
+                </div>
+              )}
+
+              {/* TAB 3: GitHub Submission Helper */}
+              {activeTab === 'github' && (
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                  
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700">
+                    <h3 className="text-sm font-bold text-slate-100 mb-1 flex items-center gap-2">
+                      <i className="fa-brands fa-github text-purple-400"></i> Hướng dẫn Từng bước Nộp bài lên GitHub
+                    </h3>
+                    <p className="text-xs text-slate-400">
+                      Thực hiện các lệnh Git sau trong thư mục chứa file <code className="text-amber-300">simpleform.html</code> để đưa mã nguồn lên GitHub Repository.
+                    </p>
+                  </div>
+
+                  {/* Git Commands List */}
+                  <div className="bg-slate-900 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                      Các lệnh Git cơ bản:
+                    </h4>
+
+                    {[
+                      { step: 1, cmd: 'git init', desc: 'Khởi tạo Git Repository trong thư mục' },
+                      { step: 2, cmd: 'git add simpleform.html', desc: 'Đưa file simpleform.html vào trạng thái theo dõi' },
+                      { step: 3, cmd: 'git commit -m "Hoàn thành bài tập tạo form cơ bản"', desc: 'Lưu lại phiên bản commit' },
+                      { step: 4, cmd: 'git branch -M main', desc: 'Chuyển tên nhánh chính thành main' },
+                      { step: 5, cmd: 'git remote add origin https://github.com/USERNAME/REPO_NAME.git', desc: 'Liên kết với GitHub Repository cá nhân' },
+                      { step: 6, cmd: 'git push -u origin main', desc: 'Đẩy mã nguồn lên kho lưu trữ GitHub' }
+                    ].map((item) => (
+                      <div key={item.step} className="bg-slate-950 p-2.5 rounded-lg border border-slate-800 flex items-center justify-between gap-2">
+                        <div className="overflow-hidden">
+                          <span className="text-[10px] text-slate-500 font-bold mr-2">BƯỚC {item.step}</span>
+                          <span className="text-xs text-slate-400 block sm:inline">{item.desc}</span>
+                          <code className="block text-xs code-font text-sky-400 mt-1">{item.cmd}</code>
+                        </div>
+
+                        <button 
+                          onClick={() => copyToClipboardText(item.cmd, `step_${item.step}`)}
+                          className="px-2.5 py-1 text-[11px] bg-slate-800 hover:bg-slate-700 text-slate-200 rounded border border-slate-700 transition shrink-0 flex items-center gap-1"
+                        >
+                          <i className={`fa-regular ${copiedCmd === `step_${item.step}` ? 'fa-circle-check text-emerald-400' : 'fa-copy'}`}></i>
+                          <span>{copiedCmd === `step_${item.step}` ? 'Đã chép' : 'Copy'}</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Repo URL Validator */}
+                  <div className="bg-slate-800 p-4 rounded-xl border border-slate-700 space-y-3">
+                    <h4 className="text-xs font-bold text-slate-200 flex items-center gap-2">
+                      <i className="fa-solid fa-link text-sky-400"></i> Kiểm tra đường dẫn Repository trước khi nộp:
+                    </h4>
+
+                    <div>
+                      <input 
+                        type="text" 
+                        value={githubUrl}
+                        onChange={handleVerifyGithub}
+                        placeholder="https://github.com/ten-nguoi-dung/ten-repository"
+                        className="w-full bg-slate-950 border border-slate-700 rounded-lg p-2.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500"
+                      />
+                    </div>
+
+                    {githubValid === true && (
+                      <div className="p-2.5 bg-emerald-950/40 border border-emerald-800/50 rounded-lg text-emerald-300 text-xs flex items-center gap-2">
+                        <i className="fa-solid fa-circle-check text-emerald-400 text-sm"></i>
+                        <span>Đường dẫn GitHub hợp lệ! Bạn có thể dán liên kết này vào hệ thống nộp bài.</span>
+                      </div>
+                    )}
+
+                    {githubValid === false && (
+                      <div className="p-2.5 bg-red-950/40 border border-red-800/50 rounded-lg text-red-300 text-xs flex items-center gap-2">
+                        <i className="fa-solid fa-circle-xmark text-red-400 text-sm"></i>
+                        <span>Đường dẫn chưa đúng định dạng. Cần có dạng: https://github.com/username/repository</span>
+                      </div>
+                    )}
+                  </div>
+
+                </div>
+              )}
+
+            </div>
+
+          </div>
+
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
