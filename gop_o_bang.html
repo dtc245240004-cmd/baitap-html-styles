@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực Hành HTML - Gộp Ô Trong Bảng (rowspan & colspan)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        
+        .code-editor-textarea {
+            tab-size: 4;
+            font-family: 'JetBrains Mono', monospace;
+            white-space: pre;
+            overflow-wrap: normal;
+            overflow-x: auto;
+            resize: none;
+        }
+
+        .matrix-cell {
+            transition: all 0.2s ease;
+        }
+
+        .matrix-cell:hover {
+            transform: scale(1.02);
+        }
+
+        .bg-grid-pattern {
+            background-size: 20px 20px;
+            background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+        }
+
+        /* Modern styled preview table CSS */
+        .modern-preview-table table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            border: 1px solid #cbd5e1;
+        }
+        .modern-preview-table th {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #ffffff;
+            font-weight: 600;
+            padding: 14px 18px;
+            text-align: center;
+            border-bottom: 2px solid #334155;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+        }
+        .modern-preview-table td {
+            padding: 14px 18px;
+            text-align: center;
+            border-bottom: 1px solid #e2e8f0;
+            border-right: 1px solid #e2e8f0;
+            background-color: #ffffff;
+            color: #1e293b;
+            font-weight: 500;
+            transition: background-color 0.2s;
+        }
+        .modern-preview-table tr:last-child td {
+            border-bottom: none;
+        }
+        .modern-preview-table td:last-child {
+            border-right: none;
+        }
+        .modern-preview-table td[rowspan] {
+            background: #eff6ff !important;
+            color: #1d4ed8 !important;
+            font-weight: 700;
+            border-left: 4px solid #3b82f6;
+        }
+        .modern-preview-table td[colspan] {
+            background: #fef2f2 !important;
+            color: #b91c1c !important;
+            font-weight: 700;
+            font-style: italic;
+        }
+        .modern-preview-table tr:nth-child(even) td:not([rowspan]):not([colspan]) {
+            background-color: #f8fafc;
+        }
+
+        @keyframes pulse-light {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+        .animate-pulse-light {
+            animation: pulse-light 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen flex flex-col antialiased selection:bg-sky-500 selection:text-white">
+
+    <!-- Top Navigation Header -->
+    <header class="bg-slate-900/90 border-b border-slate-800 sticky top-0 z-50 backdrop-blur-md">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white shadow-lg shadow-sky-500/20">
+                    <i class="fa-solid fa-table-cells text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                        <span>HTML Table Interactive Workspace</span>
+                        <span class="text-xs font-normal px-2 py-0.5 rounded-full bg-sky-500/10 text-sky-400 border border-sky-500/20 hidden sm:inline-block">rowspan & colspan</span>
+                    </h1>
+                    <p class="text-xs text-slate-400 hidden sm:block">Thực hành gộp hàng và gộp cột chuẩn W3C</p>
+                </div>
+            </div>
+
+            <!-- Score & Quick Actions -->
+            <div class="flex items-center space-x-3">
+                <div id="scoreBadge" class="flex items-center gap-2 bg-slate-800/80 border border-slate-700 px-3 py-1.5 rounded-xl transition-all">
+                    <div class="relative w-8 h-8 flex items-center justify-center">
+                        <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                            <path class="text-slate-700" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                            <path id="scoreCircle" class="text-sky-500 transition-all duration-500" stroke-linecap="round" stroke-dasharray="100, 100" stroke-width="3.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+                        </svg>
+                        <span id="scoreText" class="absolute text-[10px] font-bold text-white">0%</span>
+                    </div>
+                    <div class="text-left hidden md:block">
+                        <div class="text-xs text-slate-400 font-medium">Tiến độ bài tập</div>
+                        <div id="scoreLabel" class="text-xs font-semibold text-sky-400">Chưa hoàn tất</div>
+                    </div>
+                </div>
+
+                <button onclick="openTab('githubTab')" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded-lg border border-slate-700 transition flex items-center gap-1.5">
+                    <i class="fa-brands fa-github text-sm"></i>
+                    <span class="hidden sm:inline">Nộp bài Git</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Layout -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6">
+
+        <!-- LEFT COLUMN: Code Editor & Validator Checklist (5 Cols) -->
+        <section class="lg:col-span-5 flex flex-col gap-6">
+            
+            <!-- CODE EDITOR CARD -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden shadow-xl flex flex-col h-[520px]">
+                <!-- Editor Header Toolbar -->
+                <div class="bg-slate-950 px-4 py-2.5 border-b border-slate-800 flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500/80 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500/80 inline-block"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500/80 inline-block"></span>
+                        <span class="text-xs font-mono text-slate-400 ml-2 flex items-center gap-1">
+                            <i class="fa-regular fa-file-code text-sky-400"></i> index.html
+                        </span>
+                    </div>
+                    <!-- Toolbar Controls -->
+                    <div class="flex items-center space-x-1.5">
+                        <button onclick="formatCode()" title="Định dạng Code (Format)" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-sky-400 rounded-md transition text-xs flex items-center gap-1">
+                            <i class="fa-solid fa-wand-magic-sparkles"></i>
+                            <span class="hidden xl:inline">Format</span>
+                        </button>
+                        <button onclick="copyCode()" title="Sao chép Code" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-green-400 rounded-md transition text-xs flex items-center gap-1">
+                            <i class="fa-regular fa-copy"></i>
+                            <span class="hidden xl:inline">Copy</span>
+                        </button>
+                        <button onclick="resetCode()" title="Khôi phục mặc định" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-amber-400 rounded-md transition text-xs flex items-center gap-1">
+                            <i class="fa-solid fa-rotate-left"></i>
+                            <span class="hidden xl:inline">Reset</span>
+                        </button>
+                        <button onclick="downloadCode()" title="Tải về file index.html" class="p-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded-md transition text-xs flex items-center gap-1 px-2.5 ml-1">
+                            <i class="fa-solid fa-download"></i>
+                            <span class="hidden sm:inline font-medium">Tải xuống</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Code Editor Container -->
+                <div class="flex-1 relative bg-slate-950 font-mono text-sm flex overflow-hidden">
+                    <!-- Line Numbers -->
+                    <div id="lineNumbers" class="py-3 px-2 text-right bg-slate-900/50 text-slate-600 select-none border-r border-slate-800/80 text-xs leading-6 font-mono w-10 flex-shrink-0">
+                        1
+                    </div>
+                    <!-- Editor Textarea -->
+                    <textarea id="codeEditor" spellcheck="false" class="code-editor-textarea flex-1 p-3 bg-transparent text-slate-200 focus:outline-none text-xs sm:text-sm leading-6 border-none w-full h-full text-slate-100 selection:bg-sky-500/30" oninput="onCodeChange()"></textarea>
+                </div>
+                <!-- Status Footer -->
+                <div class="bg-slate-950/80 border-t border-slate-800/80 px-4 py-1.5 flex justify-between items-center text-[11px] text-slate-500 font-mono">
+                    <span id="charCount">0 characters</span>
+                    <span class="flex items-center gap-1 text-emerald-400"><i class="fa-solid fa-check-circle text-[10px]"></i> Sẵn sàng chỉnh sửa</span>
+                </div>
+            </div>
+
+            <!-- REAL-TIME DOM VALIDATOR & GRADER -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-4">
+                <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                        <i class="fa-solid fa-list-check text-sky-400"></i>
+                        Bộ Kiểm Tra Tiêu Chí Yêu Cầu
+                    </h2>
+                    <span id="criteriaBadge" class="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-800 text-slate-300">
+                        0/7 Tiêu chí
+                    </span>
+                </div>
+
+                <!-- Criteria Checklist Grid -->
+                <div class="space-y-2 text-xs" id="validatorList">
+                    <!-- Dynamic rendering by JS -->
+                </div>
+            </div>
+
+        </section>
+
+        <!-- RIGHT COLUMN: Preview, Matrix Visualizer, Sandbox, Cheat Sheet, Git Helper (7 Cols) -->
+        <section class="lg:col-span-7 flex flex-col gap-6">
+
+            <!-- TAB HEADER CONTROLS -->
+            <div class="bg-slate-900 p-1.5 rounded-2xl border border-slate-800 flex flex-wrap gap-1">
+                <button onclick="openTab('previewTab')" id="tabBtn-previewTab" class="tab-btn flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition bg-sky-600 text-white shadow-md">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>Xem Trực Tiếp</span>
+                </button>
+                <button onclick="openTab('visualizerTab')" id="tabBtn-visualizerTab" class="tab-btn flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i class="fa-solid fa-diagram-project"></i>
+                    <span>Ma Trận Ô Gộp</span>
+                </button>
+                <button onclick="openTab('sandboxTab')" id="tabBtn-sandboxTab" class="tab-btn flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i class="fa-solid fa-flask"></i>
+                    <span>Sandbox Gộp Ô</span>
+                </button>
+                <button onclick="openTab('cheatsheetTab')" id="tabBtn-cheatsheetTab" class="tab-btn flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                    <span>Lý Thuyết & Mẹo</span>
+                </button>
+                <button onclick="openTab('githubTab')" id="tabBtn-githubTab" class="tab-btn flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-slate-200 hover:bg-slate-800">
+                    <i class="fa-brands fa-github"></i>
+                    <span>Nộp Bài</span>
+                </button>
+            </div>
+
+            <!-- TAB 1: LIVE PREVIEW & STYLES -->
+            <div id="tabContent-previewTab" class="tab-content flex-col gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl flex flex-col gap-4 min-h-[560px]">
+                    
+                    <!-- View Mode Toolbar -->
+                    <div class="flex flex-wrap items-center justify-between gap-3 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-semibold text-slate-400 pl-1">Chế độ giao diện:</span>
+                            <div class="inline-flex p-1 bg-slate-900 rounded-lg border border-slate-800">
+                                <button onclick="setPreviewStyle('classic')" id="styleBtn-classic" class="px-3 py-1 rounded-md text-xs font-medium transition bg-sky-600 text-white shadow">
+                                    HTML Cổ Điển (<code class="text-[11px]">border="1"</code>)
+                                </button>
+                                <button onclick="setPreviewStyle('modern')" id="styleBtn-modern" class="px-3 py-1 rounded-md text-xs font-medium transition text-slate-400 hover:text-white">
+                                    CSS Hiện Đại (Highlight)
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <button onclick="refreshPreview()" class="p-1.5 hover:bg-slate-800 text-slate-400 hover:text-sky-400 rounded-lg transition text-xs" title="Làm mới">
+                                <i class="fa-solid fa-arrows-rotate"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Live Render Container -->
+                    <div class="flex-1 bg-white rounded-xl p-6 overflow-auto min-h-[420px] flex flex-col justify-start items-center border border-slate-300 relative shadow-inner" id="previewWrapper">
+                        <iframe id="previewIframe" class="w-full h-full min-h-[380px] border-none bg-transparent"></iframe>
+                    </div>
+
+                    <!-- Hint note -->
+                    <div id="previewHint" class="text-xs text-slate-400 bg-slate-950/60 p-3 rounded-xl border border-slate-800/80 flex items-start gap-2.5">
+                        <i class="fa-solid fa-circle-info text-sky-400 mt-0.5 text-sm"></i>
+                        <div>
+                            <strong>Chế độ HTML Cổ điển:</strong> Hiển thị đúng kết quả bảng mặc định trình duyệt khi tạo thuộc tính <code class="text-sky-300 font-mono">border="1"</code>. Chuyển sang <strong>CSS Hiện Đại</strong> để quan sát màu nổi bật của các ô được gộp hàng (<code class="text-blue-400">rowspan</code>) và gộp cột (<code class="text-rose-400">colspan</code>).
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: INTERACTIVE MATRIX GRID VISUALIZER -->
+            <div id="tabContent-visualizerTab" class="tab-content hidden flex-col gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-5">
+                    
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-cubes text-sky-400"></i>
+                                Sơ Đồ Phân Tích Ma Trận Tọa Độ Ô Gộp (4x3)
+                            </h3>
+                            <p class="text-xs text-slate-400">Minh họa cách trình duyệt tính toán tọa độ khi sử dụng rowspan và colspan</p>
+                        </div>
+                    </div>
+
+                    <!-- Visual Grid Matrix Display -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 bg-grid-pattern overflow-x-auto">
+                        <div class="min-w-[480px]">
+                            <div class="text-xs font-mono text-slate-500 mb-2 flex justify-between px-2">
+                                <span>Hàng 0 (tr#0 - Headers)</span>
+                                <span>Cột 0 | Cột 1 | Cột 2</span>
+                            </div>
+
+                            <!-- Interactive Grid Displayed via JS -->
+                            <div id="matrixDisplay" class="grid grid-cols-3 gap-3">
+                                <!-- JS dynamic visualizer matrix -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Coordinate Explanation Box -->
+                    <div id="matrixExplanation" class="bg-slate-950 p-4 rounded-xl border border-slate-800/80 text-xs space-y-2">
+                        <h4 class="font-bold text-sky-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-lightbulb"></i> Giải thích cơ chế nhảy tọa độ trong cây DOM:
+                        </h4>
+                        <ul class="list-disc list-inside space-y-1 text-slate-300 leading-relaxed">
+                            <li><strong class="text-blue-400 font-mono">rowspan="2"</strong> ở ô <code class="text-sky-300">Thứ Hai</code> (Hàng 1, Cột 0): Ô này kéo dài xuống Hàng 2. Do đó ở <strong>Hàng 2</strong>, vị trí Cột 0 đã bị chiếm chỗ, mã HTML ở Hàng 2 chỉ cần khai báo <strong>2 thẻ &lt;td&gt;</strong> (cho Môn học và Giáo viên) thay vì 3 thẻ!</li>
+                            <li><strong class="text-rose-400 font-mono">colspan="2"</strong> ở ô <code class="text-amber-300">Nghỉ học</code> (Hàng 3, Cột 1): Ô này trải dài qua 2 cột (Cột 1 và Cột 2). Do đó Hàng 3 chỉ cần tổng cộng <strong>2 thẻ &lt;td&gt;</strong> (<code class="text-slate-300">Thứ Ba</code> + <code class="text-slate-300">Nghỉ học</code>).</li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 3: CELL SPAN SANDBOX -->
+            <div id="tabContent-sandboxTab" class="tab-content hidden flex-col gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-5">
+                    
+                    <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+                        <div>
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-solid fa-vial-circle-check text-purple-400"></i>
+                                Phòng Thử Nghiệm Tùy Chỉnh Gộp Ô (Sandbox)
+                            </h3>
+                            <p class="text-xs text-slate-400">Thay đổi giá trị rowspan & colspan của các ô để xem kết quả trực quan</p>
+                        </div>
+                        <button onclick="resetSandbox()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-xs text-slate-300 rounded-lg border border-slate-700">
+                            Đặt lại Sandbox
+                        </button>
+                    </div>
+
+                    <!-- Sandbox Controls Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Cell Selection Control -->
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                            <label class="block text-xs font-medium text-slate-300">1. Chọn ô để tùy chỉnh:</label>
+                            <select id="sandboxCellSelect" onchange="updateSandboxCellControls()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-sky-500">
+                                <option value="cell-thu2">Ô "Thứ Hai" (Default: rowspan=2)</option>
+                                <option value="cell-nghihoc">Ô "Nghỉ học" (Default: colspan=2)</option>
+                                <option value="cell-toan">Ô "Toán"</option>
+                                <option value="cell-van">Ô "Văn"</option>
+                            </select>
+
+                            <div class="grid grid-cols-2 gap-3 pt-2">
+                                <div>
+                                    <label class="block text-[11px] text-slate-400 mb-1">rowspan (Gộp dòng)</label>
+                                    <input type="number" id="sandboxRowspanInput" min="1" max="4" value="2" oninput="applySandboxCustomization()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-sky-500">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] text-slate-400 mb-1">colspan (Gộp cột)</label>
+                                    <input type="number" id="sandboxColspanInput" min="1" max="3" value="1" oninput="applySandboxCustomization()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white focus:outline-none focus:border-sky-500">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Layout Status Alert -->
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 flex flex-col justify-between">
+                            <div class="space-y-2">
+                                <span class="text-xs font-semibold text-slate-400">Trạng thái cấu trúc bảng:</span>
+                                <div id="sandboxStatusBox" class="p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2">
+                                    <i class="fa-solid fa-circle-check text-base"></i>
+                                    <span>Bảng chuẩn - Tọa độ cân đối 3x3!</span>
+                                </div>
+                            </div>
+                            <p class="text-[11px] text-slate-500 mt-2">Mẹo: Nếu giá trị gộp quá lớn so với số ô thực tế trong hàng/cột, bảng sẽ bị đẩy lệch ô (vỡ khung).</p>
+                        </div>
+                    </div>
+
+                    <!-- Live Sandbox Output Table -->
+                    <div class="bg-slate-950 p-6 rounded-xl border border-slate-800 flex justify-center items-center overflow-x-auto">
+                        <div id="sandboxTableContainer" class="modern-preview-table w-full max-w-lg">
+                            <!-- JS renders sandbox table -->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 4: CHEAT SHEET & KNOWLEDGE -->
+            <div id="tabContent-cheatsheetTab" class="tab-content hidden flex-col gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-5">
+                    
+                    <div class="border-b border-slate-800 pb-3">
+                        <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-graduation-cap text-amber-400"></i>
+                            Bảng Tra Cứu Kiến Thức & Mẹo Tính Ô
+                        </h3>
+                        <p class="text-xs text-slate-400">Phân biệt thuộc tính rowspan vs colspan và quy tắc tính toán số ô</p>
+                    </div>
+
+                    <!-- Comparison Cards Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Rowspan Card -->
+                        <div class="bg-slate-950 p-4 rounded-xl border border-blue-500/30 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-1 rounded-md bg-blue-500/20 text-blue-400 text-xs font-bold font-mono">rowspan="N"</span>
+                                <span class="text-xs text-slate-400">Gộp Dọc / Gộp Hàng</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Dùng khi muốn một ô mở rộng kéo dài xuống <strong>N hàng bên dưới</strong> trong cùng một cột.
+                            </p>
+                            <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300">
+                                &lt;td <span class="text-blue-400">rowspan="2"</span>&gt;Thứ Hai&lt;/td&gt;
+                            </div>
+                            <div class="text-[11px] text-amber-400/90 bg-amber-500/10 p-2 rounded border border-amber-500/20">
+                                <i class="fa-solid fa-triangle-exclamation mr-1"></i> Chú ý: Ở các hàng tiếp theo bên dưới, phải bỏ bớt 1 thẻ &lt;td&gt; tương ứng!
+                            </div>
+                        </div>
+
+                        <!-- Colspan Card -->
+                        <div class="bg-slate-950 p-4 rounded-xl border border-rose-500/30 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="px-2.5 py-1 rounded-md bg-rose-500/20 text-rose-400 text-xs font-bold font-mono">colspan="N"</span>
+                                <span class="text-xs text-slate-400">Gộp Ngang / Gộp Cột</span>
+                            </div>
+                            <p class="text-xs text-slate-300 leading-relaxed">
+                                Dùng khi muốn một ô mở rộng kéo dài qua <strong>N cột bên phải</strong> trong cùng một hàng.
+                            </p>
+                            <div class="bg-slate-900 p-2.5 rounded-lg border border-slate-800 text-[11px] font-mono text-slate-300">
+                                &lt;td <span class="text-rose-400">colspan="2"</span>&gt;Nghỉ học&lt;/td&gt;
+                            </div>
+                            <div class="text-[11px] text-emerald-400/90 bg-emerald-500/10 p-2 rounded border border-emerald-500/20">
+                                <i class="fa-solid fa-lightbulb mr-1"></i> Công thức: Số ô &lt;td&gt; còn lại trong hàng = (Tổng số cột) - N + 1.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Formula Calculator -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                        <h4 class="text-xs font-bold text-white flex items-center gap-2">
+                            <i class="fa-solid fa-calculator text-sky-400"></i>
+                            Công Thức Tính Ô Chuẩn Trong 1 Hàng (&lt;tr&gt;)
+                        </h4>
+                        <p class="text-xs text-slate-400">Nhập thông số bảng của bạn để tính số thẻ &lt;td&gt; thực tế cần viết:</p>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-1">
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Tổng số cột của Bảng</label>
+                                <input type="number" id="calcTotalCols" value="3" min="1" max="10" oninput="calculateCellFormula()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Giá trị colspan trong hàng</label>
+                                <input type="number" id="calcColspan" value="2" min="1" max="10" oninput="calculateCellFormula()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] text-slate-400 mb-1">Số ô bị Rowspan từ trên</label>
+                                <input type="number" id="calcRowspanOccupied" value="0" min="0" max="10" oninput="calculateCellFormula()" class="w-full bg-slate-900 border border-slate-700 rounded-lg p-2 text-xs text-white">
+                            </div>
+                        </div>
+
+                        <div id="calcResultBox" class="p-3 bg-sky-500/10 border border-sky-500/20 rounded-lg text-xs text-sky-300 font-medium">
+                            👉 Bạn chỉ cần khai báo chính xác <strong>2 thẻ &lt;td&gt;</strong> trong hàng này!
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 5: GITHUB SUBMISSION GUIDE -->
+            <div id="tabContent-githubTab" class="tab-content hidden flex-col gap-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-2xl p-5 shadow-xl flex flex-col gap-5">
+                    
+                    <div class="border-b border-slate-800 pb-3 flex justify-between items-center">
+                        <div>
+                            <h3 class="text-sm font-bold text-white flex items-center gap-2">
+                                <i class="fa-brands fa-github text-white text-base"></i>
+                                Hướng Dẫn Nộp Bài Lên GitHub Repository
+                            </h3>
+                            <p class="text-xs text-slate-400">Thực hiện theo các bước sau để nộp sản phẩm bài làm</p>
+                        </div>
+                        <span id="githubStatusBadge" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 font-medium">
+                            Chưa kiểm tra Repo
+                        </span>
+                    </div>
+
+                    <!-- Git Terminal Commands -->
+                    <div class="space-y-3">
+                        <div class="flex justify-between items-center text-xs text-slate-300">
+                            <span class="font-semibold text-sky-400">Các lệnh Git cần thực thi tại thư mục dự án:</span>
+                            <button onclick="copyGitCommands()" class="text-xs text-slate-400 hover:text-white flex items-center gap-1">
+                                <i class="fa-regular fa-copy"></i> Copy tất cả lệnh
+                            </button>
+                        </div>
+
+                        <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 font-mono text-xs text-emerald-400 space-y-2 select-all overflow-x-auto">
+                            <p><span class="text-slate-500"># 1. Khởi tạo kho chứa Git local</span></p>
+                            <p class="text-slate-200">git init</p>
+                            <p><span class="text-slate-500"># 2. Thêm file index.html vào Stage</span></p>
+                            <p class="text-slate-200">git add index.html</p>
+                            <p><span class="text-slate-500"># 3. Tạo commit bài làm</span></p>
+                            <p class="text-slate-200">git commit -m "Hoan thanh bai thuc hanh gop o trong bang HTML"</p>
+                            <p><span class="text-slate-500"># 4. Liên kết tới GitHub Repo và đẩy code</span></p>
+                            <p class="text-slate-200">git branch -M main</p>
+                            <p class="text-slate-200">git remote add origin <span class="text-amber-300">&lt;LINK_GITHUB_REPO_CUA_BAN&gt;</span></p>
+                            <p class="text-slate-200">git push -u origin main</p>
+                        </div>
+                    </div>
+
+                    <!-- Repository Link Verification -->
+                    <div class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+                        <label class="block text-xs font-semibold text-slate-200">
+                            Nhập liên kết GitHub Repository của bạn để xác nhận nộp bài:
+                        </label>
+                        <div class="flex gap-2">
+                            <input type="url" id="githubRepoUrl" placeholder="https://github.com/username/html-table-exercise" class="flex-1 bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-sky-500">
+                            <button onclick="verifyAndSubmitRepo()" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-semibold transition flex items-center gap-1.5">
+                                <i class="fa-solid fa-paper-plane"></i>
+                                <span>Xác Nhận Nộp Bài</span>
+                            </button>
+                        </div>
+                        <p id="githubValidationMsg" class="text-xs hidden"></p>
+                    </div>
+
+                </div>
+            </div>
+
+        </section>
+    </main>
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+    <!-- SUCCESS MODAL FOR SUBMISSION -->
+    <div id="successModal" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center hidden p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-md w-full p-6 text-center space-y-4 shadow-2xl transform transition-all scale-100">
+            <div class="w-16 h-16 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center mx-auto text-2xl animate-bounce">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white">Xuất Sắc! Bài Làm Đã Được Xác Nhận</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+                Bạn đã hoàn thành 100% các tiêu chí yêu cầu cho bài tập <strong class="text-sky-400">Gộp ô trong bảng với rowspan và colspan</strong> và nộp liên kết thành công!
+            </p>
+            <div class="p-3 bg-slate-950 rounded-xl text-xs font-mono text-slate-400 break-all" id="modalRepoUrl">
+                https://github.com/...
+            </div>
+            <button onclick="closeModal('successModal')" class="w-full py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-xl transition">
+                Đóng & Tiếp tục luyện tập
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // Initial HTML template from assignment prompt
+        const INITIAL_HTML_CODE = `<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Gộp ô trong bảng</title>
+    </head>
+    <body>
+        <h2>Thời khóa biểu</h2>
+        <table border="1">
+            <tr>
+                <th>Thứ</th>
+                <th>Môn học</th>
+                <th>Giáo viên</th>
+            </tr>
+            <tr>
+                <td rowspan="2">Thứ Hai</td>
+                <td>Toán</td>
+                <td>Thầy Nam</td>
+            </tr>
+            <tr>
+                <td>Văn</td>
+                <td>Cô Hạnh</td>
+            </tr>
+            <tr>
+                <td>Thứ Ba</td>
+                <td colspan="2">Nghỉ học</td>
+            </tr>
+        </table>
+    </body>
+</html>`;
+
+        // App state variables
+        let currentCode = INITIAL_HTML_CODE;
+        let previewStyleMode = 'classic'; // 'classic' or 'modern'
+        let validationCriteria = [
+            { id: 1, text: "Khai báo DOCTYPE và UTF-8 charset (<meta charset=\"utf-8\">)", passed: false },
+            { id: 2, text: "Tiêu đề <h2> chứa nội dung \"Thời khóa biểu\"", passed: false },
+            { id: 3, text: "Thẻ <table> có thuộc tính border=\"1\"", passed: false },
+            { id: 4, text: "Đủ 3 cột tiêu đề <th> (Thứ, Môn học, Giáo viên)", passed: false },
+            { id: 5, text: "Thẻ <td> có thuộc tính rowspan=\"2\" chứa \"Thứ Hai\"", passed: false },
+            { id: 6, text: "Thẻ <td> có thuộc tính colspan=\"2\" chứa \"Nghỉ học\"", passed: false },
+            { id: 7, text: "Đầy đủ các dữ liệu còn lại (Toán, Thầy Nam, Văn, Cô Hạnh, Thứ Ba)", passed: false }
+        ];
+
+        window.addEventListener('DOMContentLoaded', () => {
+            const editorElem = document.getElementById('codeEditor');
+            editorElem.value = INITIAL_HTML_CODE;
+            
+            updateLineNumbers();
+            onCodeChange();
+            renderSandboxTable();
+            calculateCellFormula();
+        });
+
+        function onCodeChange() {
+            const editorElem = document.getElementById('codeEditor');
+            currentCode = editorElem.value;
+            
+            updateLineNumbers();
+            updateCharCount();
+            validateDOMCode(currentCode);
+            renderPreview();
+            renderMatrixVisualizer();
+        }
+
+        function updateLineNumbers() {
+            const editorElem = document.getElementById('codeEditor');
+            const lines = editorElem.value.split('\n').length;
+            const lineNumElem = document.getElementById('lineNumbers');
+            
+            let numsHTML = '';
+            for (let i = 1; i <= lines; i++) {
+                numsHTML += i + '<br>';
+            }
+            lineNumElem.innerHTML = numsHTML;
+        }
+
+        function updateCharCount() {
+            const editorElem = document.getElementById('codeEditor');
+            document.getElementById('charCount').textContent = `${editorElem.value.length} kí tự`;
+        }
+
+        function formatCode() {
+            const editorElem = document.getElementById('codeEditor');
+            let raw = editorElem.value;
+            
+            // Clean simple formatting spacing
+            let formatted = raw.replace(/>\s*</g, '>\n<');
+            let lines = formatted.split('\n');
+            let indentLevel = 0;
+            let result = [];
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (!line) continue;
+                
+                if (line.startsWith('</')) {
+                    indentLevel = Math.max(0, indentLevel - 1);
+                }
+                
+                result.push('    '.repeat(indentLevel) + line);
+                
+                if (line.startsWith('<') && !line.startsWith('</') && !line.startsWith('<!') && !line.endsWith('/>') && !line.includes('</')) {
+                    if (!['meta', 'link', 'br', 'hr', 'img', 'input'].some(tag => line.toLowerCase().startsWith('<' + tag))) {
+                        indentLevel++;
+                    }
+                }
+            }
+            
+            editorElem.value = result.join('\n');
+            onCodeChange();
+            showToast('Đã tự động định dạng mã nguồn HTML!', 'success');
+        }
+
+        function resetCode() {
+            const editorElem = document.getElementById('codeEditor');
+            editorElem.value = INITIAL_HTML_CODE;
+            onCodeChange();
+            showToast('Đã khôi phục mã HTML mặc định từ đề bài!', 'info');
+        }
+
+        function copyCode() {
+            const editorElem = document.getElementById('codeEditor');
+            editorElem.select();
+            try {
+                document.execCommand('copy');
+                showToast('Đã sao chép mã nguồn vào bộ nhớ tạm!', 'success');
+            } catch (err) {
+                showToast('Không thể sao chép code!', 'error');
+            }
+        }
+
+        function downloadCode() {
+            const blob = new Blob([currentCode], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'index.html';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('Đã tải xuống file index.html thành công!', 'success');
+        }
+
+        function setPreviewStyle(style) {
+            previewStyleMode = style;
+            
+            document.getElementById('styleBtn-classic').className = style === 'classic' 
+                ? 'px-3 py-1 rounded-md text-xs font-medium transition bg-sky-600 text-white shadow' 
+                : 'px-3 py-1 rounded-md text-xs font-medium transition text-slate-400 hover:text-white';
+                
+            document.getElementById('styleBtn-modern').className = style === 'modern' 
+                ? 'px-3 py-1 rounded-md text-xs font-medium transition bg-sky-600 text-white shadow' 
+                : 'px-3 py-1 rounded-md text-xs font-medium transition text-slate-400 hover:text-white';
+
+            renderPreview();
+        }
+
+        function renderPreview() {
+            const iframe = document.getElementById('previewIframe');
+            const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+            
+            let finalHTML = currentCode;
+
+            if (previewStyleMode === 'modern') {
+                const modernStyleTag = `
+                <style>
+                    body {
+                        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+                        padding: 24px;
+                        background-color: #ffffff;
+                        color: #0f172a;
+                    }
+                    h2 {
+                        color: #0369a1;
+                        font-weight: 700;
+                        font-size: 1.25rem;
+                        margin-bottom: 16px;
+                        display: flex;
+                        align-items: center;
+                        gap: 8px;
+                    }
+                    table {
+                        width: 100%;
+                        border-collapse: separate;
+                        border-spacing: 0;
+                        border-radius: 12px;
+                        overflow: hidden;
+                        box-shadow: 0 4px 15px -3px rgba(0,0,0,0.1);
+                        border: 1px solid #e2e8f0;
+                    }
+                    th {
+                        background: #1e293b;
+                        color: #ffffff;
+                        font-weight: 600;
+                        padding: 12px 16px;
+                        text-align: center;
+                    }
+                    td {
+                        padding: 12px 16px;
+                        text-align: center;
+                        border-bottom: 1px solid #f1f5f9;
+                        border-right: 1px solid #f1f5f9;
+                        color: #334155;
+                    }
+                    td[rowspan] {
+                        background: #eff6ff !important;
+                        color: #1d4ed8 !important;
+                        font-weight: bold;
+                        border-left: 4px solid #3b82f6;
+                    }
+                    td[colspan] {
+                        background: #fef2f2 !important;
+                        color: #b91c1c !important;
+                        font-weight: bold;
+                    }
+                </style>`;
+                finalHTML = finalHTML.replace('</head>', `${modernStyleTag}</head>`);
+            }
+
+            iframeDoc.open();
+            iframeDoc.write(finalHTML);
+            iframeDoc.close();
+        }
+
+        function refreshPreview() {
+            renderPreview();
+            showToast('Làm mới bản xem trực tiếp!', 'info');
+        }
+
+        function validateDOMCode(htmlText) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(htmlText, 'text/html');
+
+            // 1. DOCTYPE & Charset
+            const hasDoctype = htmlText.toLowerCase().includes('<!doctype html>');
+            const hasCharset = doc.querySelector('meta[charset]') !== null || htmlText.toLowerCase().includes('charset="utf-8"');
+            validationCriteria[0].passed = hasDoctype && hasCharset;
+
+            // 2. h2 Title "Thời khóa biểu"
+            const h2 = doc.querySelector('h2');
+            validationCriteria[1].passed = h2 !== null && h2.textContent.toLowerCase().includes('thời khóa biểu');
+
+            // 3. Table border="1"
+            const table = doc.querySelector('table');
+            validationCriteria[2].passed = table !== null && (table.getAttribute('border') === '1' || table.hasAttribute('border'));
+
+            // 4. 3 th headers
+            const ths = doc.querySelectorAll('th');
+            const thTexts = Array.from(ths).map(th => th.textContent.trim().toLowerCase());
+            validationCriteria[3].passed = ths.length >= 3 && 
+                thTexts.includes('thứ') && 
+                thTexts.includes('môn học') && 
+                thTexts.includes('giáo viên');
+
+            // 5. td rowspan="2" containing "Thứ Hai"
+            const rowspanTd = Array.from(doc.querySelectorAll('td[rowspan]')).find(td => td.getAttribute('rowspan') === '2');
+            validationCriteria[4].passed = rowspanTd !== undefined && rowspanTd.textContent.toLowerCase().includes('thứ hai');
+
+            // 6. td colspan="2" containing "Nghỉ học"
+            const colspanTd = Array.from(doc.querySelectorAll('td[colspan]')).find(td => td.getAttribute('colspan') === '2');
+            validationCriteria[5].passed = colspanTd !== undefined && colspanTd.textContent.toLowerCase().includes('nghỉ học');
+
+            // 7. Remaining Data
+            const allTdText = Array.from(doc.querySelectorAll('td')).map(td => td.textContent.trim().toLowerCase()).join(' ');
+            const hasToan = allTdText.includes('toán');
+            const hasNam = allTdText.includes('nam');
+            const hasVan = allTdText.includes('văn');
+            const hasHanh = allTdText.includes('hạnh');
+            const hasThuBa = allTdText.includes('thứ ba');
+            validationCriteria[6].passed = hasToan && hasNam && hasVan && hasHanh && hasThuBa;
+
+            // Calculate percentage score
+            const passedCount = validationCriteria.filter(c => c.passed).length;
+            const percentage = Math.round((passedCount / validationCriteria.length) * 100);
+
+            renderValidationUI(passedCount, percentage);
+        }
+
+        function renderValidationUI(passedCount, percentage) {
+            // Update Score Badge
+            document.getElementById('scoreText').textContent = `${percentage}%`;
+            document.getElementById('scoreCircle').setAttribute('stroke-dasharray', `${percentage}, 100`);
+            document.getElementById('criteriaBadge').textContent = `${passedCount}/7 Tiêu chí`;
+
+            const scoreLabel = document.getElementById('scoreLabel');
+            if (percentage === 100) {
+                scoreLabel.textContent = 'Hoàn thành 100%';
+                scoreLabel.className = 'text-xs font-semibold text-emerald-400';
+            } else if (percentage >= 50) {
+                scoreLabel.textContent = 'Đang tiến hành';
+                scoreLabel.className = 'text-xs font-semibold text-sky-400';
+            } else {
+                scoreLabel.textContent = 'Chưa đạt';
+                scoreLabel.className = 'text-xs font-semibold text-amber-400';
+            }
+
+            // Render checklist
+            const validatorListElem = document.getElementById('validatorList');
+            validatorListElem.innerHTML = validationCriteria.map(item => `
+                <div class="p-2.5 rounded-xl border transition flex items-center justify-between ${
+                    item.passed 
+                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-300' 
+                    : 'bg-slate-950 border-slate-800 text-slate-400'
+                }">
+                    <div class="flex items-center gap-2">
+                        <i class="${item.passed ? 'fa-solid fa-circle-check text-emerald-400 text-sm' : 'fa-regular fa-circle text-slate-600 text-sm'}"></i>
+                        <span>${item.text}</span>
+                    </div>
+                    ${item.passed ? '<span class="text-[10px] bg-emerald-500/20 text-emerald-400 font-bold px-2 py-0.5 rounded-full">Đạt</span>' : '<span class="text-[10px] bg-slate-800 text-slate-500 px-2 py-0.5 rounded-full">Chưa</span>'}
+                </div>
+            `).join('');
+        }
+
+        function renderMatrixVisualizer() {
+            const matrixContainer = document.getElementById('matrixDisplay');
+            
+            // Hardcoded DOM cells map representation for clear visual mapping
+            const matrixCells = [
+                // Row 0
+                { label: 'Thứ (th)', type: 'header', span: '1x1', col: '0', row: '0' },
+                { label: 'Môn học (th)', type: 'header', span: '1x1', col: '1', row: '0' },
+                { label: 'Giáo viên (th)', type: 'header', span: '1x1', col: '2', row: '0' },
+                // Row 1
+                { label: 'Thứ Hai (td)\nrowspan="2"', type: 'rowspan', span: '2 hàng', col: '0', row: '1-2', class: 'row-span-2 bg-blue-600/30 border-blue-500 text-blue-200' },
+                { label: 'Toán (td)', type: 'normal', span: '1x1', col: '1', row: '1' },
+                { label: 'Thầy Nam (td)', type: 'normal', span: '1x1', col: '2', row: '1' },
+                // Row 2 (Col 0 covered)
+                { label: 'Văn (td)', type: 'normal', span: '1x1', col: '1', row: '2' },
+                { label: 'Cô Hạnh (td)', type: 'normal', span: '1x1', col: '2', row: '2' },
+                // Row 3
+                { label: 'Thứ Ba (td)', type: 'normal', span: '1x1', col: '0', row: '3' },
+                { label: 'Nghỉ học (td)\ncolspan="2"', type: 'colspan', span: '2 cột', col: '1-2', row: '3', class: 'col-span-2 bg-rose-600/30 border-rose-500 text-rose-200' }
+            ];
+
+            matrixContainer.innerHTML = `
+                <!-- Headers Row -->
+                <div class="p-3 bg-slate-800 border border-slate-700 rounded-lg text-center font-bold text-xs text-white">Thứ (th)</div>
+                <div class="p-3 bg-slate-800 border border-slate-700 rounded-lg text-center font-bold text-xs text-white">Môn học (th)</div>
+                <div class="p-3 bg-slate-800 border border-slate-700 rounded-lg text-center font-bold text-xs text-white">Giáo viên (th)</div>
+
+                <!-- Row 1 & 2 with Rowspan -->
+                <div class="p-4 bg-blue-500/20 border-2 border-blue-500/80 rounded-xl text-center flex flex-col items-center justify-center row-span-2 text-xs font-bold text-blue-300 shadow-lg">
+                    <i class="fa-solid fa-arrows-up-down text-blue-400 text-base mb-1"></i>
+                    <span>Thứ Hai</span>
+                    <code class="text-[10px] bg-blue-900/60 text-blue-300 px-1.5 py-0.5 rounded mt-1 font-mono">rowspan="2"</code>
+                </div>
+                <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-center text-xs text-slate-300">Toán</div>
+                <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-center text-xs text-slate-300">Thầy Nam</div>
+
+                <!-- Row 2 right cells -->
+                <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-center text-xs text-slate-300">Văn</div>
+                <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-center text-xs text-slate-300">Cô Hạnh</div>
+
+                <!-- Row 3 with Colspan -->
+                <div class="p-3 bg-slate-900 border border-slate-800 rounded-lg text-center text-xs text-slate-300">Thứ Ba</div>
+                <div class="p-3 bg-rose-500/20 border-2 border-rose-500/80 rounded-xl text-center flex items-center justify-center gap-2 col-span-2 text-xs font-bold text-rose-300 shadow-lg">
+                    <i class="fa-solid fa-arrows-left-right text-rose-400 text-base"></i>
+                    <span>Nghỉ học</span>
+                    <code class="text-[10px] bg-rose-900/60 text-rose-300 px-1.5 py-0.5 rounded font-mono">colspan="2"</code>
+                </div>
+            `;
+        }
+
+        let sandboxState = {
+            cellThu2Rowspan: 2,
+            cellNghihocColspan: 2,
+            cellToanRowspan: 1,
+            cellVanRowspan: 1
+        };
+
+        function updateSandboxCellControls() {
+            const selectVal = document.getElementById('sandboxCellSelect').value;
+            const rowspanInput = document.getElementById('sandboxRowspanInput');
+            const colspanInput = document.getElementById('sandboxColspanInput');
+
+            if (selectVal === 'cell-thu2') {
+                rowspanInput.value = sandboxState.cellThu2Rowspan;
+                colspanInput.value = 1;
+            } else if (selectVal === 'cell-nghihoc') {
+                rowspanInput.value = 1;
+                colspanInput.value = sandboxState.cellNghihocColspan;
+            } else if (selectVal === 'cell-toan') {
+                rowspanInput.value = sandboxState.cellToanRowspan;
+                colspanInput.value = 1;
+            } else if (selectVal === 'cell-van') {
+                rowspanInput.value = sandboxState.cellVanRowspan;
+                colspanInput.value = 1;
+            }
+        }
+
+        function applySandboxCustomization() {
+            const selectVal = document.getElementById('sandboxCellSelect').value;
+            const rVal = parseInt(document.getElementById('sandboxRowspanInput').value) || 1;
+            const cVal = parseInt(document.getElementById('sandboxColspanInput').value) || 1;
+
+            if (selectVal === 'cell-thu2') sandboxState.cellThu2Rowspan = rVal;
+            if (selectVal === 'cell-nghihoc') sandboxState.cellNghihocColspan = cVal;
+            if (selectVal === 'cell-toan') sandboxState.cellToanRowspan = rVal;
+            if (selectVal === 'cell-van') sandboxState.cellVanRowspan = rVal;
+
+            renderSandboxTable();
+        }
+
+        function resetSandbox() {
+            sandboxState = {
+                cellThu2Rowspan: 2,
+                cellNghihocColspan: 2,
+                cellToanRowspan: 1,
+                cellVanRowspan: 1
+            };
+            document.getElementById('sandboxCellSelect').value = 'cell-thu2';
+            updateSandboxCellControls();
+            renderSandboxTable();
+            showToast('Đã đặt lại Sandbox về trạng thái ban đầu!', 'info');
+        }
+
+        function renderSandboxTable() {
+            const container = document.getElementById('sandboxTableContainer');
+            const statusBox = document.getElementById('sandboxStatusBox');
+
+            const isNormal = sandboxState.cellThu2Rowspan === 2 && sandboxState.cellNghihocColspan === 2;
+
+            if (isNormal) {
+                statusBox.className = 'p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs flex items-center gap-2';
+                statusBox.innerHTML = '<i class="fa-solid fa-circle-check text-base"></i><span>Bảng chuẩn - Tọa độ cân đối 3x3!</span>';
+            } else {
+                statusBox.className = 'p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs flex items-center gap-2';
+                statusBox.innerHTML = '<i class="fa-solid fa-triangle-exclamation text-base"></i><span>Cấu trúc tùy chỉnh - Hãy quan sát sự thay đổi vị trí ô!</span>';
+            }
+
+            container.innerHTML = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Thứ</th>
+                            <th>Môn học</th>
+                            <th>Giáo viên</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td rowspan="${sandboxState.cellThu2Rowspan}">Thứ Hai</td>
+                            <td rowspan="${sandboxState.cellToanRowspan}">Toán</td>
+                            <td>Thầy Nam</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="${sandboxState.cellVanRowspan}">Văn</td>
+                            <td>Cô Hạnh</td>
+                        </tr>
+                        <tr>
+                            <td>Thứ Ba</td>
+                            <td colspan="${sandboxState.cellNghihocColspan}">Nghỉ học</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `;
+        }
+
+        function calculateCellFormula() {
+            const totalCols = parseInt(document.getElementById('calcTotalCols').value) || 3;
+            const colspan = parseInt(document.getElementById('calcColspan').value) || 1;
+            const occupied = parseInt(document.getElementById('calcRowspanOccupied').value) || 0;
+
+            const neededTd = Math.max(0, totalCols - (colspan - 1) - occupied);
+
+            const resultBox = document.getElementById('calcResultBox');
+            resultBox.innerHTML = `👉 Bạn cần khai báo chính xác <strong>${neededTd} thẻ &lt;td&gt;</strong> trong hàng này để bảng không bị vỡ!`;
+        }
+
+        function copyGitCommands() {
+            const cmds = `git init\ngit add index.html\ngit commit -m "Hoan thanh bai thuc hanh gop o trong bang HTML"\ngit branch -M main\ngit remote add origin <LINK_GITHUB_REPO>\ngit push -u origin main`;
+            
+            const tempTextArea = document.createElement('textarea');
+            tempTextArea.value = cmds;
+            document.body.appendChild(tempTextArea);
+            tempTextArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempTextArea);
+
+            showToast('Đã sao chép toàn bộ lệnh Git!', 'success');
+        }
+
+        function verifyAndSubmitRepo() {
+            const repoUrl = document.getElementById('githubRepoUrl').value.trim();
+            const validationMsg = document.getElementById('githubValidationMsg');
+            const badge = document.getElementById('githubStatusBadge');
+
+            const githubRegex = /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+\/[a-zA-Z0-9_-]+\/?$/;
+
+            if (!repoUrl) {
+                validationMsg.textContent = 'Vui lòng nhập đường dẫn GitHub Repository!';
+                validationMsg.className = 'text-xs text-rose-400 block';
+                return;
+            }
+
+            if (!githubRegex.test(repoUrl)) {
+                validationMsg.textContent = 'Đường dẫn GitHub không hợp lệ (Ví dụ đúng: https://github.com/username/repository)';
+                validationMsg.className = 'text-xs text-rose-400 block';
+                badge.textContent = 'Repo không hợp lệ';
+                badge.className = 'text-xs px-2.5 py-1 rounded-full bg-rose-500/20 text-rose-400 font-medium';
+                return;
+            }
+
+            // Check if score is 100%
+            const passedCount = validationCriteria.filter(c => c.passed).length;
+            if (passedCount < 7) {
+                validationMsg.textContent = 'Bạn cần hoàn thành tất cả 7 tiêu chí HTML trước khi nộp bài!';
+                validationMsg.className = 'text-xs text-amber-400 block';
+                return;
+            }
+
+            validationMsg.textContent = 'Xác minh đường dẫn thành công!';
+            validationMsg.className = 'text-xs text-emerald-400 block';
+
+            badge.textContent = 'Đã Nộp Bài';
+            badge.className = 'text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-medium';
+
+            document.getElementById('modalRepoUrl').textContent = repoUrl;
+            openModal('successModal');
+        }
+
+        function openTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.add('hidden');
+            });
+            // Reset tab button styles
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.className = 'tab-btn flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition text-slate-400 hover:text-slate-200 hover:bg-slate-800';
+            });
+
+            // Show selected tab
+            const targetTab = document.getElementById(`tabContent-${tabId}`);
+            if (targetTab) {
+                targetTab.classList.remove('hidden');
+                targetTab.classList.add('flex');
+            }
+
+            // Active button style
+            const activeBtn = document.getElementById(`tabBtn-${tabId}`);
+            if (activeBtn) {
+                activeBtn.className = 'tab-btn flex-1 min-w-[100px] py-2 px-3 rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 transition bg-sky-600 text-white shadow-md';
+            }
+        }
+
+        function openModal(modalId) {
+            document.getElementById(modalId).classList.remove('hidden');
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).classList.add('hidden');
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let iconClass = 'fa-solid fa-circle-info text-sky-400';
+            let bgClass = 'bg-slate-900 border-slate-700 text-slate-100';
+
+            if (type === 'success') {
+                iconClass = 'fa-solid fa-circle-check text-emerald-400';
+                bgClass = 'bg-slate-900 border-emerald-500/30 text-emerald-200';
+            } else if (type === 'error') {
+                iconClass = 'fa-solid fa-circle-xmark text-rose-400';
+                bgClass = 'bg-slate-900 border-rose-500/30 text-rose-200';
+            }
+
+            toast.className = `pointer-events-auto px-4 py-3 rounded-xl border ${bgClass} shadow-xl flex items-center gap-2.5 text-xs font-medium transform transition-all duration-300 translate-y-2 opacity-0`;
+            toast.innerHTML = `<i class="${iconClass} text-sm"></i> <span>${message}</span>`;
+
+            container.appendChild(toast);
+
+            // Animate in
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            // Remove after 3s
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
