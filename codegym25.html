@@ -1,0 +1,427 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Newsletter - Phiên bản 2</title>
+
+    <!-- Bootstrap 5 -->
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <style>
+        /* =====================================================
+           BẢNG MÀU PHIÊN BẢN 2
+           ===================================================== */
+
+        :root {
+            --primary-color: #EA580C;
+            --secondary-color: #FB923C;
+            --accent-color: #FED7AA;
+            --background-color: #FFF7ED;
+            --text-color: #431407;
+            --darker-primary-color: #C2410C;
+            --white-color: #FFFFFF;
+        }
+
+        /* =====================================================
+           CÀI ĐẶT CHUNG
+           ===================================================== */
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: Arial, sans-serif;
+        }
+
+        /* =====================================================
+           HEADER
+           ===================================================== */
+
+        .primary-bg {
+            background-color: var(--primary-color);
+        }
+
+        .newsletter-header {
+            border-radius: 15px;
+            padding: 50px 20px;
+
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+        }
+
+        .newsletter-header h1 {
+            font-size: 42px;
+            font-weight: bold;
+        }
+
+        .newsletter-header p {
+            font-size: 18px;
+            margin-bottom: 0;
+        }
+
+        .logo {
+            width: 75px;
+            height: 75px;
+
+            border-radius: 50%;
+
+            background-color: var(--white-color);
+            color: var(--primary-color);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin: 0 auto 20px;
+
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        /* =====================================================
+           NỘI DUNG CHÍNH
+           ===================================================== */
+
+        .main-card {
+            border: none;
+            border-radius: 15px;
+            overflow: hidden;
+
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        .main-card .card-body {
+            padding: 35px;
+        }
+
+        .text-primary-color {
+            color: var(--primary-color);
+        }
+
+        .main-card h2 {
+            font-weight: bold;
+        }
+
+        .main-card p {
+            line-height: 1.7;
+        }
+
+        /* =====================================================
+           NÚT CTA
+           ===================================================== */
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            border-color: var(--primary-color);
+
+            padding: 12px 25px;
+
+            border-radius: 8px;
+
+            transition: 0.3s;
+        }
+
+        .btn-primary-custom:hover {
+            background-color: var(--darker-primary-color);
+            border-color: var(--darker-primary-color);
+            color: var(--white-color);
+
+            transform: translateY(-2px);
+        }
+
+        /* =====================================================
+           HAI KHỐI TÍNH NĂNG
+           ===================================================== */
+
+        .secondary-bg {
+            background-color: var(--secondary-color);
+        }
+
+        .accent-bg {
+            background-color: var(--accent-color);
+            color: var(--text-color);
+        }
+
+        .feature-card {
+            border: none;
+            border-radius: 15px;
+
+            min-height: 230px;
+
+            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.08);
+
+            transition: 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .feature-icon {
+            width: 55px;
+            height: 55px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 24px;
+            font-weight: bold;
+
+            margin-bottom: 15px;
+        }
+
+        .icon-white {
+            background-color: var(--white-color);
+            color: var(--primary-color);
+        }
+
+        .icon-orange {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+        }
+
+        /* =====================================================
+           HÌNH ẢNH
+           ===================================================== */
+
+        .newsletter-image {
+            width: 100%;
+            height: 220px;
+
+            object-fit: cover;
+
+            border-radius: 12px;
+
+            margin-bottom: 25px;
+        }
+
+        /* =====================================================
+           FOOTER
+           ===================================================== */
+
+        footer {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+
+            border-radius: 15px;
+
+            padding: 25px;
+
+            margin-top: 40px;
+        }
+
+        footer p {
+            margin: 0;
+        }
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 768px) {
+
+            .newsletter-header h1 {
+                font-size: 32px;
+            }
+
+            .newsletter-header {
+                padding: 35px 15px;
+            }
+
+            .main-card .card-body {
+                padding: 25px;
+            }
+
+            .feature-card {
+                margin-bottom: 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container py-5">
+
+    <!-- ================= HEADER ================= -->
+
+    <header class="newsletter-header primary-bg text-white text-center mb-5">
+
+        <div class="logo">
+            N
+        </div>
+
+        <h1>Newsletter Mẫu</h1>
+
+        <p>
+            Nơi bắt đầu những câu chuyện mới
+        </p>
+
+    </header>
+
+
+    <!-- ================= NỘI DUNG CHÍNH ================= -->
+
+    <section class="card main-card mb-5">
+
+        <div class="card-body">
+
+            <h2 class="card-title text-primary-color mb-3">
+                Chào mừng bạn đến với bản tin của chúng tôi!
+            </h2>
+
+            <p class="card-text">
+                Đây là bản tin dành cho những người yêu thích
+                những nội dung mới, những ý tưởng sáng tạo và
+                những thông tin hữu ích.
+            </p>
+
+            <p>
+                Mỗi tuần, chúng tôi sẽ gửi đến bạn những câu chuyện,
+                thông tin nổi bật và những nội dung đáng chú ý.
+            </p>
+
+            <a href="#" class="btn btn-primary-custom">
+                Tìm hiểu thêm
+            </a>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= HÌNH ẢNH ================= -->
+
+    <section class="mb-5">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-6 mb-3">
+
+                <img
+                    src="https://images.unsplash.com/photo-1499750310107-5fef28a66643?auto=format&fit=crop&w=900&q=80"
+                    alt="Không gian làm việc"
+                    class="newsletter-image">
+
+            </div>
+
+            <div class="col-md-6">
+
+                <h2 class="text-primary-color">
+                    Câu chuyện tuần này
+                </h2>
+
+                <p>
+                    Hãy dành một chút thời gian để khám phá những
+                    nội dung mới nhất. Những ý tưởng nhỏ có thể tạo
+                    nên những thay đổi lớn.
+                </p>
+
+                <p>
+                    Newsletter giúp bạn cập nhật thông tin một cách
+                    đơn giản và thuận tiện.
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= TÍNH NĂNG ================= -->
+
+    <section class="row mb-4">
+
+        <!-- Tính năng 1 -->
+
+        <div class="col-md-6 mb-3">
+
+            <div class="card feature-card secondary-bg text-white h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="feature-icon icon-white">
+                        1
+                    </div>
+
+                    <h3 class="card-title">
+                        Tính năng nổi bật 1
+                    </h3>
+
+                    <p class="card-text">
+                        Cập nhật những nội dung mới nhất,
+                        những bài viết nổi bật và những thông
+                        tin hữu ích dành cho bạn.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Tính năng 2 -->
+
+        <div class="col-md-6 mb-3">
+
+            <div class="card feature-card accent-bg h-100">
+
+                <div class="card-body p-4">
+
+                    <div class="feature-icon icon-orange">
+                        2
+                    </div>
+
+                    <h3 class="card-title">
+                        Tính năng nổi bật 2
+                    </h3>
+
+                    <p class="card-text">
+                        Khám phá những ý tưởng mới và tìm
+                        cảm hứng thông qua các nội dung được
+                        lựa chọn dành riêng cho người đọc.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- ================= FOOTER ================= -->
+
+    <footer class="text-center">
+
+        <p>
+            &copy; 2026 Newsletter Mẫu.
+            Mọi quyền được bảo lưu.
+        </p>
+
+    </footer>
+
+</div>
+
+
+<!-- Bootstrap JS -->
+
+<script
+    src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js">
+</script>
+
+</body>
+</html>
+```
