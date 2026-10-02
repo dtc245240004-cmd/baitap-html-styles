@@ -1,0 +1,418 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Trang Web Cá Nhân</title>
+
+    <style>
+
+        /* ============================= */
+        /* ĐỊNH DẠNG CHUNG */
+        /* ============================= */
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            background-color: #f5f7fb;
+            color: #333;
+            text-align: center;
+        }
+
+
+        /* ============================= */
+        /* TIÊU ĐỀ */
+        /* ============================= */
+
+        header {
+            background-color: #4CAF50;
+            color: white;
+            padding: 35px 20px;
+            border-bottom: 5px solid #388E3C;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+
+        header p {
+            font-size: 18px;
+            margin-top: 10px;
+        }
+
+
+        /* ============================= */
+        /* PHẦN GIỚI THIỆU */
+        /* ============================= */
+
+        .profile {
+            background-color: white;
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            border: 2px solid #4CAF50;
+            border-radius: 15px;
+        }
+
+
+        /* ============================= */
+        /* ẢNH ĐẠI DIỆN */
+        /* ============================= */
+
+        .avatar {
+            width: 150px;
+            height: 150px;
+
+            /* Làm ảnh thành hình tròn */
+            border-radius: 50%;
+
+            /* Tạo đường viền */
+            border: 4px solid #4CAF50;
+
+            /* Không làm ảnh bị méo */
+            object-fit: cover;
+
+            margin-bottom: 15px;
+        }
+
+
+        /* ============================= */
+        /* ĐOẠN GIỚI THIỆU */
+        /* ============================= */
+
+        .profile p {
+            font-size: 18px;
+            line-height: 1.6;
+        }
+
+        .profile strong {
+            color: #4CAF50;
+        }
+
+
+        /* ============================= */
+        /* PHẦN SỞ THÍCH */
+        /* ============================= */
+
+        .hobbies {
+            background-color: #e8f5e9;
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+            border: 2px solid #81C784;
+            border-radius: 15px;
+        }
+
+        .hobbies h2 {
+            color: #2E7D32;
+        }
+
+        .hobbies ul {
+            list-style-type: square;
+            text-align: left;
+
+            /* Đưa danh sách vào giữa */
+            display: inline-block;
+
+            font-size: 18px;
+            line-height: 2;
+        }
+
+
+        /* ============================= */
+        /* MỤC TIÊU HỌC TẬP */
+        /* ============================= */
+
+        .goals {
+            width: 80%;
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 30px;
+
+            background-color: #fff8e1;
+
+            border: 2px solid #FFC107;
+            border-radius: 15px;
+
+            /* Ảnh nền */
+            background-image: linear-gradient(
+                rgba(255, 248, 225, 0.9),
+                rgba(255, 248, 225, 0.9)
+            );
+        }
+
+        .goals h2 {
+            color: #F57F17;
+        }
+
+        .goals p {
+            font-size: 18px;
+            line-height: 1.8;
+        }
+
+
+        /* ============================= */
+        /* THÔNG TIN LIÊN HỆ */
+        /* ============================= */
+
+        footer {
+            margin-top: 30px;
+            padding: 30px;
+
+            background-color: #263238;
+            color: white;
+        }
+
+        footer h2 {
+            margin-bottom: 20px;
+        }
+
+
+        /* ============================= */
+        /* BẢNG */
+        /* ============================= */
+
+        table {
+            margin: auto;
+            width: 80%;
+            max-width: 700px;
+
+            border-collapse: collapse;
+
+            background-color: white;
+            color: #333;
+        }
+
+        th,
+        td {
+            border: 1px solid #999;
+            padding: 15px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+            width: 30%;
+        }
+
+        td {
+            background-color: #f5f5f5;
+        }
+
+
+        /* ============================= */
+        /* LINK */
+        /* ============================= */
+
+        a {
+            color: #2E7D32;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+
+        /* ============================= */
+        /* HIỆU ỨNG KHI DI CHUỘT */
+        /* ============================= */
+
+        .profile:hover,
+        .hobbies:hover,
+        .goals:hover {
+            transform: translateY(-3px);
+            transition: 0.3s;
+        }
+
+
+        /* ============================= */
+        /* RESPONSIVE */
+        /* ============================= */
+
+        @media (max-width: 600px) {
+
+            header h1 {
+                font-size: 24px;
+            }
+
+            .profile,
+            .hobbies,
+            .goals {
+                width: 85%;
+                padding: 20px;
+            }
+
+            table {
+                width: 95%;
+            }
+
+            th,
+            td {
+                padding: 10px;
+            }
+        }
+
+    </style>
+</head>
+
+
+<body>
+
+
+    <!-- ============================= -->
+    <!-- TIÊU ĐỀ CHÍNH -->
+    <!-- ============================= -->
+
+    <header>
+
+        <h1>
+            Chào mừng đến với trang web cá nhân của tôi
+        </h1>
+
+        <p>
+            Đây là nơi giới thiệu về bản thân tôi
+        </p>
+
+    </header>
+
+
+
+    <!-- ============================= -->
+    <!-- ẢNH + GIỚI THIỆU -->
+    <!-- ============================= -->
+
+    <section class="profile">
+
+        <!-- 
+            Nếu có ảnh riêng:
+            đặt ảnh vào cùng thư mục và đổi tên thành avatar.jpg
+        -->
+
+        <img
+            src="https://i.pravatar.cc/300"
+            alt="Ảnh đại diện"
+            class="avatar"
+        >
+
+        <p>
+            Xin chào! Tôi là
+            <strong>Nguyễn Văn A</strong>,
+            một người yêu thích công nghệ và lập trình.
+        </p>
+
+        <p>
+            Tôi đang học HTML, CSS, JavaScript và các công nghệ
+            phát triển web.
+        </p>
+
+    </section>
+
+
+
+    <!-- ============================= -->
+    <!-- SỞ THÍCH -->
+    <!-- ============================= -->
+
+    <section class="hobbies">
+
+        <h2>Sở thích</h2>
+
+        <ul>
+            <li>Đọc sách</li>
+            <li>Chơi thể thao</li>
+            <li>Lập trình</li>
+            <li>Nghe nhạc</li>
+            <li>Du lịch</li>
+        </ul>
+
+    </section>
+
+
+
+    <!-- ============================= -->
+    <!-- MỤC TIÊU HỌC TẬP -->
+    <!-- ============================= -->
+
+    <section class="goals">
+
+        <h2>Mục tiêu học tập</h2>
+
+        <p>
+            Tôi muốn trở thành một lập trình viên chuyên nghiệp,
+            có khả năng xây dựng những website đẹp, hiện đại
+            và hữu ích.
+        </p>
+
+        <p>
+            Trong thời gian tới, tôi sẽ tiếp tục học HTML, CSS,
+            JavaScript và các công nghệ phát triển web khác.
+        </p>
+
+    </section>
+
+
+
+    <!-- ============================= -->
+    <!-- THÔNG TIN LIÊN HỆ -->
+    <!-- ============================= -->
+
+    <footer>
+
+        <h2>Thông tin liên hệ</h2>
+
+        <table>
+
+            <tr>
+                <th>Email</th>
+
+                <td>
+                    nguyenvana@example.com
+                </td>
+            </tr>
+
+
+            <tr>
+                <th>Facebook</th>
+
+                <td>
+                    <a href="#">
+                        facebook.com/nguyenvana
+                    </a>
+                </td>
+            </tr>
+
+
+            <tr>
+                <th>Số điện thoại</th>
+
+                <td>
+                    0123 456 789
+                </td>
+            </tr>
+
+
+            <tr>
+                <th>Địa chỉ</th>
+
+                <td>
+                    Việt Nam
+                </td>
+            </tr>
+
+        </table>
+
+    </footer>
+
+
+</body>
+</html>
+```
