@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch họp công ty</title>
+
+    <style>
+        table {
+            width: 700px;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Lịch họp công ty</h1>
+
+    <table>
+
+        <!-- Hàng tiêu đề -->
+        <tr>
+            <th>Ngày</th>
+            <th>Giờ</th>
+            <th>Nội dung cuộc họp</th>
+        </tr>
+
+        <!-- Ngày thứ Hai có 2 cuộc họp -->
+        <tr>
+            <td rowspan="2">Thứ Hai</td>
+            <td>08:00 - 09:00</td>
+            <td>Họp phòng Kinh doanh</td>
+        </tr>
+
+        <tr>
+            <td>14:00 - 15:00</td>
+            <td>Họp phòng Marketing</td>
+        </tr>
+
+        <!-- Cuộc họp kéo dài nhiều giờ -->
+        <tr>
+            <td>Thứ Ba</td>
+            <td colspan="2">08:00 - 12:00: Hội nghị toàn công ty</td>
+        </tr>
+
+        <!-- Ngày thứ Tư có 2 cuộc họp -->
+        <tr>
+            <td rowspan="2">Thứ Tư</td>
+            <td>09:00 - 10:00</td>
+            <td>Họp phòng Nhân sự</td>
+        </tr>
+
+        <tr>
+            <td>15:00 - 16:00</td>
+            <td>Họp Ban Giám đốc</td>
+        </tr>
+
+    </table>
+
+</body>
+</html>
