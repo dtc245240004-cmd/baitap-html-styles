@@ -1,0 +1,193 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Layout HTML5 và CSS</title>
+
+    <style>
+        /* Thiết lập chung */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        /* HEADER */
+        header {
+            height: 100px;
+            background-color: #4CAF50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        header h1 {
+            margin: 0;
+        }
+
+        header p {
+            margin: 10px 0 0;
+        }
+
+        /* NAV */
+        nav {
+            background-color: #333;
+            text-align: center;
+        }
+
+        nav a {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+        }
+
+        nav a:hover {
+            background-color: #555;
+        }
+
+        /* SECTION */
+        section {
+            width: 70%;
+            min-height: 450px;
+            float: left;
+            background-color: white;
+            padding: 20px;
+        }
+
+        /* ARTICLE */
+        article {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            background-color: #fafafa;
+        }
+
+        article h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        article p {
+            line-height: 1.6;
+            color: #555;
+        }
+
+        /* ASIDE */
+        aside {
+            width: 30%;
+            min-height: 450px;
+            float: right;
+            background-color: #e8f5e9;
+            padding: 20px;
+        }
+
+        aside h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        aside ul {
+            padding-left: 20px;
+        }
+
+        aside li {
+            margin-bottom: 10px;
+        }
+
+        /* FOOTER */
+        footer {
+            clear: both;
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Phần đầu trang -->
+    <header>
+        <h1>Website của tôi</h1>
+        <p>Học HTML5 và CSS</p>
+    </header>
+
+    <!-- Thanh điều hướng -->
+    <nav>
+        <a href="#">Trang chủ</a>
+        <a href="#">Giới thiệu</a>
+        <a href="#">Khóa học</a>
+        <a href="#">Tin tức</a>
+        <a href="#">Liên hệ</a>
+    </nav>
+
+    <!-- Nội dung chính -->
+    <section>
+
+        <article>
+            <h2>HTML5 là gì?</h2>
+
+            <p>
+                HTML5 là phiên bản mới của HTML, cung cấp nhiều
+                thẻ semantic giúp xây dựng cấu trúc trang web
+                rõ ràng và dễ hiểu hơn.
+            </p>
+        </article>
+
+        <article>
+            <h2>CSS là gì?</h2>
+
+            <p>
+                CSS được sử dụng để định dạng giao diện cho trang web
+                như màu sắc, kích thước, khoảng cách và bố cục.
+            </p>
+        </article>
+
+        <article>
+            <h2>Tạo layout với HTML5</h2>
+
+            <p>
+                Các thẻ header, nav, section, article, aside và footer
+                có thể được sử dụng để tạo cấu trúc bố cục cho website.
+            </p>
+        </article>
+
+    </section>
+
+    <!-- Nội dung bên phải -->
+    <aside>
+        <h2>Danh mục</h2>
+
+        <ul>
+            <li>HTML5</li>
+            <li>CSS</li>
+            <li>JavaScript</li>
+            <li>Web Design</li>
+        </ul>
+
+        <h2>Liên kết</h2>
+
+        <ul>
+            <li>Trang chủ</li>
+            <li>Khóa học</li>
+            <li>Tài liệu</li>
+        </ul>
+    </aside>
+
+    <!-- Cuối trang -->
+    <footer>
+        <p>© 2026 - Website học HTML5 và CSS</p>
+    </footer>
+
+</body>
+</html>
+```
