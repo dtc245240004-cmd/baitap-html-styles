@@ -1,0 +1,475 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Thực hành Bảng trong CSS</title>
+
+    <style>
+        /* ============================= */
+        /* CÀI ĐẶT CHUNG */
+        /* ============================= */
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #1d4ed8;
+            margin-top: 30px;
+        }
+
+        .container {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+        }
+
+
+        /* ============================= */
+        /* 1. ĐƯỜNG VIỀN CỦA BẢNG */
+        /* ============================= */
+
+        .bang-border {
+            width: 100%;
+            border: 1px solid black;
+        }
+
+        .bang-border th,
+        .bang-border td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+
+        /* ============================= */
+        /* 2. BORDER-COLLAPSE */
+        /* ============================= */
+
+        .bang-collapse {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bang-collapse th,
+        .bang-collapse td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+
+        /* ============================= */
+        /* 3. CHIỀU RỘNG VÀ CHIỀU CAO */
+        /* ============================= */
+
+        .bang-kich-thuoc {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bang-kich-thuoc th,
+        .bang-kich-thuoc td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .bang-kich-thuoc th {
+            height: 50px;
+        }
+
+
+        /* ============================= */
+        /* 4. CĂN CHỈNH NGANG */
+        /* ============================= */
+
+        .bang-can-ngang {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bang-can-ngang th,
+        .bang-can-ngang td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .bang-can-ngang th {
+            text-align: left;
+        }
+
+
+        /* ============================= */
+        /* 5. CĂN CHỈNH DỌC */
+        /* ============================= */
+
+        .bang-can-doc {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bang-can-doc th,
+        .bang-can-doc td {
+            border: 1px solid black;
+            padding: 10px;
+        }
+
+        .bang-can-doc td {
+            height: 80px;
+            vertical-align: bottom;
+        }
+
+
+        /* ============================= */
+        /* 6. PADDING TRONG BẢNG */
+        /* ============================= */
+
+        .bang-padding {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bang-padding th,
+        .bang-padding td {
+            border: 1px solid black;
+            padding: 15px;
+        }
+
+
+        /* ============================= */
+        /* 7. MÀU SẮC TRONG BẢNG */
+        /* ============================= */
+
+        .bang-mau {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bang-mau th,
+        .bang-mau td {
+            border: 1px solid black;
+            padding: 15px;
+        }
+
+        .bang-mau th {
+            background-color: #333;
+            color: white;
+        }
+
+        .bang-mau td {
+            background-color: #f2f2f2;
+            color: #333;
+        }
+
+
+        /* ============================= */
+        /* 8. BẢNG TỔNG HỢP */
+        /* ============================= */
+
+        .bang-tong-hop {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .bang-tong-hop th,
+        .bang-tong-hop td {
+            border: 1px solid #2563eb;
+            padding: 15px;
+        }
+
+        .bang-tong-hop th {
+            background-color: #2563eb;
+            color: white;
+            text-align: center;
+            height: 50px;
+        }
+
+        .bang-tong-hop td {
+            background-color: #eff6ff;
+            color: #1e3a8a;
+        }
+
+        .bang-tong-hop tr:hover td {
+            background-color: #dbeafe;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Thực hành Bảng trong CSS</h1>
+
+
+    <!-- ============================= -->
+    <!-- 1. ĐƯỜNG VIỀN CỦA BẢNG -->
+    <!-- ============================= -->
+
+    <div class="container">
+
+        <h2>1. Đường viền của bảng</h2>
+
+        <table class="bang-border">
+            <tr>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Lớp</th>
+            </tr>
+
+            <tr>
+                <td>Nguyễn Văn A</td>
+                <td>20</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>Trần Thị B</td>
+                <td>21</td>
+                <td>Web</td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- 2. BORDER-COLLAPSE -->
+    <!-- ============================= -->
+
+    <div class="container">
+
+        <h2>2. Bỏ các đường viền kép</h2>
+
+        <table class="bang-collapse">
+            <tr>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Lớp</th>
+            </tr>
+
+            <tr>
+                <td>Nguyễn Văn A</td>
+                <td>20</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>Trần Thị B</td>
+                <td>21</td>
+                <td>Web</td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- 3. WIDTH VÀ HEIGHT -->
+    <!-- ============================= -->
+
+    <div class="container">
+
+        <h2>3. Chiều rộng và chiều cao của bảng</h2>
+
+        <table class="bang-kich-thuoc">
+            <tr>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Lớp</th>
+            </tr>
+
+            <tr>
+                <td>Nguyễn Văn A</td>
+                <td>20</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>Trần Thị B</td>
+                <td>21</td>
+                <td>Web</td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- 4. CĂN CHỈNH NGANG -->
+    <!-- ============================= -->
+
+    <div class="container">
+
+        <h2>4. Căn chỉnh theo chiều ngang</h2>
+
+        <table class="bang-can-ngang">
+            <tr>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Lớp</th>
+            </tr>
+
+            <tr>
+                <td>Nguyễn Văn A</td>
+                <td>20</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>Trần Thị B</td>
+                <td>21</td>
+                <td>Web</td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- 5. CĂN CHỈNH DỌC -->
+    <!-- ============================= -->
+
+    <div class="container">
+
+        <h2>5. Căn chỉnh theo chiều dọc</h2>
+
+        <table class="bang-can-doc">
+            <tr>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Lớp</th>
+            </tr>
+
+            <tr>
+                <td>Nguyễn Văn A</td>
+                <td>20</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>Trần Thị B</td>
+                <td>21</td>
+                <td>Web</td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- 6. PADDING -->
+    <!-- ============================= -->
+
+    <div class="container">
+
+        <h2>6. Padding trong bảng</h2>
+
+        <table class="bang-padding">
+            <tr>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Lớp</th>
+            </tr>
+
+            <tr>
+                <td>Nguyễn Văn A</td>
+                <td>20</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>Trần Thị B</td>
+                <td>21</td>
+                <td>Web</td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- 7. MÀU SẮC -->
+    <!-- ============================= -->
+
+    <div class="container">
+
+        <h2>7. Màu sắc trong bảng</h2>
+
+        <table class="bang-mau">
+            <tr>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Lớp</th>
+            </tr>
+
+            <tr>
+                <td>Nguyễn Văn A</td>
+                <td>20</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>Trần Thị B</td>
+                <td>21</td>
+                <td>Web</td>
+            </tr>
+        </table>
+
+    </div>
+
+
+    <!-- ============================= -->
+    <!-- 8. BẢNG TỔNG HỢP -->
+    <!-- ============================= -->
+
+    <div class="container">
+
+        <h2>8. Bảng tổng hợp</h2>
+
+        <table class="bang-tong-hop">
+
+            <tr>
+                <th>STT</th>
+                <th>Họ tên</th>
+                <th>Tuổi</th>
+                <th>Lớp</th>
+            </tr>
+
+            <tr>
+                <td>1</td>
+                <td>Nguyễn Văn A</td>
+                <td>20</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Trần Thị B</td>
+                <td>21</td>
+                <td>Web</td>
+            </tr>
+
+            <tr>
+                <td>3</td>
+                <td>Lê Văn C</td>
+                <td>22</td>
+                <td>Web</td>
+            </tr>
+
+        </table>
+
+    </div>
+
+</body>
+</html>
+```
