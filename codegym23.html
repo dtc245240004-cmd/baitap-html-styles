@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bố cục với Float và Overflow</title>
+
+    <style>
+        /* Áp dụng box-sizing cho tất cả phần tử */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f5f5f5;
+        }
+
+        /* Tiêu đề */
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Khối chứa 2 cột */
+        .container {
+            width: 100%;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        /* Cột bên trái */
+        .left-column {
+            width: 50%;
+            float: left;
+            background-color: lightgray;
+            padding: 20px;
+            min-height: 120px;
+        }
+
+        /* Cột bên phải */
+        .right-column {
+            width: 50%;
+            float: right;
+            background-color: lightgreen;
+            padding: 20px;
+            min-height: 120px;
+        }
+
+        /* Khối nội dung bị tràn */
+        .overflow-box {
+            width: 300px;
+            height: 100px;
+            background-color: lightcoral;
+            padding: 10px;
+            overflow: auto;
+            margin-top: 20px;
+        }
+
+        /* Tiêu đề khối overflow */
+        .overflow-title {
+            color: #333;
+        }
+
+        /* Hiển thị tốt trên màn hình nhỏ */
+        @media (max-width: 600px) {
+            .left-column,
+            .right-column {
+                width: 100%;
+                float: none;
+            }
+
+            .overflow-box {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Bố cục trang với float và overflow</h1>
+
+    <!-- Hai cột sử dụng float -->
+    <div class="container">
+
+        <div class="left-column">
+            <h2>Nội dung bên trái</h2>
+            <p>
+                Đây là nội dung của cột bên trái.
+                Cột này được căn sang bên trái bằng thuộc tính float.
+            </p>
+        </div>
+
+        <div class="right-column">
+            <h2>Nội dung bên phải</h2>
+            <p>
+                Đây là nội dung của cột bên phải.
+                Cột này được căn sang bên phải bằng thuộc tính float.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Khối sử dụng overflow -->
+    <h2 class="overflow-title">Nội dung dài sử dụng Overflow</h2>
+
+    <div class="overflow-box">
+        Đây là nội dung rất dài mà chúng ta kiểm tra overflow.
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+        Phasellus ultricies nunc in mauris pharetra, a ultricies
+        justo fermentum. Sed do eiusmod tempor incididunt ut labore
+        et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
+        exercitation ullamco laboris nisi ut aliquip ex ea commodo
+        consequat. Duis aute irure dolor in reprehenderit in voluptate
+        velit esse cillum dolore eu fugiat nulla pariatur.
+    </div>
+
+</body>
+</html>
+
