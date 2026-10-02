@@ -1,0 +1,149 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Bố cục với display</title>
+
+    <style>
+        /* Thiết lập chung */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            background-color: #f5f5f5;
+        }
+
+        /* Tiêu đề */
+        h1 {
+            display: block;
+            max-width: 1000px;
+            margin: 30px auto;
+            color: #333;
+        }
+
+        /* Thanh điều hướng */
+        nav {
+            display: block;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 15px;
+            background-color: #333;
+        }
+
+        nav a {
+            display: inline-block;
+            margin: 0 15px;
+            text-decoration: none;
+            color: white;
+            padding: 8px 15px;
+        }
+
+        nav a:hover {
+            color: #ffcc00;
+        }
+
+        /* Khu vực chứa 3 cột */
+        section {
+            display: block;
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+
+        /* Các cột */
+        .box {
+            display: inline-block;
+            width: 30%;
+            max-width: 280px;
+            padding: 20px;
+            margin: 10px;
+            background-color: lightblue;
+            box-sizing: border-box;
+            vertical-align: top;
+        }
+
+        .box h2 {
+            color: #333;
+        }
+
+        .box p {
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Footer */
+        footer {
+            display: block;
+            max-width: 1000px;
+            margin: 30px auto 0;
+            padding: 20px;
+            background-color: #333;
+            color: white;
+        }
+
+        /* Responsive cho màn hình nhỏ */
+        @media (max-width: 768px) {
+            .box {
+                display: block;
+                width: 90%;
+                max-width: 500px;
+                margin: 10px auto;
+            }
+
+            nav a {
+                display: block;
+                margin: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Tiêu đề -->
+    <h1>Bố cục trang web với display</h1>
+
+    <!-- Thanh điều hướng -->
+    <nav>
+        <a href="#">Trang chủ</a>
+        <a href="#">Giới thiệu</a>
+        <a href="#">Dịch vụ</a>
+        <a href="#">Liên hệ</a>
+    </nav>
+
+    <!-- Nội dung chính -->
+    <section>
+
+        <div class="box">
+            <h2>Cột 1</h2>
+            <p>
+                Đây là nội dung của cột thứ nhất.
+            </p>
+        </div>
+
+        <div class="box">
+            <h2>Cột 2</h2>
+            <p>
+                Đây là nội dung của cột thứ hai.
+            </p>
+        </div>
+
+        <div class="box">
+            <h2>Cột 3</h2>
+            <p>
+                Đây là nội dung của cột thứ ba.
+            </p>
+        </div>
+
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>Bản quyền &copy; 2024</p>
+    </footer>
+
+</body>
+</html>
+```
