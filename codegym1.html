@@ -1,0 +1,269 @@
+```html
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Thực hành Danh sách trong CSS</title>
+
+    <style>
+        /* ============================= */
+        /* CÀI ĐẶT CHUNG */
+        /* ============================= */
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f7fb;
+            color: #333;
+            padding: 30px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #2563eb;
+            margin-bottom: 40px;
+        }
+
+        section {
+            background-color: white;
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 10px;
+        }
+
+        h2 {
+            color: #1d4ed8;
+        }
+
+        h3 {
+            color: #374151;
+        }
+
+
+        /* ============================= */
+        /* 2. LIST-STYLE-TYPE: SQUARE */
+        /* ============================= */
+
+        .mon-hoc {
+            list-style-type: square;
+        }
+
+
+        /* ============================= */
+        /* 3. LIST-STYLE-TYPE: UPPER-ROMAN */
+        /* ============================= */
+
+        .cac-buoc {
+            list-style-type: upper-roman;
+        }
+
+
+        /* ============================= */
+        /* 4. LIST-STYLE-IMAGE */
+        /* ============================= */
+
+        .cong-cu {
+            list-style-image: url("https://cdn-icons-png.flaticon.com/16/1828/1828640.png");
+        }
+
+
+        /* ============================= */
+        /* 5. LIST-STYLE-POSITION */
+        /* ============================= */
+
+        .outside {
+            list-style-position: outside;
+            background-color: #e0f2fe;
+            padding: 20px;
+        }
+
+        .inside {
+            list-style-position: inside;
+            background-color: #dcfce7;
+            padding: 20px;
+        }
+
+
+        /* ============================= */
+        /* 6. LIST-STYLE RÚT GỌN */
+        /* ============================= */
+
+        .rut-gon {
+            list-style: square inside;
+        }
+
+
+        /* ============================= */
+        /* 7. MÀU SẮC VÀ KHOẢNG CÁCH */
+        /* ============================= */
+
+        .ngon-ngu {
+            background-color: #dbeafe;
+            color: #1e3a8a;
+            padding: 25px 40px;
+            list-style-type: circle;
+        }
+
+        .ngon-ngu li {
+            margin: 10px;
+        }
+
+
+        /* ============================= */
+        /* 8. BÀI TẬP TỔNG HỢP */
+        /* ============================= */
+
+        .lo-trinh {
+            background-color: #ede9fe;
+            color: #5b21b6;
+            padding: 25px 45px;
+            margin: 20px 0;
+
+            /* Kết hợp type + position */
+            list-style: upper-roman inside;
+        }
+
+        .lo-trinh li {
+            margin: 12px 0;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Thực hành Danh sách trong CSS</h1>
+
+
+    <!-- ============================= -->
+    <!-- 2. DANH SÁCH KHÔNG CÓ THỨ TỰ -->
+    <!-- ============================= -->
+
+    <section>
+        <h2>2. Thay đổi kiểu đánh dấu danh sách</h2>
+
+        <p>Các môn học:</p>
+
+        <ul class="mon-hoc">
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>JavaScript</li>
+            <li>Git</li>
+        </ul>
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- 3. DANH SÁCH CÓ THỨ TỰ -->
+    <!-- ============================= -->
+
+    <section>
+        <h2>3. Thay đổi kiểu đánh dấu danh sách có thứ tự</h2>
+
+        <p>Các bước học:</p>
+
+        <ol class="cac-buoc">
+            <li>Học HTML</li>
+            <li>Học CSS</li>
+            <li>Học JavaScript</li>
+            <li>Học Git</li>
+        </ol>
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- 4. SỬ DỤNG HÌNH ẢNH -->
+    <!-- ============================= -->
+
+    <section>
+        <h2>4. Sử dụng hình ảnh làm dấu đánh dấu</h2>
+
+        <p>Công cụ học tập:</p>
+
+        <ul class="cong-cu">
+            <li>Visual Studio Code</li>
+            <li>Google Chrome</li>
+            <li>GitHub</li>
+            <li>Git</li>
+        </ul>
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- 5. OUTSIDE VÀ INSIDE -->
+    <!-- ============================= -->
+
+    <section>
+        <h2>5. Thay đổi vị trí dấu đánh dấu</h2>
+
+        <h3>list-style-position: outside</h3>
+
+        <ul class="outside">
+            <li>HTML - Ngôn ngữ đánh dấu dùng để xây dựng cấu trúc trang web.</li>
+            <li>CSS - Dùng để thiết kế giao diện trang web.</li>
+            <li>JavaScript - Dùng để tạo tính tương tác.</li>
+        </ul>
+
+
+        <h3>list-style-position: inside</h3>
+
+        <ul class="inside">
+            <li>HTML - Ngôn ngữ đánh dấu dùng để xây dựng cấu trúc trang web.</li>
+            <li>CSS - Dùng để thiết kế giao diện trang web.</li>
+            <li>JavaScript - Dùng để tạo tính tương tác.</li>
+        </ul>
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- 6. LIST-STYLE -->
+    <!-- ============================= -->
+
+    <section>
+        <h2>6. Sử dụng thuộc tính rút gọn list-style</h2>
+
+        <ul class="rut-gon">
+            <li>Học HTML</li>
+            <li>Học CSS</li>
+            <li>Học JavaScript</li>
+            <li>Học Git</li>
+        </ul>
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- 7. MÀU SẮC VÀ KHOẢNG CÁCH -->
+    <!-- ============================= -->
+
+    <section>
+        <h2>7. Tạo kiểu danh sách với màu sắc</h2>
+
+        <ul class="ngon-ngu">
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>JavaScript</li>
+            <li>Python</li>
+        </ul>
+    </section>
+
+
+    <!-- ============================= -->
+    <!-- 8. BÀI TẬP TỔNG HỢP -->
+    <!-- ============================= -->
+
+    <section>
+        <h2>8. Lộ trình học lập trình Web</h2>
+
+        <ol class="lo-trinh">
+            <li>HTML</li>
+            <li>CSS</li>
+            <li>JavaScript</li>
+            <li>Git</li>
+            <li>GitHub</li>
+        </ol>
+    </section>
+
+</body>
+</html>
+```
