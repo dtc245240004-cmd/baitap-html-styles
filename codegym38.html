@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="vi" class="h-full bg-slate-900">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực Hành CSS: Thuộc Tính grid-row (Grid 3x3)</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0284c7',
+                            700: '#0369a1',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom line overlay dashed styles */
+        .line-indicator {
+            position: absolute;
+            left: 0;
+            right: 0;
+            border-top: 2px dashed #f59e0b;
+            z-index: 20;
+            pointer-events: none;
+            transition: all 0.3s ease;
+        }
+        .line-label {
+            position: absolute;
+            right: -80px;
+            top: -12px;
+            background-color: #f59e0b;
+            color: #1e1b4b;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+        .line-label-left {
+            position: absolute;
+            left: -80px;
+            top: -12px;
+            background-color: #3b82f6;
+            color: #ffffff;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+            white-space: nowrap;
+        }
+
+        @media print {
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            .submission-card {
+                box-shadow: none !important;
+                border: 2px solid #cbd5e1 !important;
+                background: white !important;
+            }
+        }
+
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+    </style>
+</head>
+<body class="h-full flex flex-col font-sans text-slate-100 antialiased bg-slate-900">
+
+    <!-- App Navigation Header -->
+    <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-50 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Title & Badge -->
+                <div class="flex items-center space-x-3">
+                    <div class="bg-gradient-to-br from-blue-500 to-indigo-600 text-white p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
+                        <i class="fa-solid fa-table-cells text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-base sm:text-lg font-bold tracking-wide flex items-center gap-2">
+                            Thực Hành CSS Grid Row
+                            <span class="text-xs bg-indigo-950 text-indigo-300 border border-indigo-700/50 px-2 py-0.5 rounded-full font-mono font-semibold">grid-row</span>
+                        </h1>
+                        <p class="text-xs text-slate-400">Ứng dụng mô phỏng trực quan & Hỗ trợ nộp bài thực hành Grid 3x3</p>
+                    </div>
+                </div>
+
+                <!-- Header Actions -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="switchTab('submission')" class="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-3.5 py-2 rounded-lg shadow-md transition flex items-center gap-2">
+                        <i class="fa-solid fa-camera"></i>
+                        <span class="hidden sm:inline">Báo Cáo Nộp Bài</span>
+                    </button>
+                    <a href="#github-tab" onclick="switchTab('github')" class="text-xs bg-slate-800 hover:bg-slate-700 text-purple-300 border border-purple-500/30 px-3.5 py-2 rounded-lg transition flex items-center gap-2">
+                        <i class="fa-brands fa-github text-sm"></i>
+                        <span class="hidden sm:inline">GitHub Guide</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs Bar -->
+            <nav class="flex space-x-1 border-t border-slate-800/80 overflow-x-auto py-1 scrollbar-none text-xs sm:text-sm">
+                <button id="tab-btn-sandbox" onclick="switchTab('sandbox')" class="tab-btn active px-4 py-2.5 rounded-t-lg font-semibold flex items-center space-x-2 border-b-2 border-blue-500 text-blue-400 bg-slate-800/60 whitespace-nowrap transition">
+                    <i class="fa-solid fa-sliders text-emerald-400"></i>
+                    <span>Visual Grid Sandbox</span>
+                </button>
+                <button id="tab-btn-submission" onclick="switchTab('submission')" class="tab-btn px-4 py-2.5 rounded-t-lg font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 flex items-center space-x-2 border-b-2 border-transparent whitespace-nowrap transition">
+                    <i class="fa-solid fa-table-cells text-amber-400"></i>
+                    <span class="text-amber-300 font-semibold">So Sánh 3 Bước (Nộp Bài)</span>
+                </button>
+                <button id="tab-btn-code" onclick="switchTab('code')" class="tab-btn px-4 py-2.5 rounded-t-lg font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 flex items-center space-x-2 border-b-2 border-transparent whitespace-nowrap transition">
+                    <i class="fa-solid fa-code text-sky-400"></i>
+                    <span>Mã Nguồn HTML/CSS</span>
+                </button>
+                <button id="tab-btn-github" onclick="switchTab('github')" class="tab-btn px-4 py-2.5 rounded-t-lg font-semibold text-slate-400 hover:text-slate-200 hover:bg-slate-800/40 flex items-center space-x-2 border-b-2 border-transparent whitespace-nowrap transition">
+                    <i class="fa-brands fa-github text-purple-400"></i>
+                    <span class="text-purple-300 font-semibold">Hướng Dẫn GitHub & Validator</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Notification Toast Box -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-slate-950 text-white px-4 py-3 rounded-xl shadow-2xl border border-slate-700 flex items-center space-x-3 transition-all transform translate-y-20 opacity-0 z-50 pointer-events-none">
+        <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400 text-lg"></i>
+        <span id="toast-msg" class="text-xs sm:text-sm font-medium">Đã sao chép mã thành công!</span>
+    </div>
+
+    <!-- Main Content Container -->
+    <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- TAB 1: VISUAL GRID SANDBOX -->
+        <section id="tab-sandbox" class="tab-content space-y-6">
+            <!-- Sandbox Header Note -->
+            <div class="bg-slate-800/70 rounded-2xl p-5 border border-slate-700 shadow-md flex flex-wrap items-center justify-between gap-4">
+                <div class="space-y-1">
+                    <div class="flex items-center space-x-2">
+                        <span class="px-2.5 py-0.5 text-xs font-bold bg-blue-500/20 text-blue-300 border border-blue-500/30 rounded">BÀI THỰC HÀNH GRID 3x3</span>
+                        <span class="text-xs text-slate-400 font-mono">3 Cột x 3 Hàng | Gap: 10px</span>
+                    </div>
+                    <h2 class="text-lg sm:text-xl font-bold text-white">Thử Nghiệm Tương Tác Thuộc Tính <code class="text-amber-400 font-mono">grid-row</code></h2>
+                    <p class="text-xs text-slate-400">Thay đổi giá trị <code class="text-indigo-300 font-mono">grid-row</code> của <b>Ô 1</b> và quan sát sự dịch chuyển đường kẻ hàng cùng thuật toán sắp xếp tự động của Grid.</p>
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <button onclick="resetSandbox()" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-2 rounded-lg border border-slate-600 transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-rotate-left text-amber-400"></i> Đặt Lại Mặc Định
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Interactive Controls & Live Canvas Split Grid -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                <!-- Left Controls Panel -->
+                <div class="lg:col-span-5 space-y-5">
+                    
+                    <!-- Quick Exercise Selector Presets -->
+                    <div class="bg-slate-800/90 rounded-2xl p-5 border border-slate-700 space-y-4 shadow-sm">
+                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center justify-between">
+                            <span><i class="fa-solid fa-list-check text-blue-400 mr-2"></i> Chuyển Nhanh Yêu Cầu Đề Bài</span>
+                            <span class="text-[10px] text-slate-400 font-normal">Click chọn</span>
+                        </h3>
+
+                        <div class="space-y-2">
+                            <!-- Req 1: Default -->
+                            <button onclick="setGridRowPreset('auto', 'default')" id="btn-preset-default" class="preset-btn w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 transition flex items-center justify-between group">
+                                <div>
+                                    <div class="text-xs font-bold text-slate-200 flex items-center gap-2">
+                                        <span>Yêu Cầu 1: Mặc Định</span>
+                                        <span class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-mono">auto</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Ô 1 ở vị trí tự nhiên (Hàng 1, Cột 1).</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-blue-400"></i>
+                            </button>
+
+                            <!-- Req 2: 1 / 3 -->
+                            <button onclick="setGridRowPreset('1 / 3', 'req2')" id="btn-preset-req2" class="preset-btn w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 transition flex items-center justify-between group">
+                                <div>
+                                    <div class="text-xs font-bold text-amber-300 flex items-center gap-2">
+                                        <span>Yêu Cầu 2: 1 / 3</span>
+                                        <span class="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30 px-1.5 py-0.5 rounded font-mono">grid-row: 1 / 3;</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Ô 1 chiếm từ Đường Kẻ Hàng 1 đến 3 (Bao phủ Hàng 1 & 2).</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-amber-400"></i>
+                            </button>
+
+                            <!-- Req 3: 2 / 4 -->
+                            <button onclick="setGridRowPreset('2 / 4', 'req3')" id="btn-preset-req3" class="preset-btn w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 transition flex items-center justify-between group">
+                                <div>
+                                    <div class="text-xs font-bold text-emerald-300 flex items-center gap-2">
+                                        <span>Yêu Cầu 3: 2 / 4</span>
+                                        <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-1.5 py-0.5 rounded font-mono">grid-row: 2 / 4;</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Ô 1 di chuyển xuống từ Đường Kẻ Hàng 2 đến 4 (Bao phủ Hàng 2 & 3).</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-emerald-400"></i>
+                            </button>
+
+                            <!-- Req 4: span 2 -->
+                            <button onclick="setGridRowPreset('span 2', 'req4')" id="btn-preset-req4" class="preset-btn w-full text-left p-3 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-800 transition flex items-center justify-between group">
+                                <div>
+                                    <div class="text-xs font-bold text-purple-300 flex items-center gap-2">
+                                        <span>Yêu Cầu 4: span 2</span>
+                                        <span class="text-[10px] bg-purple-500/20 text-purple-300 border border-purple-500/30 px-1.5 py-0.5 rounded font-mono">grid-row: span 2;</span>
+                                    </div>
+                                    <p class="text-[11px] text-slate-400 mt-0.5">Ô 1 mở rộng qua 2 hàng dựa theo vị trí sắp xếp tự động.</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right text-xs text-slate-500 group-hover:text-purple-400"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Custom Value Input & Toggle Display Tools -->
+                    <div class="bg-slate-800/90 rounded-2xl p-5 border border-slate-700 space-y-4 shadow-sm">
+                        <h3 class="text-xs font-bold text-slate-300 uppercase tracking-wider">
+                            <i class="fa-solid fa-pen-to-square text-sky-400 mr-2"></i> Nhập Giá Trị Tùy Chỉnh
+                        </h3>
+
+                        <div class="space-y-2">
+                            <label for="custom-grid-row" class="text-xs text-slate-300 font-medium flex justify-between">
+                                <span>Cú pháp CSS <code class="text-amber-400 font-mono">grid-row</code> cho Ô 1:</span>
+                                <span class="text-[10px] text-slate-400">ví dụ: 1 / 4, 3 / 4, 1 / span 3</span>
+                            </label>
+                            <div class="flex items-center space-x-2">
+                                <div class="relative flex-1">
+                                    <input type="text" id="custom-grid-row" placeholder="vd: 1 / 3 hoặc span 2" value="1 / 3" class="w-full bg-slate-950 border border-slate-700 text-amber-300 font-mono text-sm rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition">
+                                </div>
+                                <button onclick="applyCustomGridRow()" class="bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs px-4 py-2.5 rounded-xl transition shadow">
+                                    Áp Dụng
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Grid Lines Display Toggle Switch -->
+                        <div class="pt-3 border-t border-slate-700/80 flex items-center justify-between">
+                            <div class="space-y-0.5">
+                                <label for="toggle-lines" class="text-xs font-bold text-slate-200 cursor-pointer flex items-center gap-2">
+                                    <i class="fa-solid fa-ruler-combined text-amber-400"></i>
+                                    Hiển Thị Đường Kẻ Hàng (Grid Row Lines 1-4)
+                                </label>
+                                <p class="text-[11px] text-slate-400">Hiện vị trí các đường chỉ giới 1, 2, 3, 4 trên Grid.</p>
+                            </div>
+                            <input type="checkbox" id="toggle-lines" checked onchange="toggleGridLines()" class="w-5 h-5 accent-amber-500 cursor-pointer rounded">
+                        </div>
+                    </div>
+
+                    <!-- Current Execution Explanation Box -->
+                    <div id="explanation-box" class="bg-indigo-950/40 border border-indigo-700/50 rounded-2xl p-4 text-xs space-y-2">
+                        <div class="flex items-center space-x-2 font-bold text-indigo-300">
+                            <i class="fa-solid fa-circle-info text-amber-400"></i>
+                            <span>Giải Thích Thuật Toán Định Vị:</span>
+                        </div>
+                        <p id="explanation-text" class="text-indigo-100/90 leading-relaxed">
+                            Thuộc tính <code class="text-amber-300 font-mono">grid-row: 1 / 3;</code> chỉ định Ô 1 bắt đầu tại đường kẻ hàng 1 (Grid Line 1) và kết thúc tại đường kẻ hàng 3 (Grid Line 3). Do đó Ô 1 sẽ kéo dài chiếm trọn 2 hàng (Hàng 1 và Hàng 2). Các ô còn lại (Ô 2 đến Ô 6) được Grid tự động đẩy sang các vị trí trống tiếp theo.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Right Visual Canvas & Code Inspector Column -->
+                <div class="lg:col-span-7 space-y-4">
+                    
+                    <!-- Canvas Header Bar -->
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-400 uppercase tracking-wider px-1">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-display text-emerald-400"></i> Trực Quan Khung Lưới (3 Cột x 3 Hàng)
+                        </span>
+                        <span id="badge-active-value" class="font-mono text-amber-300 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-lg lowercase">
+                            grid-row: 1 / 3;
+                        </span>
+                    </div>
+
+                    <!-- Main Grid Live Render Outer Container -->
+                    <div class="bg-slate-950 p-6 sm:p-8 rounded-2xl border border-slate-800 shadow-2xl relative overflow-x-auto min-w-[320px]">
+                        
+                        <!-- Line Overlay Layer Target -->
+                        <div id="grid-lines-overlay" class="absolute inset-0 p-6 sm:p-8 pointer-events-none z-10 transition-all duration-300">
+                            <!-- JS will inject line dividers dynamically -->
+                        </div>
+
+                        <!-- Main 3x3 Grid Container -->
+                        <div id="sandbox-grid" class="grid grid-cols-3 bg-slate-900/90 p-3 rounded-xl border border-slate-800 relative z-0 transition-all duration-300" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 100px); gap: 10px;">
+                            <!-- Items 1 to 6 rendered dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Live Generated CSS Code View -->
+                    <div class="bg-slate-950 rounded-2xl overflow-hidden border border-slate-800 shadow-lg">
+                        <div class="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
+                            <span class="text-xs font-mono text-slate-300 flex items-center gap-2">
+                                <i class="fa-regular fa-file-code text-blue-400"></i> Mã CSS Trực Tiếp (Live Inspector)
+                            </span>
+                            <button onclick="copyCode('sandbox-css-code', 'Mã CSS Sandbox')" class="text-xs text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1 rounded-lg transition flex items-center gap-1.5 border border-slate-700">
+                                <i class="fa-regular fa-copy text-amber-400"></i> Sao Chép
+                            </button>
+                        </div>
+                        <pre id="sandbox-css-code" class="p-4 text-xs font-mono text-emerald-400 overflow-x-auto leading-relaxed bg-slate-950"><code><span class="text-slate-500">/* Khung chứa 3x3 Grid */</span>
+<span class="text-amber-300">.grid-container</span> {
+    <span class="text-sky-300">display</span>: grid;
+    <span class="text-sky-300">grid-template-columns</span>: repeat(3, 1fr);
+    <span class="text-sky-300">grid-template-rows</span>: repeat(3, 100px);
+    <span class="text-sky-300">gap</span>: 10px;
+}
+
+<span class="text-slate-500">/* Cấu hình vị trí Ô 1 */</span>
+<span class="text-amber-300">.item1</span> {
+    <span class="text-yellow-400 font-bold">grid-row</span>: <span id="code-row-value" class="text-amber-300">1 / 3</span>;
+}</code></pre>
+                    </div>
+
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 2: SO SÁNH 3 BƯỚC (SUBMISSION SCREENSHOT CARD) -->
+        <section id="tab-submission" class="tab-content hidden space-y-6">
+            
+            <!-- Top Instruction Banner for Screenshot / Print -->
+            <div class="no-print bg-amber-500/10 border border-amber-500/30 rounded-2xl p-4 flex flex-wrap items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-2.5 bg-amber-500 text-slate-950 rounded-xl font-bold">
+                        <i class="fa-solid fa-camera text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-bold text-amber-300">Báo Cáo Thực Hành 3 Bước (Nộp Bài Chi Tiết)</h3>
+                        <p class="text-xs text-slate-300 mt-0.5">Thẻ tổng hợp kết quả cả 3 yêu cầu đề bài trên cùng một khung hình. Nhập thông tin sinh viên và nhấn In / Tải PDF hoặc chụp màn hình để nộp bài.</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <button onclick="window.print()" class="text-xs bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold px-4 py-2.5 rounded-xl shadow transition flex items-center gap-2">
+                        <i class="fa-solid fa-print"></i>
+                        <span>In Báo Cáo / Xuất PDF</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Printable & Screenshot Submission Card -->
+            <div class="submission-card bg-slate-950 rounded-2xl p-6 sm:p-8 border border-slate-800 space-y-6 shadow-2xl">
+                
+                <!-- Student Details & Header Info -->
+                <div class="border-b border-slate-800 pb-6 flex flex-wrap justify-between items-start gap-6">
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <span class="bg-blue-600 text-white text-xs font-bold px-2.5 py-1 rounded-md">BÀI THỰC HÀNH NỘP BÀI</span>
+                            <span class="text-xs text-slate-400 font-mono">CSS Grid Layout Level 1</span>
+                        </div>
+                        <h2 class="text-2xl font-extrabold text-white mt-2">Báo Cáo So Sánh Thuộc Tính: <code class="text-amber-400 font-mono">grid-row</code></h2>
+                        <p class="text-xs text-slate-400 mt-1">Kết quả thực hiện 3 trường hợp thay đổi kích thước & vị trí Ô 1 trên lưới 3x3.</p>
+                    </div>
+
+                    <!-- Editable Student Information Form Box -->
+                    <div class="bg-slate-900 p-4 rounded-xl border border-slate-800 min-w-[280px] space-y-2.5 text-xs">
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-semibold text-slate-400">Họ và Tên:</span>
+                            <input type="text" value="Nguyễn Văn A" class="font-bold text-amber-300 bg-slate-950 text-right border-b border-slate-700 focus:border-amber-400 focus:outline-none px-2 py-0.5 rounded">
+                        </div>
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-semibold text-slate-400">Mã Sinh Viên:</span>
+                            <input type="text" value="SV202688" class="font-bold text-amber-300 bg-slate-950 text-right border-b border-slate-700 focus:border-amber-400 focus:outline-none px-2 py-0.5 rounded font-mono">
+                        </div>
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-semibold text-slate-400">Lớp Lập Trình Web:</span>
+                            <input type="text" value="CNTT-K65" class="font-bold text-amber-300 bg-slate-950 text-right border-b border-slate-700 focus:border-amber-400 focus:outline-none px-2 py-0.5 rounded">
+                        </div>
+                        <div class="flex justify-between items-center gap-4">
+                            <span class="font-semibold text-slate-400">Ngày Thực Hiện:</span>
+                            <span id="submission-date" class="font-medium text-slate-300 font-mono">12/10/2026</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3 Steps Comparison Grid Layout -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    
+                    <!-- STEP 1: req2 (1 / 3) -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-check-circle"></i> Bước 1 (Yêu Cầu 2)
+                            </span>
+                            <span class="text-[11px] font-mono bg-amber-500/20 text-amber-300 border border-amber-500/30 px-2 py-0.5 rounded">grid-row: 1 / 3;</span>
+                        </div>
+                        
+                        <!-- Mini Grid Preview 1 -->
+                        <div class="grid grid-cols-3 bg-slate-950 p-2 rounded-lg border border-slate-800 text-xs font-semibold text-center" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 45px); gap: 4px;">
+                            <div class="bg-gradient-to-br from-amber-500 to-amber-600 text-slate-950 p-1 rounded border border-amber-400 flex items-center justify-center font-bold" style="grid-row: 1 / 3;">Ô 1 (1/3)</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 2</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 3</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 4</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 5</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 6</div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed pt-1">
+                            Ô 1 kéo dài từ Line 1 đến Line 3, chiếm Hàng 1 & 2.
+                        </p>
+                    </div>
+
+                    <!-- STEP 2: req3 (2 / 4) -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-check-circle"></i> Bước 2 (Yêu Cầu 3)
+                            </span>
+                            <span class="text-[11px] font-mono bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded">grid-row: 2 / 4;</span>
+                        </div>
+                        
+                        <!-- Mini Grid Preview 2 -->
+                        <div class="grid grid-cols-3 bg-slate-950 p-2 rounded-lg border border-slate-800 text-xs font-semibold text-center" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 45px); gap: 4px;">
+                            <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-slate-950 p-1 rounded border border-emerald-400 flex items-center justify-center font-bold" style="grid-row: 2 / 4;">Ô 1 (2/4)</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 2</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 3</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 4</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 5</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 6</div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed pt-1">
+                            Ô 1 dịch xuống từ Line 2 đến Line 4, chiếm Hàng 2 & 3.
+                        </p>
+                    </div>
+
+                    <!-- STEP 3: req4 (span 2) -->
+                    <div class="bg-slate-900/80 border border-slate-800 rounded-xl p-4 space-y-3">
+                        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+                            <span class="text-xs font-bold text-purple-400 flex items-center gap-1.5">
+                                <i class="fa-solid fa-check-circle"></i> Bước 3 (Yêu Cầu 4)
+                            </span>
+                            <span class="text-[11px] font-mono bg-purple-500/20 text-purple-300 border border-purple-500/30 px-2 py-0.5 rounded">grid-row: span 2;</span>
+                        </div>
+                        
+                        <!-- Mini Grid Preview 3 -->
+                        <div class="grid grid-cols-3 bg-slate-950 p-2 rounded-lg border border-slate-800 text-xs font-semibold text-center" style="grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(3, 45px); gap: 4px;">
+                            <div class="bg-gradient-to-br from-purple-500 to-purple-600 text-white p-1 rounded border border-purple-400 flex items-center justify-center font-bold" style="grid-row: span 2;">Ô 1 (span 2)</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 2</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 3</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 4</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 5</div>
+                            <div class="bg-slate-800 text-slate-300 p-1 rounded border border-slate-700 flex items-center justify-center">Ô 6</div>
+                        </div>
+                        <p class="text-[11px] text-slate-400 leading-relaxed pt-1">
+                            Ô 1 tự động mở rộng qua 2 ô hàng từ vị trí mặc định.
+                        </p>
+                    </div>
+
+                </div>
+
+                <!-- Footer Sign Off & Status Badge -->
+                <div class="pt-4 border-t border-slate-800 flex justify-between items-center text-xs text-slate-400">
+                    <span class="flex items-center gap-1.5">
+                        <i class="fa-solid fa-certificate text-emerald-400"></i> Xác nhận đã hoàn thành đủ 3 yêu cầu đề bài thực hành CSS Grid Row.
+                    </span>
+                    <span class="font-mono bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2.5 py-0.5 rounded-full font-bold">PASSED</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- TAB 3: MÃ NGUỒN CHUẨN HTML & CSS -->
+        <section id="tab-code" class="tab-content hidden space-y-6">
+            <div class="bg-slate-800/80 rounded-2xl p-6 border border-slate-700 space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-4 border-b border-slate-700 pb-4">
+                    <div>
+                        <span class="px-2.5 py-0.5 text-xs font-bold bg-sky-500/20 text-sky-300 border border-sky-500/30 rounded">SOURCE CODE</span>
+                        <h2 class="text-xl font-bold text-white mt-1">Mã Nguồn Đầy Đủ (index.html & style.css)</h2>
+                        <p class="text-xs text-slate-400 mt-0.5">Mã nguồn tách biệt hoàn chỉnh theo đúng yêu cầu đề bài thực hành.</p>
+                    </div>
+                </div>
+
+                <!-- Code Tabs Component -->
+                <div class="space-y-4">
+                    <!-- File Switcher Buttons -->
+                    <div class="flex space-x-2 border-b border-slate-700">
+                        <button id="code-file-btn-html" onclick="switchCodeFile('html')" class="px-4 py-2 text-xs font-mono font-bold text-sky-400 border-b-2 border-sky-400 bg-slate-900/50 rounded-t-lg transition flex items-center gap-2">
+                            <i class="fa-brands fa-html5 text-orange-500 text-sm"></i> index.html
+                        </button>
+                        <button id="code-file-btn-css" onclick="switchCodeFile('css')" class="px-4 py-2 text-xs font-mono font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition flex items-center gap-2">
+                            <i class="fa-brands fa-css3-alt text-blue-500 text-sm"></i> style.css
+                        </button>
+                    </div>
+
+                    <!-- File 1: index.html block -->
+                    <div id="code-block-html" class="bg-slate-950 rounded-xl overflow-hidden border border-slate-800">
+                        <div class="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
+                            <span class="text-xs font-mono text-slate-300 flex items-center gap-2">
+                                <i class="fa-regular fa-file-code text-orange-400"></i> index.html
+                            </span>
+                            <button onclick="copyCode('raw-html-code', 'File index.html')" class="text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 border border-slate-700">
+                                <i class="fa-regular fa-copy text-amber-400"></i> Sao Chép index.html
+                            </button>
+                        </div>
+                        <pre id="raw-html-code" class="p-4 text-xs font-mono text-emerald-300 overflow-x-auto leading-relaxed bg-slate-950"><code>&lt;!DOCTYPE html&gt;
+&lt;html lang="vi"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Bài Tập CSS Grid Row&lt;/title&gt;
+    &lt;link rel="stylesheet" href="style.css"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;h1&gt;Thực Hành Cấu Trúc CSS Grid 3x3&lt;/h1&gt;
+
+    &lt;!-- Container chứa 6 Ô theo yêu cầu --&gt;
+    &lt;div class="grid-container"&gt;
+        &lt;div class="item item1"&gt;Ô 1&lt;/div&gt;
+        &lt;div class="item item2"&gt;Ô 2&lt;/div&gt;
+        &lt;div class="item item3"&gt;Ô 3&lt;/div&gt;
+        &lt;div class="item item4"&gt;Ô 4&lt;/div&gt;
+        &lt;div class="item item5"&gt;Ô 5&lt;/div&gt;
+        &lt;div class="item item6"&gt;Ô 6&lt;/div&gt;
+    &lt;/div&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+                    </div>
+
+                    <!-- File 2: style.css block -->
+                    <div id="code-block-css" class="hidden bg-slate-950 rounded-xl overflow-hidden border border-slate-800">
+                        <div class="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
+                            <span class="text-xs font-mono text-slate-300 flex items-center gap-2">
+                                <i class="fa-regular fa-file-code text-blue-400"></i> style.css
+                            </span>
+                            <button onclick="copyCode('raw-css-code', 'File style.css')" class="text-xs text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg transition flex items-center gap-1.5 border border-slate-700">
+                                <i class="fa-regular fa-copy text-amber-400"></i> Sao Chép style.css
+                            </button>
+                        </div>
+                        <pre id="raw-css-code" class="p-4 text-xs font-mono text-sky-300 overflow-x-auto leading-relaxed bg-slate-950"><code>/* Cấu hình khung chứa Grid 3 cột x 3 hàng */
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 100px);
+    gap: 10px;
+    background-color: #0f172a;
+    padding: 15px;
+    border-radius: 8px;
+}
+
+/* Kiểu dáng chung cho các ô */
+.item {
+    background-color: #1e293b;
+    color: #ffffff;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    border: 1px solid #334155;
+}
+
+/* Yêu cầu 2: Ô 1 chiếm từ đường kẻ hàng 1 đến 3 */
+.item1 {
+    background-color: #f59e0b;
+    color: #0f172a;
+    grid-row: 1 / 3; /* Thay bằng '2 / 4' cho yêu cầu 3 hoặc 'span 2' cho yêu cầu 4 */
+}</code></pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 4: HƯỚNG DẪN GITHUB & KHIỂM TRA URL -->
+        <section id="tab-github" class="tab-content hidden space-y-6">
+            <div class="bg-slate-800/80 rounded-2xl p-6 border border-slate-700 space-y-6">
+                <div class="flex items-center space-x-3 border-b border-slate-700 pb-4">
+                    <div class="p-3 bg-purple-500/20 text-purple-300 border border-purple-500/30 rounded-xl">
+                        <i class="fa-brands fa-github text-2xl"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white">Hướng Dẫn Nộp Bài GitHub & Kiểm Tra URL</h2>
+                        <p class="text-xs text-slate-400">Các bước đưa code lên Repository <code class="text-purple-300 font-mono">css-grid-row-practice</code> và công cụ kiểm tra link nộp bài.</p>
+                    </div>
+                </div>
+
+                <!-- GitHub Step-by-Step Guide -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    <!-- Steps 1 & 2 -->
+                    <div class="space-y-4">
+                        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2 text-xs font-bold text-purple-300">
+                                <span class="w-5 h-5 bg-purple-500 text-slate-950 rounded-full flex items-center justify-center text-[10px]">1</span>
+                                <span>Tạo Thư Mục & Code Lập Trình</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed pl-7">
+                                Tạo thư mục <code class="text-slate-200 font-mono">css-grid-row-practice</code> trên máy tính, lưu 2 file <code class="text-amber-300 font-mono">index.html</code> và <code class="text-amber-300 font-mono">style.css</code> từ Tab Mã Nguồn.
+                            </p>
+                        </div>
+
+                        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2 text-xs font-bold text-purple-300">
+                                <span class="w-5 h-5 bg-purple-500 text-slate-950 rounded-full flex items-center justify-center text-[10px]">2</span>
+                                <span>Khởi Tạo Git Repository</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed pl-7">
+                                Mở Terminal/Git Bash trong thư mục dự án và chạy các lệnh:
+                            </p>
+                            <pre class="bg-slate-950 text-[11px] font-mono text-emerald-400 p-2.5 rounded border border-slate-800 ml-7">git init
+git add .
+git commit -m "Complete CSS grid-row practice assignment"</pre>
+                        </div>
+                    </div>
+
+                    <!-- Steps 3 & 4 -->
+                    <div class="space-y-4">
+                        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2 text-xs font-bold text-purple-300">
+                                <span class="w-5 h-5 bg-purple-500 text-slate-950 rounded-full flex items-center justify-center text-[10px]">3</span>
+                                <span>Tạo Repo Trực Tuyến & Push Code</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed pl-7">
+                                Trên GitHub, tạo mới repository đặt tên là <code class="text-purple-300 font-mono">css-grid-row-practice</code> (chế độ Public), sau đó liên kết và push code:
+                            </p>
+                            <pre class="bg-slate-950 text-[11px] font-mono text-emerald-400 p-2.5 rounded border border-slate-800 ml-7">git remote add origin https://github.com/USERNAME/css-grid-row-practice.git
+git branch -M main
+git push -u origin main</pre>
+                        </div>
+
+                        <div class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 space-y-2">
+                            <div class="flex items-center space-x-2 text-xs font-bold text-purple-300">
+                                <span class="w-5 h-5 bg-purple-500 text-slate-950 rounded-full flex items-center justify-center text-[10px]">4</span>
+                                <span>Bật GitHub Pages (Tùy Chọn)</span>
+                            </div>
+                            <p class="text-xs text-slate-400 leading-relaxed pl-7">
+                                Vào <b>Settings &rarr; Pages &rarr; Source: deploy from a branch (main / root)</b> để xuất bản trang web live công khai.
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Interactive GitHub Repository URL Validator -->
+                <div class="bg-slate-950 p-5 rounded-2xl border border-purple-500/30 space-y-4">
+                    <h3 class="text-sm font-bold text-purple-300 flex items-center gap-2">
+                        <i class="fa-solid fa-link text-amber-400"></i> Công Cụ Kiểm Tra Định Dạng Link Nộp Bài GitHub
+                    </h3>
+
+                    <div class="space-y-2">
+                        <label for="github-url-input" class="text-xs text-slate-400 block">
+                            Dán đường dẫn GitHub Repository hoặc GitHub Pages của bạn vào đây:
+                        </label>
+                        <div class="flex flex-col sm:flex-row gap-2">
+                            <input type="text" id="github-url-input" placeholder="https://github.com/your-username/css-grid-row-practice" oninput="validateGithubUrl()" class="flex-1 bg-slate-900 border border-slate-700 text-slate-100 text-xs font-mono rounded-xl px-4 py-2.5 focus:outline-none focus:border-purple-500 transition">
+                            <button onclick="validateGithubUrl()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs px-5 py-2.5 rounded-xl transition shadow">
+                                Kiểm Tra Link
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Checklist Results Output -->
+                    <div id="validator-results" class="bg-slate-900 p-4 rounded-xl border border-slate-800 text-xs space-y-2">
+                        <div class="text-slate-400 font-semibold mb-1">Kết quả phân tích đường dẫn:</div>
+                        
+                        <div id="check-domain" class="flex items-center gap-2 text-slate-400">
+                            <i class="fa-solid fa-circle-minus text-slate-600"></i>
+                            <span>Tên miền hợp lệ (<code class="font-mono">github.com</code> hoặc <code class="font-mono">github.io</code>)</span>
+                        </div>
+                        
+                        <div id="check-repo" class="flex items-center gap-2 text-slate-400">
+                            <i class="fa-solid fa-circle-minus text-slate-600"></i>
+                            <span>Tên Repository chứa từ khóa liên quan (<code class="font-mono">css-grid-row-practice</code> hoặc tương đương)</span>
+                        </div>
+
+                        <div id="check-structure" class="flex items-center gap-2 text-slate-400">
+                            <i class="fa-solid fa-circle-minus text-slate-600"></i>
+                            <span>Cấu trúc URL hoàn chỉnh không chứa ký tự lỗi</span>
+                        </div>
+
+                        <div id="validator-status" class="mt-3 pt-2 border-t border-slate-800 font-medium text-slate-400">
+                            Nhập URL phía trên để bắt đầu xác minh.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- App Footer -->
+    <footer class="bg-slate-950 border-t border-slate-800 py-4 text-center text-xs text-slate-500 no-print">
+        <p>Bộ Công Cụ Thực Hành Lập Trình Web: CSS Grid Layout — Thuộc Tính <code class="text-slate-400 font-mono">grid-row</code></p>
+    </footer>
+
+    <!-- JavaScript Core Logic -->
+    <script>
+        let currentGridRow = '1 / 3';
+        let showLines = true;
+        let currentPreset = 'req2';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Set submission date
+            const today = new Date();
+            const dateElem = document.getElementById('submission-date');
+            if (dateElem) {
+                dateElem.innerText = today.toLocaleDateString('vi-VN');
+            }
+
+            // Initialize Grid Render
+            renderSandboxGrid();
+            updateGridLinesOverlay();
+            
+            // Sync initial preset UI
+            setGridRowPreset('1 / 3', 'req2');
+        });
+
+        // Tab Switching Logic
+        function switchTab(tabId) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('active', 'border-blue-500', 'text-blue-400', 'bg-slate-800/60');
+                btn.classList.add('text-slate-400', 'border-transparent');
+            });
+
+            const targetContent = document.getElementById(`tab-${tabId}`);
+            if (targetContent) {
+                targetContent.classList.remove('hidden');
+            }
+
+            const targetBtn = document.getElementById(`tab-btn-${tabId}`);
+            if (targetBtn) {
+                targetBtn.classList.add('active', 'border-blue-500', 'text-blue-400', 'bg-slate-800/60');
+                targetBtn.classList.remove('text-slate-400', 'border-transparent');
+            }
+
+            if (tabId === 'sandbox') {
+                setTimeout(updateGridLinesOverlay, 100);
+            }
+        }
+
+        // Preset selector logic
+        function setGridRowPreset(val, presetKey) {
+            currentGridRow = val;
+            currentPreset = presetKey;
+
+            // Highlight Preset Buttons UI
+            const buttons = document.querySelectorAll('.preset-btn');
+            buttons.forEach(btn => {
+                btn.classList.remove('border-amber-500', 'border-emerald-500', 'border-purple-500', 'border-blue-500', 'bg-slate-800');
+                btn.classList.add('border-slate-700', 'bg-slate-900/60');
+            });
+
+            const activeBtn = document.getElementById(`btn-preset-${presetKey}`);
+            if (activeBtn) {
+                activeBtn.classList.remove('border-slate-700', 'bg-slate-900/60');
+                activeBtn.classList.add('bg-slate-800');
+
+                if (presetKey === 'req2') activeBtn.classList.add('border-amber-500');
+                else if (presetKey === 'req3') activeBtn.classList.add('border-emerald-500');
+                else if (presetKey === 'req4') activeBtn.classList.add('border-purple-500');
+                else activeBtn.classList.add('border-blue-500');
+            }
+
+            // Sync Custom Input
+            document.getElementById('custom-grid-row').value = val === 'auto' ? '' : val;
+
+            // Explanations text switch
+            const expText = document.getElementById('explanation-text');
+            if (presetKey === 'default') {
+                expText.innerHTML = `Mặc định (<code class="text-amber-300 font-mono">auto</code>): Ô 1 chiếm đúng 1 hàng và 1 cột tại vị trí tự nhiên ban đầu (Hàng 1, Cột 1). Các ô từ Ô 2 đến Ô 6 lấp đầy các vị trí còn lại.`;
+            } else if (presetKey === 'req2') {
+                expText.innerHTML = `<code class="text-amber-300 font-mono">grid-row: 1 / 3;</code>: Bắt đầu tại <b>Grid Line 1</b> và kết thúc tại <b>Grid Line 3</b>. Ô 1 gộp 2 hàng đầu tiên (Hàng 1 & 2). Thuật toán Grid chuyển Ô 2, Ô 3 sang Cột 2, 3 và đẩy Ô 4, 5 xuống Hàng 2.`;
+            } else if (presetKey === 'req3') {
+                expText.innerHTML = `<code class="text-emerald-300 font-mono">grid-row: 2 / 4;</code>: Bắt đầu tại <b>Grid Line 2</b> và kết thúc tại <b>Grid Line 4</b>. Ô 1 di chuyển xuống chiếm Hàng 2 & 3. Do Hàng 1 Cột 1 trống, Ô 2 nhảy lên lấp vào vị trí Hàng 1 Cột 1.`;
+            } else if (presetKey === 'req4') {
+                expText.innerHTML = `<code class="text-purple-300 font-mono">grid-row: span 2;</code>: Kéo dài chiều cao qua <b>2 ô hàng</b> tính từ vị trí tự động hiện tại. Vì Ô 1 bắt đầu ở Hàng 1, nên tương đương với vị trí 1 / 3.`;
+            } else {
+                expText.innerHTML = `Giá trị tùy chỉnh <code class="text-amber-300 font-mono">grid-row: ${val};</code> được áp dụng trực tiếp cho Ô 1. Quan sát cách các ô khác tự động sắp xếp lại theo thuật toán Grid placement.`;
+            }
+
+            updateSandboxUI();
+        }
+
+        function applyCustomGridRow() {
+            const inputVal = document.getElementById('custom-grid-row').value.trim();
+            if (!inputVal) {
+                setGridRowPreset('auto', 'default');
+                return;
+            }
+            currentGridRow = inputVal;
+            setGridRowPreset(inputVal, 'custom');
+            showToast(`Đã áp dụng grid-row: ${inputVal}`);
+        }
+
+        function toggleGridLines() {
+            showLines = document.getElementById('toggle-lines').checked;
+            updateGridLinesOverlay();
+        }
+
+        function resetSandbox() {
+            setGridRowPreset('1 / 3', 'req2');
+            document.getElementById('toggle-lines').checked = true;
+            showLines = true;
+            showToast('Đã đặt lại cấu hình mặc định!');
+        }
+
+        function updateSandboxUI() {
+            renderSandboxGrid();
+            
+            // Update Code View
+            document.getElementById('code-row-value').innerText = currentGridRow;
+            document.getElementById('badge-active-value').innerText = `grid-row: ${currentGridRow};`;
+
+            updateGridLinesOverlay();
+        }
+
+        function renderSandboxGrid() {
+            const grid = document.getElementById('sandbox-grid');
+            if (!grid) return;
+
+            grid.innerHTML = '';
+
+            for (let i = 1; i <= 6; i++) {
+                const item = document.createElement('div');
+                item.className = 'item rounded-lg border font-bold p-2 transition-all duration-300 flex items-center justify-center text-sm shadow-md';
+                
+                if (i === 1) {
+                    item.innerText = `Ô 1 (${currentGridRow})`;
+                    item.style.gridRow = currentGridRow;
+                    
+                    if (currentPreset === 'req2') {
+                        item.className += ' bg-gradient-to-br from-amber-500 to-amber-600 text-slate-950 border-amber-300 text-base shadow-amber-500/20 shadow-lg';
+                    } else if (currentPreset === 'req3') {
+                        item.className += ' bg-gradient-to-br from-emerald-500 to-emerald-600 text-slate-950 border-emerald-300 text-base shadow-emerald-500/20 shadow-lg';
+                    } else if (currentPreset === 'req4') {
+                        item.className += ' bg-gradient-to-br from-purple-500 to-purple-600 text-white border-purple-300 text-base shadow-purple-500/20 shadow-lg';
+                    } else {
+                        item.className += ' bg-gradient-to-br from-blue-500 to-indigo-600 text-white border-blue-300 text-base shadow-blue-500/20 shadow-lg';
+                    }
+                } else {
+                    item.innerText = `Ô ${i}`;
+                    item.className += ' bg-slate-800/90 text-slate-300 border-slate-700/80 hover:border-slate-500';
+                }
+
+                grid.appendChild(item);
+            }
+        }
+
+        function updateGridLinesOverlay() {
+            const overlay = document.getElementById('grid-lines-overlay');
+            const grid = document.getElementById('sandbox-grid');
+            if (!overlay || !grid) return;
+
+            overlay.innerHTML = '';
+            if (!showLines) return;
+
+            // Grid parameters: 3 rows x 100px with gap 10px, padding 12px (p-3)
+            const rowHeight = 100;
+            const gap = 10;
+            const paddingTop = 24; // 12px grid padding + 12px outer offset
+
+            const lines = [
+                { num: 1, top: paddingTop },
+                { num: 2, top: paddingTop + rowHeight + gap / 2 },
+                { num: 3, top: paddingTop + (rowHeight * 2) + gap + gap / 2 },
+                { num: 4, top: paddingTop + (rowHeight * 3) + (gap * 2) }
+            ];
+
+            lines.forEach(line => {
+                const lineDiv = document.createElement('div');
+                lineDiv.className = 'line-indicator';
+                lineDiv.style.top = `${line.top}px`;
+
+                const labelRight = document.createElement('span');
+                labelRight.className = 'line-label';
+                labelRight.innerText = `Row Line ${line.num}`;
+
+                const labelLeft = document.createElement('span');
+                labelLeft.className = 'line-label-left';
+                labelLeft.innerText = `Line ${line.num}`;
+
+                lineDiv.appendChild(labelRight);
+                lineDiv.appendChild(labelLeft);
+                overlay.appendChild(lineDiv);
+            });
+        }
+
+        window.addEventListener('resize', updateGridLinesOverlay);
+
+        // Code file view switcher (index.html vs style.css)
+        function switchCodeFile(file) {
+            const btnHtml = document.getElementById('code-file-btn-html');
+            const btnCss = document.getElementById('code-file-btn-css');
+            const blockHtml = document.getElementById('code-block-html');
+            const blockCss = document.getElementById('code-block-css');
+
+            if (file === 'html') {
+                btnHtml.className = 'px-4 py-2 text-xs font-mono font-bold text-sky-400 border-b-2 border-sky-400 bg-slate-900/50 rounded-t-lg transition flex items-center gap-2';
+                btnCss.className = 'px-4 py-2 text-xs font-mono font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition flex items-center gap-2';
+                blockHtml.classList.remove('hidden');
+                blockCss.classList.add('hidden');
+            } else {
+                btnCss.className = 'px-4 py-2 text-xs font-mono font-bold text-sky-400 border-b-2 border-sky-400 bg-slate-900/50 rounded-t-lg transition flex items-center gap-2';
+                btnHtml.className = 'px-4 py-2 text-xs font-mono font-bold text-slate-400 border-b-2 border-transparent hover:text-slate-200 transition flex items-center gap-2';
+                blockCss.classList.remove('hidden');
+                blockHtml.classList.add('hidden');
+            }
+        }
+
+        // GitHub Repository Link Validator
+        function validateGithubUrl() {
+            const input = document.getElementById('github-url-input').value.trim();
+            const checkDomain = document.getElementById('check-domain');
+            const checkRepo = document.getElementById('check-repo');
+            const checkStructure = document.getElementById('check-structure');
+            const statusDiv = document.getElementById('validator-status');
+
+            if (!input) {
+                resetValidatorUI();
+                statusDiv.innerHTML = '<span class="text-slate-400">Vui lòng nhập URL để kiểm tra.</span>';
+                return;
+            }
+
+            let validDomain = false;
+            let validRepo = false;
+            let validStructure = false;
+
+            try {
+                const url = new URL(input);
+                if (url.hostname === 'github.com' || url.hostname.endsWith('.github.io')) {
+                    validDomain = true;
+                }
+
+                if (input.toLowerCase().includes('grid') || input.toLowerCase().includes('practice') || input.toLowerCase().includes('row') || url.pathname.length > 2) {
+                    validRepo = true;
+                }
+
+                if (url.protocol === 'https:' && url.pathname !== '/') {
+                    validStructure = true;
+                }
+            } catch (e) {
+                validDomain = false;
+                validRepo = false;
+                validStructure = false;
+            }
+
+            // Update UI Icons
+            updateCheckItem(checkDomain, validDomain, 'Tên miền hợp lệ (github.com / github.io)');
+            updateCheckItem(checkRepo, validRepo, 'Repository hợp lệ chứa bài làm CSS Grid');
+            updateCheckItem(checkStructure, validStructure, 'Cấu trúc URL hoàn chỉnh');
+
+            if (validDomain && validRepo && validStructure) {
+                statusDiv.innerHTML = `
+                    <div class="p-3 bg-emerald-500/20 border border-emerald-500/40 rounded-xl text-emerald-300 flex items-center justify-between">
+                        <span class="flex items-center gap-2"><i class="fa-solid fa-circle-check text-emerald-400"></i> Đường dẫn hợp lệ để nộp bài!</span>
+                        <a href="${input}" target="_blank" class="bg-emerald-500 text-slate-950 px-3 py-1 rounded-lg font-bold text-[11px] hover:bg-emerald-400 transition">Thử Mở Link <i class="fa-solid fa-external-link"></i></a>
+                    </div>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <div class="p-3 bg-rose-500/20 border border-rose-500/40 rounded-xl text-rose-300 flex items-center gap-2">
+                        <i class="fa-solid fa-circle-xmark text-rose-400"></i> Đường dẫn chưa đúng định dạng. Vui lòng kiểm tra lại link GitHub Repository của bạn.
+                    </div>
+                `;
+            }
+        }
+
+        function updateCheckItem(elem, isValid, text) {
+            if (isValid) {
+                elem.className = 'flex items-center gap-2 text-emerald-400 font-medium';
+                elem.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-400"></i> <span>${text}</span>`;
+            } else {
+                elem.className = 'flex items-center gap-2 text-rose-400';
+                elem.innerHTML = `<i class="fa-solid fa-circle-xmark text-rose-400"></i> <span>${text}</span>`;
+            }
+        }
+
+        function resetValidatorUI() {
+            document.getElementById('check-domain').className = 'flex items-center gap-2 text-slate-400';
+            document.getElementById('check-domain').innerHTML = `<i class="fa-solid fa-circle-minus text-slate-600"></i> <span>Tên miền hợp lệ (github.com / github.io)</span>`;
+            
+            document.getElementById('check-repo').className = 'flex items-center gap-2 text-slate-400';
+            document.getElementById('check-repo').innerHTML = `<i class="fa-solid fa-circle-minus text-slate-600"></i> <span>Repository hợp lệ chứa bài làm CSS Grid</span>`;
+
+            document.getElementById('check-structure').className = 'flex items-center gap-2 text-slate-400';
+            document.getElementById('check-structure').innerHTML = `<i class="fa-solid fa-circle-minus text-slate-600"></i> <span>Cấu trúc URL hoàn chỉnh</span>`;
+        }
+
+        // Toast system
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            toastMsg.innerText = msg;
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 2500);
+        }
+
+        function copyCode(elementId, titleName) {
+            const codeBlock = document.getElementById(elementId);
+            if (!codeBlock) return;
+
+            const textToCopy = codeBlock.innerText;
+            copyTextToClipboard(textToCopy);
+            showToast(`Đã sao chép ${titleName || 'mã'} vào Clipboard!`);
+        }
+
+        function copyTextToClipboard(text) {
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text);
+            } else {
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                textarea.style.position = 'fixed';
+                textarea.style.opacity = '0';
+                document.body.appendChild(textarea);
+                textarea.focus();
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                } catch (err) {
+                    console.error('Copy failed', err);
+                }
+                document.body.removeChild(textarea);
+            }
+        }
+    </script>
+</body>
+</html>
