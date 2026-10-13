@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bài tập Bootstrap Grid System</title>
+    <!-- Nhúng Bootstrap 5.3.0 CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="d-flex flex-column min-vh-100 bg-light">
+
+    <!-- 1. HEADER SECTION -->
+    <header class="bg-primary text-white text-center py-4 shadow-sm">
+        <div class="container">
+            <h1 class="fw-bold mb-1">Website Tin Tức & Công Nghệ</h1>
+            <p class="lead mb-0 fs-6">Thực hành Bootstrap Containers & Grid System</p>
+        </div>
+    </header>
+
+    <!-- 2. NAVBAR WITH DROPDOWN -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-warning" href="#">TechPortal</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">Trang chủ</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Giới thiệu</a>
+                    </li>
+                    
+                    <!-- Dropdown Menu -->
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="servicesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Chuyên mục
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="servicesDropdown">
+                            <li><a class="dropdown-item" href="#">Lập trình Web</a></li>
+                            <li><a class="dropdown-item" href="#">Thiết kế UI/UX</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="#">Công nghệ AI</a></li>
+                        </ul>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Liên hệ</a>
+                    </li>
+                </ul>
+
+                <!-- Form tìm kiếm nhỏ -->
+                <form class="d-flex" role="search">
+                    <input class="form-control me-2 form-control-sm" type="search" placeholder="Tìm kiếm..." aria-label="Search">
+                    <button class="btn btn-outline-warning btn-sm" type="submit">Tìm</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 3. MAIN CONTENT & SIDEBAR (GRID SYSTEM) -->
+    <div class="container my-4 flex-grow-1">
+        <div class="row g-4">
+            
+            <!-- MAIN CONTENT: col-12 trên Mobile, col-lg-8 trên Desktop (≥992px) -->
+            <main class="col-12 col-lg-8">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body p-4">
+                        <span class="badge bg-primary mb-2">Nổi bật</span>
+                        <h2 class="card-title fw-bold text-dark mb-3">Xây dựng Bố cục Web Responsive với Bootstrap Grid System</h2>
+                        <p class="card-text text-secondary">
+                            Bootstrap Grid System sử dụng cơ chế Flexbox kết hợp với 12 cột linh hoạt. Bằng cách sử dụng các tiền tố lớp như <code>col-12</code> cho thiết bị di động và <code>col-lg-8</code> cho màn hình máy tính, giao diện có thể tự động co giãn tối ưu theo từng kích thước màn hình.
+                        </p>
+                        <p class="card-text text-secondary">
+                            Nội dung chính này sẽ chiếm 8/12 cột trên màn hình Desktop (≥992px) và tự động mở rộng 100% chiều rộng (12/12 cột) khi chuyển sang màn hình di động (&lt;992px).
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Danh sách bài viết nhỏ dạng Cards -->
+                <div class="row g-3">
+                    <div class="col-12 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold text-primary">Bootstrap Container</h5>
+                                <p class="card-text text-muted small">Container giúp căn giữa và giới hạn độ rộng tối đa của trang web trên từng mức màn hình.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="card border-0 shadow-sm h-100">
+                            <div class="card-body">
+                                <h5 class="card-title fw-bold text-primary">Responsive Breakpoints</h5>
+                                <p class="card-text text-muted small">Cung cấp các mốc như sm, md, lg, xl, xxl để điều khiển bố cục dễ dàng.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- SIDEBAR: col-12 trên Mobile, col-lg-4 trên Desktop (≥992px) -->
+            <aside class="col-12 col-lg-4">
+                <!-- Widget 1: Giới thiệu -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 fw-bold text-primary pt-3">
+                        📌 Thông tin phụ
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-secondary small">
+                            Đây là khu vực Sidebar. Trên màn hình Desktop (≥992px), nó nằm ở cột bên phải chiếm 4/12 cột. Trên màn hình Mobile (&lt;992px), Sidebar sẽ tự động xếp gọn ngay phía dưới nội dung chính.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Widget 2: Bài viết mới -->
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-header bg-white border-0 fw-bold text-primary pt-3">
+                        🔥 Tin mới cập nhật
+                    </div>
+                    <ul class="list-group list-group-flush small">
+                        <li class="list-group-item"><a href="#" class="text-decoration-none text-dark">Hướng dẫn học Bootstrap 5 từ cơ bản đến nâng cao</a></li>
+                        <li class="list-group-item"><a href="#" class="text-decoration-none text-dark">Tìm hiểu thuộc tính Flexbox trong CSS</a></li>
+                        <li class="list-group-item"><a href="#" class="text-decoration-none text-dark">Top 10 mẹo tối ưu hóa trang web Responsive</a></li>
+                    </ul>
+                </div>
+            </aside>
+
+        </div>
+    </div>
+
+    <!-- 4. FOOTER SECTION -->
+    <footer class="bg-dark text-white text-center py-3 mt-auto border-top border-secondary">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2026 TechPortal. All rights reserved. | Thiết kế bởi Học viên Bootstrap</p>
+        </div>
+    </footer>
+
+    <!-- Nhúng Bootstrap 5.3.0 JS Bundle CDN (cần thiết cho Dropdown & Navbar Toggler) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
