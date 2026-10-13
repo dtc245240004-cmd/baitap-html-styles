@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giới Thiệu Doanh Nghiệp - Bootstrap</title>
+    <!-- Nhúng Bootstrap 5.3.0 CSS CDN -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+    <!-- 1. Navbar Section -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold text-primary" href="#">Doanh Nghiệp</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Trang Chủ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#about">Về Chúng Tôi</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#services">Dịch Vụ</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#contact">Liên Hệ</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. Hero Section -->
+    <header class="bg-primary text-white text-center py-5">
+        <div class="container py-4">
+            <h1 class="display-4 fw-bold mb-3">Chào mừng đến với Công Ty Chúng Tôi</h1>
+            <p class="lead mb-4">Chúng tôi cung cấp các giải pháp chuyên nghiệp cho doanh nghiệp của bạn</p>
+            <a href="#services" class="btn btn-light btn-lg text-primary fw-bold">Tìm Hiểu Ngay</a>
+        </div>
+    </header>
+
+    <!-- 3. About Section -->
+    <section id="about" class="container py-5">
+        <h2 class="text-center mb-4 fw-bold">Về Chúng Tôi</h2>
+        <p class="text-center lead text-secondary mx-auto" style="max-width: 800px;">
+            Công ty chúng tôi chuyên cung cấp các dịch vụ công nghệ, thiết kế website và tiếp thị kỹ thuật số hàng đầu. Chúng tôi luôn đồng hành và mang lại giá trị bền vững cho đối tác.
+        </p>
+    </section>
+
+    <!-- 4. Services Section -->
+    <section id="services" class="bg-light py-5">
+        <div class="container">
+            <h2 class="text-center mb-5 fw-bold">Dịch vụ của chúng tôi</h2>
+            <div class="row g-4">
+                <div class="col-md-4 text-center">
+                    <div class="card h-100 p-4 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="h4 card-title mb-3 fw-bold text-primary">Thiết kế Website</h3>
+                            <p class="card-text text-secondary">Thiết kế giao diện chuyên nghiệp, tối ưu hóa trải nghiệm người dùng và thích ứng mọi thiết bị.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="card h-100 p-4 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="h4 card-title mb-3 fw-bold text-primary">Marketing Online</h3>
+                            <p class="card-text text-secondary">Giải pháp tiếp thị số toàn diện giúp gia tăng nhận diện và phát triển thương hiệu vượt trội.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-center">
+                    <div class="card h-100 p-4 border-0 shadow-sm">
+                        <div class="card-body">
+                            <h3 class="h4 card-title mb-3 fw-bold text-primary">Hỗ trợ khách hàng</h3>
+                            <p class="card-text text-secondary">Đội ngũ kỹ thuật chuyên nghiệp cam kết hỗ trợ, giải đáp và xử lý sự cố cho khách hàng 24/7.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Contact Section -->
+    <section id="contact" class="container py-5 text-center">
+        <h2 class="mb-4 fw-bold">Liên hệ với chúng tôi</h2>
+        <p class="fs-5 mb-2"><strong>Email:</strong> contact@company.com</p>
+        <p class="fs-5"><strong>Hotline:</strong> 0988 123 456</p>
+    </section>
+
+    <!-- 6. Footer -->
+    <footer class="bg-dark text-white text-center py-3">
+        <div class="container">
+            <p class="mb-0">&copy; 2026 Công Ty Chúng Tôi. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Nhúng Bootstrap 5.3.0 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
