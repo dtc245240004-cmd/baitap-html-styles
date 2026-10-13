@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Landing Page - SASS Refactored</title>
+    <!-- Nhúng Font Awesome 6 CDN để hiển thị Icon -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        /* ==========================================================================
+           1. MÃ NGUỒN SASS/SCSS TÁI CẤU TRÚC (SCSS SOURCE CODE)
+           ==========================================================================
+           
+           // --- ABSTRACTS / VARIABLES ---
+           $primary-color: #0284c7;
+           $primary-dark: #0369a1;
+           $secondary-color: #0f172a;
+           $accent-color: #f59e0b;
+           $light-bg: #f8fafc;
+           $card-bg: #ffffff;
+           $text-dark: #1e293b;
+           $text-muted: #64748b;
+           $text-light: #ffffff;
+           $border-radius: 12px;
+           $shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+           $shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+           // --- ABSTRACTS / MIXINS ---
+           @mixin flex-between {
+             display: flex;
+             justify-content: space-between;
+             align-items: center;
+           }
+
+           @mixin flex-center {
+             display: flex;
+             justify-content: center;
+             align-items: center;
+           }
+
+           @mixin container {
+             width: 90%;
+             max-width: 1200px;
+             margin: 0 auto;
+           }
+
+           @mixin transition {
+             transition: all 0.3s ease;
+           }
+
+           // --- BASE STYLES ---
+           * {
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+           }
+
+           body {
+             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+             background-color: $light-bg;
+             color: $text-dark;
+             line-height: 1.6;
+           }
+
+           // --- 1. NAVIGATION & HEADER ---
+           .navbar {
+             background-color: $secondary-color;
+             position: sticky;
+             top: 0;
+             z-index: 1000;
+             padding: 16px 0;
+             box-shadow: $shadow-sm;
+
+             .nav-container {
+               @include container;
+               @include flex-between;
+             }
+
+             .logo {
+               font-size: 1.5rem;
+               font-weight: bold;
+               color: $text-light;
+               text-decoration: none;
+
+               i {
+                 color: $primary-color;
+                 margin-right: 8px;
+               }
+             }
+
+             .nav-menu {
+               display: flex;
+               list-style: none;
+               gap: 24px;
+
+               a {
+                 color: #cbd5e1;
+                 text-decoration: none;
+                 font-weight: 500;
+                 @include transition;
+
+                 &:hover {
+                   color: $primary-color;
+                 }
+               }
+             }
+           }
+
+           .hero {
+             background: linear-gradient(135deg, $secondary-color 0%, #1e293b 100%);
+             color: $text-light;
+             padding: 80px 0;
+             text-align: center;
+
+             .hero-container {
+               @include container;
+               max-width: 800px;
+             }
+
+             h1 {
+               font-size: 2.8rem;
+               margin-bottom: 16px;
+               line-height: 1.2;
+             }
+
+             p {
+               font-size: 1.2rem;
+               color: #94a3b8;
+               margin-bottom: 30px;
+             }
+
+             .btn-cta {
+               display: inline-block;
+               background-color: $primary-color;
+               color: $text-light;
+               padding: 14px 32px;
+               border-radius: 30px;
+               text-decoration: none;
+               font-weight: bold;
+               @include transition;
+
+               &:hover {
+                 background-color: $primary-dark;
+                 transform: translateY(-2px);
+                 box-shadow: $shadow-lg;
+               }
+             }
+           }
+
+           // --- 2. FEATURED PRODUCTS (SẢN PHẨM NỔI BẬT) ---
+           .products {
+             padding: 80px 0;
+
+             .products-container {
+               @include container;
+             }
+
+             .section-title {
+               text-align: center;
+               font-size: 2.2rem;
+               color: $secondary-color;
+               margin-bottom: 48px;
+             }
+
+             .product-grid {
+               display: grid;
+               grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+               gap: 30px;
+             }
+
+             .product-card {
+               background-color: $card-bg;
+               border-radius: $border-radius;
+               overflow: hidden;
+               box-shadow: $shadow-sm;
+               @include transition;
+
+               &:hover {
+                 transform: translateY(-8px);
+                 box-shadow: $shadow-lg;
+               }
+
+               img {
+                 width: 100%;
+                 height: 220px;
+                 object-fit: cover;
+               }
+
+               .card-body {
+                 padding: 24px;
+
+                 h3 {
+                   font-size: 1.3rem;
+                   margin-bottom: 8px;
+                   color: $text-dark;
+                 }
+
+                 p {
+                   color: $text-muted;
+                   font-size: 0.95rem;
+                   margin-bottom: 16px;
+                 }
+
+                 .price-row {
+                   @include flex-between;
+
+                   .price {
+                     font-size: 1.25rem;
+                     font-weight: bold;
+                     color: $primary-color;
+                   }
+
+                   .btn-sm {
+                     background-color: $light-bg;
+                     color: $primary-color;
+                     border: 1px solid $primary-color;
+                     padding: 6px 16px;
+                     border-radius: 20px;
+                     text-decoration: none;
+                     font-weight: 600;
+                     @include transition;
+
+                     &:hover {
+                       background-color: $primary-color;
+                       color: $text-light;
+                     }
+                   }
+                 }
+               }
+             }
+           }
+
+           // --- 3. STATISTICS (SỐ LIỆU THỐNG KÊ) ---
+           .stats {
+             background-color: $primary-color;
+             color: $text-light;
+             padding: 60px 0;
+
+             .stats-container {
+               @include container;
+               display: grid;
+               grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+               gap: 30px;
+               text-align: center;
+             }
+
+             .stat-item {
+               i {
+                 font-size: 2.5rem;
+                 margin-bottom: 12px;
+                 color: $accent-color;
+               }
+
+               .stat-number {
+                 font-size: 2.5rem;
+                 font-weight: bold;
+                 display: block;
+               }
+
+               .stat-label {
+                 font-size: 1rem;
+                 color: #e0f2fe;
+               }
+             }
+           }
+
+           // --- 4. FOOTER ---
+           .footer {
+             background-color: $secondary-color;
+             color: #94a3b8;
+             padding-top: 60px;
+
+             .footer-container {
+               @include container;
+               display: grid;
+               grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+               gap: 40px;
+               padding-bottom: 40px;
+             }
+
+             .footer-col {
+               h4 {
+                 color: $text-light;
+                 font-size: 1.2rem;
+                 margin-bottom: 20px;
+               }
+
+               p {
+                 font-size: 0.95rem;
+                 line-height: 1.7;
+               }
+
+               ul {
+                 list-style: none;
+
+                 li {
+                   margin-bottom: 10px;
+
+                   a {
+                     color: #94a3b8;
+                     text-decoration: none;
+                     @include transition;
+
+                     &:hover {
+                       color: $primary-color;
+                     }
+                   }
+                 }
+               }
+             }
+
+             .footer-bottom {
+               border-top: 1px solid #334155;
+               padding: 20px 0;
+               text-align: center;
+               font-size: 0.9rem;
+             }
+           }
+        ========================================================================== */
+
+        /* ==========================================================================
+           2. KẾT QUẢ CSS ĐÃ ĐƯỢC BIÊN DỊCH TỪ SASS ĐỂ HIỂN THỊ TRÊN TRÌNH DUYỆT
+           ========================================================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+            line-height: 1.6;
+        }
+
+        /* 1. Navigation & Header CSS */
+        .navbar {
+            background-color: #0f172a;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            padding: 16px 0;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .navbar .nav-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .navbar .logo i {
+            color: #0284c7;
+            margin-right: 8px;
+        }
+
+        .navbar .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 24px;
+        }
+
+        .navbar .nav-menu a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .nav-menu a:hover {
+            color: #0284c7;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            color: #ffffff;
+            padding: 80px 0;
+            text-align: center;
+        }
+
+        .hero .hero-container {
+            width: 90%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 16px;
+            line-height: 1.2;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #94a3b8;
+            margin-bottom: 30px;
+        }
+
+        .hero .btn-cta {
+            display: inline-block;
+            background-color: #0284c7;
+            color: #ffffff;
+            padding: 14px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .hero .btn-cta:hover {
+            background-color: #0369a1;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        /* 2. Featured Products CSS */
+        .products {
+            padding: 80px 0;
+        }
+
+        .products .products-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .products .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            color: #0f172a;
+            margin-bottom: 48px;
+        }
+
+        .products .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .products .product-card {
+            background-color: #ffffff;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .products .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .products .product-card img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .products .product-card .card-body {
+            padding: 24px;
+        }
+
+        .products .product-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+            color: #1e293b;
+        }
+
+        .products .product-card p {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 16px;
+        }
+
+        .products .product-card .price-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .products .product-card .price {
+            font-size: 1.25rem;
+            font-weight: bold;
+            color: #0284c7;
+        }
+
+        .products .product-card .btn-sm {
+            background-color: #f8fafc;
+            color: #0284c7;
+            border: 1px solid #0284c7;
+            padding: 6px 16px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .products .product-card .btn-sm:hover {
+            background-color: #0284c7;
+            color: #ffffff;
+        }
+
+        /* 3. Statistics CSS */
+        .stats {
+            background-color: #0284c7;
+            color: #ffffff;
+            padding: 60px 0;
+        }
+
+        .stats .stats-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            text-align: center;
+        }
+
+        .stats .stat-item i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            color: #f59e0b;
+        }
+
+        .stats .stat-item .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            display: block;
+        }
+
+        .stats .stat-item .stat-label {
+            font-size: 1rem;
+            color: #e0f2fe;
+        }
+
+        /* 4. Footer CSS */
+        .footer {
+            background-color: #0f172a;
+            color: #94a3b8;
+            padding-top: 60px;
+        }
+
+        .footer .footer-container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            padding-bottom: 40px;
+        }
+
+        .footer .footer-col h4 {
+            color: #ffffff;
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+        }
+
+        .footer .footer-col p {
+            font-size: 0.95rem;
+            line-height: 1.7;
+        }
+
+        .footer .footer-col ul {
+            list-style: none;
+        }
+
+        .footer .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer .footer-col ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .footer .footer-col ul li a:hover {
+            color: #0284c7;
+        }
+
+        .footer .footer-bottom {
+            border-top: 1px solid #334155;
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. NAVIGATION & HEADER SECTION -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo"><i class="fa-solid fa-layer-group"></i> TechLanding</a>
+            <ul class="nav-menu">
+                <li><a href="#hero">Trang chủ</a></li>
+                <li><a href="#products">Sản phẩm</a></li>
+                <li><a href="#stats">Thống kê</a></li>
+                <li><a href="#footer">Liên hệ</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header id="hero" class="hero">
+        <div class="hero-container">
+            <h1>Giải Pháp Công Nghệ Đột Phá</h1>
+            <p>Nâng cao hiệu suất làm việc và tối ưu hóa quy trình với hệ sinh thái sản phẩm thông minh của chúng tôi.</p>
+            <a href="#products" class="btn-cta">Khám Phá Ngay</a>
+        </div>
+    </header>
+
+    <!-- 2. FEATURED PRODUCTS SECTION -->
+    <section id="products" class="products">
+        <div class="products-container">
+            <h2 class="section-title">Sản Phẩm Nổi Bật</h2>
+            <div class="product-grid">
+                
+                <!-- Product Card 1 -->
+                <article class="product-card">
+                    <img src="https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600&q=80" alt="MacBook Pro">
+                    <div class="card-body">
+                        <h3>Laptop Pro Max</h3>
+                        <p>Màn hình Retina sắc nét, hiệu năng mạnh mẽ xử lý mọi tác vụ lập trình và thiết kế.</p>
+                        <div class="price-row">
+                            <span class="price">32.990.000đ</span>
+                            <a href="#" class="btn-sm">Chi tiết</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product Card 2 -->
+                <article class="product-card">
+                    <img src="https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&q=80" alt="Headphone Pro">
+                    <div class="card-body">
+                        <h3>Tai Nghe Lọc Âm</h3>
+                        <p>Công nghệ chống ồn chủ động ANC, chất âm trung thực sống động hàng đầu.</p>
+                        <div class="price-row">
+                            <span class="price">4.500.000đ</span>
+                            <a href="#" class="btn-sm">Chi tiết</a>
+                        </div>
+                    </div>
+                </article>
+
+                <!-- Product Card 3 -->
+                <article class="product-card">
+                    <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&q=80" alt="Smartwatch">
+                    <div class="card-body">
+                        <h3>Đồng Hồ Thông Minh</h3>
+                        <p>Theo dõi sức khỏe 24/7, đo nhịp tim, giấc ngủ và tích hợp GPS thể thao chính xác.</p>
+                        <div class="price-row">
+                            <span class="price">6.800.000đ</span>
+                            <a href="#" class="btn-sm">Chi tiết</a>
+                        </div>
+                    </div>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. STATISTICS SECTION -->
+    <section id="stats" class="stats">
+        <div class="stats-container">
+            <div class="stat-item">
+                <i class="fa-solid fa-users"></i>
+                <span class="stat-number">15,000+</span>
+                <span class="stat-label">Khách Hàng Hài Lòng</span>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-download"></i>
+                <span class="stat-number">50,000+</span>
+                <span class="stat-label">Lượt Tải Ứng Dụng</span>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-star"></i>
+                <span class="stat-number">4.9 / 5</span>
+                <span class="stat-label">Đánh Giá Trung Bình</span>
+            </div>
+            <div class="stat-item">
+                <i class="fa-solid fa-headset"></i>
+                <span class="stat-number">24/7</span>
+                <span class="stat-label">Hỗ Trợ Kỹ Thuật</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. FOOTER SECTION -->
+    <footer id="footer" class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <h4>Về TechLanding</h4>
+                <p>Chúng tôi cung cấp các sản phẩm công nghệ hàng đầu giúp tối ưu hóa cuộc sống và công việc của bạn.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Sản Phẩm</h4>
+                <ul>
+                    <li><a href="#">Laptop & Máy Tính</a></li>
+                    <li><a href="#">Thiết Bị Âm Thanh</a></li>
+                    <li><a href="#">Phụ Kiện Thông Minh</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Liên Kết</h4>
+                <ul>
+                    <li><a href="#">Trang chủ</a></li>
+                    <li><a href="#">Sản phẩm</a></li>
+                    <li><a href="#">Chính sách bảo hành</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TechLanding. All rights reserved. | Refactored with SASS</p>
+        </div>
+    </footer>
+
+</body>
+</html>
