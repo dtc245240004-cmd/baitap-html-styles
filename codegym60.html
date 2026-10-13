@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân tích & Xây dựng Cấu trúc Website Template</title>
+    <style>
+        /* ===========================================
+           1. RESET CSS & ĐỊNH DẠNG CHUNG
+        =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f6f9;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ===========================================
+           2. HEADER SECTION
+        =========================================== */
+        .header {
+            background-color: #1e293b;
+            color: #ffffff;
+            text-align: center;
+            padding: 30px 20px;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #94a3b8;
+            font-size: 1rem;
+        }
+
+        /* ===========================================
+           3. NAVIGATION MENU (Ít nhất 4 mục)
+        =========================================== */
+        .navbar {
+            background-color: #0f172a;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            flex-wrap: wrap;
+        }
+
+        .navbar li a {
+            display: block;
+            color: #f8fafc;
+            text-decoration: none;
+            padding: 14px 24px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .navbar li a:hover {
+            background-color: #0284c7;
+        }
+
+        /* ===========================================
+           4. CONTENT SECTION (Layout Flexbox 2 cột)
+        =========================================== */
+        .main-container {
+            max-width: 1100px;
+            width: 100%;
+            margin: 30px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .content-section {
+            display: flex;
+            gap: 30px;
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            align-items: center;
+        }
+
+        .content-text {
+            flex: 1;
+        }
+
+        .content-text h2 {
+            font-size: 1.8rem;
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+
+        .content-text p {
+            margin-bottom: 12px;
+            color: #475569;
+        }
+
+        .content-image {
+            flex: 1;
+            text-align: center;
+        }
+
+        .content-image img {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        /* ===========================================
+           5. FOOTER
+        =========================================== */
+        .footer {
+            background-color: #1e293b;
+            color: #94a3b8;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+
+        .footer p {
+            font-size: 0.9rem;
+        }
+
+        /* ===========================================
+           6. RESPONSIVE MOBILE (< 768px)
+        =========================================== */
+        @media (max-width: 768px) {
+            .navbar ul {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .content-section {
+                flex-direction: column;
+            }
+
+            .header h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header chứa tiêu đề trang -->
+    <header class="header">
+        <h1>Tech Portal Template</h1>
+        <p>Mẫu giao diện cấu trúc chuẩn HTML & CSS</p>
+    </header>
+
+    <!-- Navigation Menu (5 mục điều hướng) -->
+    <nav class="navbar">
+        <ul>
+            <li><a href="#">Trang chủ</a></li>
+            <li><a href="#">Giới thiệu</a></li>
+            <li><a href="#">Sản phẩm</a></li>
+            <li><a href="#">Tin tức</a></li>
+            <li><a href="#">Liên hệ</a></li>
+        </ul>
+    </nav>
+
+    <!-- Content Section gồm đoạn văn bản và hình ảnh -->
+    <div class="main-container">
+        <section class="content-section">
+            <div class="content-text">
+                <h2>Cấu Trúc Bố Cục Trang Web</h2>
+                <p>Nội dung chính được sắp xếp gọn gàng bên cạnh hình ảnh minh họa bằng kỹ thuật CSS Flexbox.</p>
+                <p>Việc chia nhỏ giao diện thành các thành phần Header, Navigation, Content và Footer giúp mã nguồn dễ đọc, linh hoạt và thuận tiện cho việc bảo trì cũng như nâng cấp về sau.</p>
+            </div>
+            <div class="content-image">
+                <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=600&q=80" alt="Website Template Preview">
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer chứa thông tin bản quyền -->
+    <footer class="footer">
+        <p>© 2026 Tech Portal Template. All rights reserved.</p>
+    </footer>
+
+</body>
+</html>
