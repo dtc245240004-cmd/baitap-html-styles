@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực hành CSS flex-flow Property</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+            background-color: #f4f6f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+
+        .example-card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .example-card h2 {
+            font-size: 18px;
+            margin-bottom: 15px;
+            color: #34495e;
+        }
+
+        /* Ví dụ 1: flex-flow: row nowrap */
+        .container-1 {
+            display: flex;
+            flex-flow: row nowrap;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .container-1 > div {
+            background-color: #007bff;
+            color: white;
+            width: 100px;
+            margin: 10px;
+            text-align: center;
+            line-height: 50px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+
+        /* Ví dụ 2: flex-flow: row-reverse nowrap */
+        .container-2 {
+            display: flex;
+            flex-flow: row-reverse nowrap;
+            background-color: #f1f1f1;
+            padding: 10px;
+            border-radius: 6px;
+        }
+
+        .container-2 > div {
+            background-color: #28a745;
+            color: white;
+            width: 100px;
+            margin: 10px;
+            text-align: center;
+            line-height: 50px;
+            font-weight: bold;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Thực hành thuộc tính flex-flow</h1>
+
+    <!-- Ví dụ 1 -->
+    <div class="example-card">
+        <h2>1. flex-flow: row nowrap (Mặc định - Sắp xếp trái qua phải)</h2>
+        <div class="container-1">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+        </div>
+    </div>
+
+    <!-- Ví dụ 2 -->
+    <div class="example-card">
+        <h2>2. flex-flow: row-reverse nowrap (Sắp xếp phải qua trái)</h2>
+        <div class="container-2">
+            <div>1</div>
+            <div>2</div>
+            <div>3</div>
+        </div>
+    </div>
+
+</body>
+</html>
