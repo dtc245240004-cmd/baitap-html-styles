@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bố cục Responsive CSS Flexbox</title>
+    <style>
+        /* ===========================================
+           1. RESET CSS & BASIC STYLES
+        =========================================== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            background-color: #f4f7f6;
+            color: #333;
+        }
+
+        /* Wrapper tổng thể */
+        .wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* ===========================================
+           2. HEADER & NAVIGATION
+        =========================================== */
+        .header {
+            background-color: #1e293b;
+            color: #ffffff;
+            text-align: center;
+            padding: 25px 15px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            background-color: #334155;
+        }
+
+        .navbar a {
+            color: #ffffff;
+            text-decoration: none;
+            padding: 14px 20px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background-color: #0ea5e9;
+        }
+
+        /* ===========================================
+           3. MAIN CONTAINER (CONTENT + SIDEBAR)
+        =========================================== */
+        .main-body {
+            display: flex;
+            flex: 1; /* Tự động lấp đầy chiều cao còn trống */
+            max-width: 1200px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 15px;
+            gap: 20px;
+        }
+
+        /* Content chính (chiếm 3 phần) */
+        .content {
+            flex: 3;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .content h2 {
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        /* Sidebar (chiếm 1 phần) */
+        .sidebar {
+            flex: 1;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .sidebar h3 {
+            margin-bottom: 15px;
+            color: #0f172a;
+        }
+
+        .sidebar ul {
+            list-style: none;
+        }
+
+        .sidebar li {
+            margin-bottom: 10px;
+        }
+
+        .sidebar a {
+            color: #0284c7;
+            text-decoration: none;
+        }
+
+        .sidebar a:hover {
+            text-decoration: underline;
+        }
+
+        /* ===========================================
+           4. FOOTER
+        =========================================== */
+        .footer {
+            background-color: #1e293b;
+            color: #94a3b8;
+            text-align: center;
+            padding: 20px 15px;
+            margin-top: auto;
+        }
+
+        /* ===========================================
+           5. RESPONSIVE MOBILE (Dưới 768px)
+        =========================================== */
+        @media (max-width: 768px) {
+            /* Chuyển menu điều hướng thành dạng cột */
+            .navbar {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            /* Chuyển phần thân từ hàng ngang thành cột dọc */
+            .main-body {
+                flex-direction: column;
+                margin: 10px auto;
+            }
+
+            .content, .sidebar {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper">
+        <!-- Header -->
+        <header class="header">
+            <h1>Trang Web Responsive Flexbox</h1>
+        </header>
+
+        <!-- Navigation Bar -->
+        <nav class="navbar">
+            <a href="#">Trang chủ</a>
+            <a href="#">Tin tức</a>
+            <a href="#">Sản phẩm</a>
+            <a href="#">Giới thiệu</a>
+            <a href="#">Liên hệ</a>
+        </nav>
+
+        <!-- Main Body -->
+        <div class="main-body">
+            <main class="content">
+                <h2>Main Content - Nội dung chính</h2>
+                <p>Khu vực này hiển thị nội dung chính của website. Trên giao diện Desktop, thẻ <code>main</code> được thiết lập <code>flex: 3</code> để chiếm 75% chiều rộng phần thân.</p>
+                <p>Khi thu nhỏ màn hình xuống thiết bị di động (Mobile), thuộc tính <code>flex-direction: column</code> trong media query sẽ kích hoạt để đưa toàn bộ các phần tử về dạng xếp chồng dọc.</p>
+            </main>
+
+            <aside class="sidebar">
+                <h3>Sidebar - Nội dung phụ</h3>
+                <ul>
+                    <li><a href="#">Bài viết mới nhất</a></li>
+                    <li><a href="#">Khuyến mãi hot</a></li>
+                    <li><a href="#">Thống kê truy cập</a></li>
+                </ul>
+            </aside>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>© 2026 Bản quyền thuộc về Web Developer | Thực hành CSS Flexbox</p>
+        </footer>
+    </div>
+
+</body>
+</html>
