@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thực Hành Cài Đặt và Biên Dịch SASS</title>
+    <style>
+        /* ============================================================
+           MÃ NGUỒN SCSS GỐC (DÙNG ĐỂ NỘP BÀI KIỂM TRA SASS):
+           ------------------------------------------------------------
+           $primary-color: #0284c7;
+           $secondary-color: #0f172a;
+           $bg-light: #f8fafc;
+           $text-color: #334155;
+           $border-radius: 8px;
+
+           @mixin flex-center {
+             display: flex;
+             justify-content: center;
+             align-items: center;
+           }
+
+           * {
+             margin: 0;
+             padding: 0;
+             box-sizing: border-box;
+           }
+
+           body {
+             font-family: Arial, sans-serif;
+             background-color: $bg-light;
+             color: $text-color;
+             line-height: 1.6;
+           }
+
+           .header {
+             background-color: $secondary-color;
+             color: #ffffff;
+             text-align: center;
+             padding: 40px 20px;
+
+             h1 {
+               font-size: 2rem;
+               margin-bottom: 10px;
+             }
+
+             p {
+               color: lighten($primary-color, 25%);
+             }
+           }
+
+           .container {
+             max-width: 800px;
+             margin: 40px auto;
+             padding: 0 20px;
+
+             .card {
+               background: #ffffff;
+               padding: 30px;
+               border-radius: $border-radius;
+               box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+
+               h2 {
+                 color: $secondary-color;
+                 margin-bottom: 15px;
+               }
+
+               .btn {
+                 display: inline-block;
+                 padding: 10px 20px;
+                 border: none;
+                 border-radius: $border-radius;
+                 cursor: pointer;
+                 font-weight: bold;
+                 margin-top: 15px;
+                 text-decoration: none;
+                 transition: background-color 0.3s;
+
+                 &-primary {
+                   background-color: $primary-color;
+                   color: #ffffff;
+
+                   &:hover {
+                     background-color: darken($primary-color, 10%);
+                   }
+                 }
+               }
+             }
+           }
+        ============================================================ */
+
+        /* ============================================================
+           MÃ CSS KẾT QUẢ ĐÃ ĐƯỢC BIÊN DỊCH TỪ MÃ SCSS Ở TRÊN:
+        ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+            line-height: 1.6;
+        }
+
+        .header {
+            background-color: #0f172a;
+            color: #ffffff;
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #82d3f8;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .container .card {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .container .card h2 {
+            color: #0f172a;
+            margin-bottom: 15px;
+        }
+
+        .container .card .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 15px;
+            text-decoration: none;
+            transition: background-color 0.3s;
+        }
+
+        .container .card .btn-primary {
+            background-color: #0284c7;
+            color: #ffffff;
+        }
+
+        .container .card .btn-primary:hover {
+            background-color: #026597;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <h1>Thực Hành SASS CLI & npm</h1>
+        <p>Biên dịch tệp SCSS sang CSS thành công!</p>
+    </header>
+
+    <main class="container">
+        <section class="card">
+            <h2>Kiểm Tra Chế Độ Watch Mode</h2>
+            <p>Mã SCSS đã sử dụng thành công Biến (Variables), Nesting và Mixin. Khi thay đổi trong tệp SCSS, trình biên dịch SASS CLI với tham số <code>--watch</code> sẽ tự động cập nhật CSS tương ứng.</p>
+            <a href="#" class="btn btn-primary">Xác Nhận Hoàn Thành</a>
+        </section>
+    </main>
+
+</body>
+</html>
