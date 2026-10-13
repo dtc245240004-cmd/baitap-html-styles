@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>iPhone 15 Pro - Apple (VN)</title>
+
+    <!-- Bootstrap 5.3.3 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome 6.5.2 CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        .hero-img {
+            max-height: 480px;
+            object-fit: contain;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+
+    <!-- 1. NAVBAR -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark sticky-top border-bottom border-secondary">
+        <div class="container">
+            <a class="navbar-brand fw-bold d-flex align-items-center gap-2" href="#">
+                <i class="fa-brands fa-apple fs-2"></i>
+                <span>iPhone 15 Pro</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
+                    <li class="nav-item"><a class="nav-link active" href="#overview">Tổng quan</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#features">Thiết kế</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#specs">Thông số</a></li>
+                    <li class="nav-item mt-2 mt-lg-0">
+                        <a href="#buy" class="btn btn-primary btn-sm rounded-pill px-3 py-1 fw-semibold">
+                            <i class="fa-solid fa-cart-shopping me-1"></i> Mua ngay
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 2. HERO SECTION (BANNER TỔNG QUAN) -->
+    <section id="overview" class="py-5 text-center bg-black">
+        <div class="container py-4">
+            <span class="text-warning fw-semibold text-uppercase tracking-wider small">Mới ra mắt</span>
+            <h1 class="display-3 fw-bold text-white mt-2 mb-3">iPhone 15 Pro</h1>
+            <p class="fs-4 text-secondary max-w-lg mx-auto mb-4">
+                Khung Titan hàng không vũ trụ. Chip A17 Pro bứt phá. Nút Tác Vụ tùy chỉnh hoàn toàn mới.
+            </p>
+            
+            <!-- Flexbox căn giữa các nút bấm -->
+            <div class="d-flex justify-content-center align-items-center gap-3 mb-5 flex-wrap">
+                <a href="#buy" class="btn btn-primary btn-lg rounded-pill px-4 fw-bold">
+                    Đặt Mua - Từ 28.999.000đ
+                </a>
+                <a href="#features" class="btn btn-outline-light btn-lg rounded-pill px-4 fw-semibold">
+                    Xem Video <i class="fa-regular fa-circle-play ms-1"></i>
+                </a>
+            </div>
+
+            <!-- Hình ảnh nổi bật chính -->
+            <div class="d-flex justify-content-center">
+                <img src="https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=1000&q=80"
+                     alt="iPhone 15 Pro Showcase" 
+                     class="img-fluid hero-img rounded-4 shadow-lg border border-secondary">
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. FEATURE SHOWCASE (GRID + FLEXBOX CHIA 2 CỘT) -->
+    <section id="features" class="py-5 bg-dark border-top border-secondary">
+        <div class="container py-4">
+            <div class="row align-items-center g-5">
+                <!-- Cột văn bản (Sử dụng Flexbox dọc) -->
+                <div class="col-12 col-md-6 d-flex flex-column justify-content-center">
+                    <span class="text-primary fw-bold text-uppercase mb-2">
+                        <i class="fa-solid fa-shield-halved me-1"></i> Vật liệu đột phá
+                    </span>
+                    <h2 class="display-5 fw-bold mb-3 text-white">Khung Titan Siêu Bền & Siêu Nhẹ</h2>
+                    <p class="text-secondary fs-5 mb-4">
+                        iPhone 15 Pro sở hữu thiết kế từ Titan chuẩn hàng không vũ trụ, mang lại tỉ lệ độ bền trên trọng lượng cao nhất từng có trên một dòng iPhone.
+                    </p>
+                    <div class="d-flex align-items-center gap-3 text-light">
+                        <div class="border-start border-primary border-3 ps-3">
+                            <h4 class="fw-bold mb-0">Hợp Kim Cấp 5</h4>
+                            <small class="text-secondary">Cùng loại vật liệu dùng cho tàu vũ trụ Sao Hỏa</small>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột hình ảnh -->
+                <div class="col-12 col-md-6 d-flex justify-content-center align-items-center">
+                    <img src="https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=800&q=80"
+                         alt="Titanium Design" 
+                         class="img-fluid rounded-4 shadow border border-secondary">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. TECH SPECS GRID (BOOTSTRAP GRID 4 CỘT) -->
+    <section id="specs" class="py-5 bg-black">
+        <div class="container py-4">
+            <div class="text-center mb-5">
+                <h2 class="display-5 fw-bold text-white mb-2">Sức Mạnh Vượt Trỗi</h2>
+                <p class="text-secondary fs-5">Tích hợp những công nghệ phần cứng mạnh mẽ nhất của Apple</p>
+            </div>
+
+            <div class="row g-4 justify-content-center">
+                <!-- Spec 1: Chip -->
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="card h-100 bg-dark text-white border-secondary p-4 rounded-4 text-center d-flex flex-column justify-content-between">
+                        <div class="card-body p-0">
+                            <div class="text-primary fs-1 mb-3">
+                                <i class="fa-solid fa-microchip"></i>
+                            </div>
+                            <h3 class="h4 fw-bold mb-2">Chip A17 Pro</h3>
+                            <p class="text-secondary small mb-0">GPU 6 lõi đẳng cấp Pro mang lại đồ họa chơi game chân thực với công nghệ Ray Tracing.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spec 2: Camera -->
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="card h-100 bg-dark text-white border-secondary p-4 rounded-4 text-center d-flex flex-column justify-content-between">
+                        <div class="card-body p-0">
+                            <div class="text-primary fs-1 mb-3">
+                                <i class="fa-solid fa-camera"></i>
+                            </div>
+                            <h3 class="h4 fw-bold mb-2">Camera 48MP</h3>
+                            <p class="text-secondary small mb-0">Hệ thống camera nâng cấp hỗ trợ nhiều tiêu cự và chụp ảnh chân dung thế hệ mới.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spec 3: Battery -->
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="card h-100 bg-dark text-white border-secondary p-4 rounded-4 text-center d-flex flex-column justify-content-between">
+                        <div class="card-body p-0">
+                            <div class="text-primary fs-1 mb-3">
+                                <i class="fa-solid fa-battery-full"></i>
+                            </div>
+                            <h3 class="h4 fw-bold mb-2">Pin Cả Ngày</h3>
+                            <p class="text-secondary small mb-0">Thời gian xem video liên tục lên đến 29 giờ trên phiên bản Pro Max.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Spec 4: USB-C -->
+                <div class="col-12 col-sm-6 col-lg-3">
+                    <div class="card h-100 bg-dark text-white border-secondary p-4 rounded-4 text-center d-flex flex-column justify-content-between">
+                        <div class="card-body p-0">
+                            <div class="text-primary fs-1 mb-3">
+                                <i class="fa-solid fa-bolt"></i>
+                            </div>
+                            <h3 class="h4 fw-bold mb-2">Cổng USB-C</h3>
+                            <p class="text-secondary small mb-0">Hỗ trợ chuẩn USB 3 cho tốc độ truyền dữ liệu nhanh hơn gấp 20 lần so với trước đây.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. CALL TO ACTION SECTION -->
+    <section id="buy" class="py-5 bg-dark border-top border-secondary text-center">
+        <div class="container py-4">
+            <i class="fa-brands fa-apple fs-1 text-primary mb-3"></i>
+            <h2 class="display-5 fw-bold text-white mb-3">Sở Hữu iPhone 15 Pro Ngay</h2>
+            <p class="text-secondary fs-5 mb-4">Giao hàng miễn phí toàn quốc. Trả góp 0% lãi suất qua Apple Store Online.</p>
+            <div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
+                <button class="btn btn-primary btn-lg rounded-pill px-5 py-3 fw-bold shadow">
+                    <i class="fa-solid fa-bag-shopping me-2"></i>Mua Ngay Tại Apple Store
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. FOOTER -->
+    <footer class="bg-black text-secondary py-4 border-top border-secondary text-center">
+        <div class="container">
+            <p class="mb-0 small">&copy; 2026 Apple Inc. All rights reserved. | Thiết kế lấy cảm hứng từ trang giới thiệu sản phẩm Apple</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5.3.3 JS Bundle CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
